@@ -1,0 +1,220 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "alignItems": "stretch",
+        "flex": 1,
+        "justifyContent": "flex-start",
+        "paddingTop": 16,
+      },
+    ]
+  }
+>
+  <Text
+    style={
+      Object {
+        "backgroundColor": "transparent",
+        "fontSize": 17,
+        "margin": 8,
+        "textAlign": "center",
+      }
+    }
+  >
+    环境: 
+    test
+     版本: 
+    1.0.0 - 1
+  </Text>
+  <Text
+    style={
+      Object {
+        "backgroundColor": "transparent",
+        "fontSize": 17,
+        "margin": 8,
+        "textAlign": "center",
+      }
+    }
+  >
+    按下一个按钮，让 APP 崩溃! xx
+  </Text>
+  <TouchableOpacity
+    activeOpacity={0.2}
+    onPress={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "height": 40,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "transparent",
+          "color": "rgb(34,88,220)",
+        }
+      }
+    >
+      Sentry crash
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity
+    activeOpacity={0.2}
+    onPress={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "height": 40,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "transparent",
+          "color": "rgb(34,88,220)",
+        }
+      }
+    >
+      Sentry native crash
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity
+    activeOpacity={0.2}
+    onPress={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "height": 40,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "transparent",
+          "color": "rgb(34,88,220)",
+        }
+      }
+    >
+      jsCrash
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity
+    activeOpacity={0.2}
+    onPress={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "height": 40,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "transparent",
+          "color": "rgb(34,88,220)",
+        }
+      }
+    >
+      throw
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity
+    activeOpacity={0.2}
+    onPress={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "height": 40,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "transparent",
+          "color": "rgb(34,88,220)",
+        }
+      }
+    >
+      promise reject
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity
+    activeOpacity={0.2}
+    onPress={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "height": 40,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "transparent",
+          "color": "rgb(34,88,220)",
+        }
+      }
+    >
+      captureMessage
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity
+    activeOpacity={0.2}
+    onPress={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "height": 40,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "transparent",
+          "color": "rgb(34,88,220)",
+        }
+      }
+    >
+      captureException
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity
+    activeOpacity={0.2}
+    onPress={[Function]}
+    style={
+      Object {
+        "alignItems": "center",
+        "height": 40,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <Text
+      style={
+        Object {
+          "backgroundColor": "transparent",
+          "color": "rgb(34,88,220)",
+        }
+      }
+    >
+      captureBreadcrumb
+    </Text>
+  </TouchableOpacity>
+</View>
+`;

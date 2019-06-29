@@ -1,0 +1,161 @@
+app_identifier = ENV['APPLICATION_ID'] || 'com.shundaojia.myapp'
+app_name = ENV['APP_NAME'] || 'MyApp'
+xcodeproj = "./#{app_name}.xcodeproj"
+
+lane :build do |options|
+    ENV['CI'] = 'true' # 确保是在 CI 环境，否则 xcode 中的脚本不会生效
+    sh(%(cd #{ENV['PWD']} && rm -rf ./Pods && rm -rf ./Podfile.lock))
+    cocoapods(podfile: "./Podfile")
+
+    # 默认打 qa 环境的包
+    environment = options[:environment] || ENV['ENVIRONMENT']|| 'qa'
+    export_method = options[:export_method] || 'app-store'
+    type = export_method.gsub(/-/, '')
+
+    # 设置 bundle id
+    update_app_identifier(
+        xcodeproj: xcodeproj,
+        plist_path: "#{app_name}/Info.plist", 
+        app_identifier: app_identifier
+    )
+
+    build_number = ENV['VERSION_CODE'] || '1'
+    version_name = ENV['VERSION_NAME'] || '1.0.0'
+
+    # 设置 version code
+    increment_build_number(
+        build_number: build_number,
+        xcodeproj: xcodeproj
+    )
+
+    # 设置 version name
+    increment_version_number(
+        version_number: version_name,
+        xcodeproj: xcodeproj
+    )
+
+    git_url = options[:git_url] || ENV['CERTIFICATES_GIT_URL']
+    username = options[:apple_id] || ENV['FASTLANE_USER']
+
+    match(
+        type: 'development', 
+        readonly: true, 
+        app_identifier: app_identifier, 
+        git_url: git_url, 
+        username: username
+    )
+    match(
+        type: type, 
+        readonly: true, 
+        app_identifier: app_identifier, 
+        git_url: git_url, 
+        username: username
+    )
+
+    profile_name = ENV["sigh_#{app_identifier}#{type}_profile-name"];
+    output_name = "#{environment}-#{version_name}-#{build_number}"
+    # 要求项目 scheme 的命名规则是 app 名称 + 空格 + 环境
+    scheme = options[:scheme] || "#{app_name} #{environment}"
+
+    sh(%(cd #{ENV['PWD']} && rm -rf ./build && mkdir build))
+    gym(
+        export_method: export_method,
+        export_options: {
+            method: export_method,
+            provisioningProfiles: { 
+                app_identifier => profile_name,
+            }
+        },
+        include_symbols: true,
+        include_bitcode: false,
+        xcargs: 'DEBUG_INFORMATION_FORMAT="dwarf-with-dsym"',
+        scheme: scheme,
+        output_name: output_name,
+        clean: true,
+        output_directory: "./build"
+    )
+end
+
+lane :test do 
+    puts last_git_tag
+end
+
+lane :upload_ipa_to_bugly do |options|
+    file_name, basename = app_info
+    bugly_exp_id = options[:bugly_exp_id] || ENV['BUGLY_EXP_ID']
+    bugly_app_key = options[:bugly_app_key] || ENV['BUGLY_APP_KEY']
+    command = %(cd #{ENV['PWD']} && \
+        curl --insecure -X "PUT" \
+        -F "file=@#{file_name}" \
+        -F "exp_id=#{bugly_exp_id}" \
+        https://api.bugly.qq.com/beta/apiv1/exp?app_key=#{bugly_app_key})
+    sh(command)
+end
+
+lane :upload_ipa_to_testflight do |options|
+    file_name, basename, version_name, build_number, dir_name = app_info
+    username = options[:apple_id] || ENV['FASTLANE_USER']
+    pilot(
+        username: username,
+        app_identifier: app_identifier,
+        ipa: file_name,
+        # changelog 不能过短，否则会有警告
+        changelog: 'This is my changelog of things that have changed in a log.',
+    )
+end
+
+lane :upload_ipa_to_app_store do |options|
+    file_name, basename, version_name, build_number = app_info
+    username = options[:apple_id] || ENV['FASTLANE_USER']
+    upload_to_app_store(
+        username: username,
+        app_identifier: app_identifier,
+        app_version: "#{version_name}", 
+        ipa: file_name
+    )
+end
+
+lane :upload_debug_symbol_to_sentry do |options|
+
+    file_name, basename, version_name, build_number, dir_name = app_info
+    
+    bundle_output = "#{ENV['PWD']}/build/main.jsbundle"
+    sourcemap_output = "#{ENV['PWD']}/build/main.jsbundle.map"
+    release = "#{app_identifier}-#{version_name}"
+
+    sh(%(
+        sentry-cli --log-level INFO releases new #{release}
+    ))
+
+    # upload_sourcemaps
+    sh(%(
+        sentry-cli --log-level INFO releases files #{release} upload-sourcemaps --dist #{build_number} --rewrite #{sourcemap_output}
+    ))
+    
+    # upload_bundle 
+    sh(%(
+        sentry-cli --log-level INFO releases files #{release} upload --dist #{build_number} #{bundle_output} "~/main.jsbundle"
+    ))
+
+    sh(%(sentry-cli releases finalize #{release}))
+   
+    # upload_sdym
+    sh(%(
+        sentry-cli --log-level INFO upload-dif -t dsym --no-bin #{dir_name}
+    ))
+end
+
+def app_info
+    dir_name = "#{ENV['PWD']}/build/*"
+    match_extension = '.ipa'
+    files = Dir[dir_name]
+    file_name = files.find do |file|
+        File.extname(file) == match_extension
+    end
+
+    basename = File.basename(file_name, match_extension)
+    version_name, build_number = basename.split('-').last(2)
+
+    return file_name, basename, version_name, build_number, dir_name
+end
+

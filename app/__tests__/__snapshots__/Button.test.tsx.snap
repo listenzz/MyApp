@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button Rendering should match to snapshot - Primary: Primary button snapshot 1`] = `
+<TouchableOpacity
+  activeOpacity={0.2}
+  onPress={[Function]}
+  style={
+    Object {
+      "alignSelf": "stretch",
+      "backgroundColor": "#38ba7d",
+      "borderBottomColor": "#1e6343",
+      "borderBottomWidth": 6,
+      "borderWidth": 1,
+      "height": 45,
+      "justifyContent": "center",
+      "marginLeft": 15,
+      "marginRight": 15,
+    }
+  }
+  testID="touchable"
+>
+  <Text
+    style={
+      Object {
+        "alignSelf": "center",
+        "color": "#fff",
+        "fontSize": 17,
+        "fontWeight": "600",
+      }
+    }
+    testID="text"
+  >
+    test
+  </Text>
+</TouchableOpacity>
+`;
+
+exports[`Button Rendering should match to snapshot - Secondary: Secondary button snapshot 1`] = `
+<TouchableOpacity
+  activeOpacity={0.2}
+  onPress={[Function]}
+  style={
+    Array [
+      Object {
+        "alignSelf": "stretch",
+        "backgroundColor": "#38ba7d",
+        "borderBottomColor": "#1e6343",
+        "borderBottomWidth": 6,
+        "borderWidth": 1,
+        "height": 45,
+        "justifyContent": "center",
+        "marginLeft": 15,
+        "marginRight": 15,
+      },
+      Object {
+        "backgroundColor": "#f34541",
+        "borderBottomColor": "#a43532",
+      },
+    ]
+  }
+  testID="touchable"
+>
+  <Text
+    style={
+      Object {
+        "alignSelf": "center",
+        "color": "#fff",
+        "fontSize": 17,
+        "fontWeight": "600",
+      }
+    }
+    testID="text"
+  >
+    test
+  </Text>
+</TouchableOpacity>
+`;

@@ -1,0 +1,94 @@
+apply plugin: "com.android.application"
+apply plugin: 'channel'
+
+project.ext.sentryCli = [
+        logLevel: "debug",
+        root    : "$rn_root"
+]
+
+project.ext.react = [
+        entryFile      : "index.js",
+        bundleInRelease: true,
+        root           : "$rn_root"
+]
+
+apply from: "./react.gradle"
+apply from: "./sentry.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
+
+rebuildChannel {
+    def flavor = System.getenv("ENVIRONMENT") ?: 'production'
+    def baseName = "outputs/apk/${flavor}/release/app-${flavor}-armeabi-v7a-release.apk"
+    baseReleaseApk = new File(project.buildDir, baseName)
+    releaseOutputDir = new File(project.buildDir, "outputs/channels")
+}
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'navigation'
+            keyPassword '123456'
+            storeFile file('./navigation')
+            storePassword '123456'
+        }
+    }
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId System.getenv("APPLICATION_ID") ?: "com.shundaojia.myapp"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode ((System.getenv("VERSION_CODE") ?: '1').toInteger())
+        versionName (System.getenv("VERSION_NAME") ?: '1.0.0')
+    }
+    splits {
+        abi {
+            reset()
+            enable true
+            universalApk false  // If true, also generate a universal APK
+            include "armeabi-v7a", "x86"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
+        }
+    }
+    flavorDimensions "default"
+    productFlavors {
+        qa {
+            buildConfigField "String", "CODEPUSH_KEY", '"L-XEelCs4LTKQwOK0huftB3JLbp6rkAfA5tcN"'
+        }
+        production {
+            buildConfigField "String", "CODEPUSH_KEY", '"MWyeVC38WoHktu9u4Mg2TQRH8rMOHJaIp9Y5V"'
+        }
+    }
+}
+
+dependencies {
+    implementation project(':react-native-code-push')
+    implementation project(':react-native-sentry')
+    implementation project(':react-native-navigation-hybrid')
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'com.leon.channel:helper:2.0.1'
+}
+
+// Run this once to be able to run the application with BUCK
+// puts all compile dependencies into folder libs for BUCK to use
+task copyDownloadableDepsToLibs(type: Copy) {
+    from configurations.compile
+    into 'libs'
+}

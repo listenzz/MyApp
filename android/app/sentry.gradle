@@ -1,0 +1,89 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+def config = project.hasProperty("sentryCli") ? project.sentryCli : []
+def reactRoot = file(config.root ?: "../../")
+
+afterEvaluate {
+
+    android.applicationVariants.all { variant ->
+
+        def targetName = variant.name.capitalize()
+
+        def flavor = variant.flavorName
+
+        def proguardTask = tasks.findByName("transformClassesAndResourcesWithProguardFor${targetName}")
+        if (proguardTask == null) {
+            return
+        }
+        def dexTask = tasks.findByName("transformClassesWithDexBuilderFor${targetName}")
+        if (dexTask == null) {
+            return
+        }
+
+        def propertiesFile = "$rootDir/sentry.properties"
+        if (new File("$rootDir/sentry-$flavor" + ".properties").exists()) {
+            propertiesFile = "$rootDir/sentry-$flavor" + ".properties"
+            println "For $variant.name using: $propertiesFile"
+        }
+
+        Properties sentryProps = new Properties()
+        try {
+            sentryProps.load(new FileInputStream(propertiesFile))
+        } catch (FileNotFoundException e) {
+            println "File not found: $propertiesFile"
+        }
+
+        def cliExecutable = sentryProps.get("cli.executable", "$reactRoot/node_modules/@sentry/cli/bin/sentry-cli")
+
+        // https://docs.sentry.io/cli/dif/proguard/
+        // https://docs.sentry.io/clients/java/modules/android/
+        // https://github.com/getsentry/sentry-java/issues/528
+        // https://github.com/getsentry/sentry-java/blob/master/sentry-android-gradle-plugin/src/main/groovy/io/sentry/android/gradle/SentryPlugin.groovy
+
+        def persistIdsTask = tasks.create(
+                name: "processSentryProGuardFor${targetName}",
+                type: Exec) {
+
+            if (!System.getenv("CI")) {
+                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    commandLine("cmd", "/c", "echo", "skip processing proGuard for sentry.")
+                } else {
+                    commandLine("echo", "skip processing proGuard for sentry.")
+                }
+                return
+            }
+
+            workingDir reactRoot
+
+            def args = [
+                    cliExecutable
+            ]
+            if (config.logLevel) {
+                args.push("--log-level")
+                args.push(config.logLevel)
+            }
+
+            args.push("upload-proguard")
+            args.push("--android-manifest")
+            args.push("$buildDir/intermediates/merged_manifests/${variant.name}/armeabi-v7a/AndroidManifest.xml")
+            args.push("--write-properties")
+            args.push("${variant.mergeAssetsProvider.get().outputDir}/sentry-debug-meta.properties")
+            args.push(variant.mappingFile)
+            args.push("--no-upload")
+
+            println args
+
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine("cmd", "/c", *args)
+            } else {
+                commandLine(*args)
+            }
+            enabled true
+        }
+
+        if (proguardTask && dexTask) {
+            dexTask.dependsOn persistIdsTask
+            persistIdsTask.dependsOn proguardTask
+        }
+    }
+}

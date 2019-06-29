@@ -1,0 +1,38 @@
+# Uncomment the next line to define a global platform for your project
+platform :ios, '9.0'
+inhibit_all_warnings!
+
+target 'MyApp' do
+    
+    node_modules_path = '../node_modules/'
+    
+    # RN
+    pod 'React', :path => node_modules_path + 'react-native', :subspecs => [
+    'Core',
+    'CxxBridge',
+    'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
+    'RCTAnimation',
+    'RCTActionSheet',
+    'RCTText',
+    'RCTImage',
+    'RCTSettings',
+    'RCTCameraRoll',
+    'RCTVibration',
+    'RCTNetwork',
+    'RCTLinkingIOS',
+    'RCTWebSocket', # needed for debugging
+    # Add any other subspecs you want to use in your project
+    ]
+    # Explicitly include Yoga if you are using RN >= 0.42.0
+    pod 'yoga', :path => node_modules_path +  'react-native/ReactCommon/yoga'
+    pod 'DoubleConversion', :podspec => node_modules_path + 'react-native/third-party-podspecs/DoubleConversion.podspec'
+    pod 'glog', :podspec => node_modules_path + 'react-native/third-party-podspecs/glog.podspec'
+    pod 'Folly', :podspec => node_modules_path + 'react-native/third-party-podspecs/Folly.podspec'
+    
+    pod 'NavigationHybrid', :path => node_modules_path + 'react-native-navigation-hybrid'
+    pod 'SentryReactNative', :path => node_modules_path + 'react-native-sentry'
+    
+    # CodePush plugin dependency
+    pod 'CodePush', :path => node_modules_path + 'react-native-code-push'
+    
+end

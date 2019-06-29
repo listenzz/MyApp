@@ -1,0 +1,7 @@
+# The Deliverfile allows you to store various App Store Connect metadata
+# For more information, check out the docs
+# https://docs.fastlane.tools/actions/deliver/
+
+skip_app_version_update true
+skip_screenshots true
+skip_metadata true

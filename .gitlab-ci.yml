@@ -1,0 +1,105 @@
+before_script:
+  - export
+
+stages:
+  - build
+  - deploy
+
+variables:
+  LC_ALL: 'en_US.UTF-8'
+  LANG: 'en_US.UTF-8'
+  APP_MODULE: app
+
+build:ios:
+  stage: build
+  artifacts:
+    paths:
+      - ios/build/
+  script:
+    - yarn install
+    - node ./ci/sha.js
+    - node ./ci/build.js ios
+  tags:
+    - ios
+  except:
+    refs:
+      - tags
+    variables:
+      - $ANDROID_ONLY
+
+deploy:ios:upload:
+  stage: deploy
+  dependencies:
+    - build:ios
+  script:
+    - node ./ci/upload.js ios
+  allow_failure: true
+  only:
+    - schedules
+  tags:
+    - ios
+  except:
+    variables:
+      - $ANDROID_ONLY
+
+deploy:ios:sentry:
+  stage: deploy
+  dependencies:
+    - build:ios
+  script:
+    - node ./ci/sentry.js ios
+  allow_failure: true
+  only:
+    - schedules
+  tags:
+    - ios
+  except:
+    variables:
+      - $ANDROID_ONLY
+
+build:android:
+  stage: build
+  script:
+    - yarn install
+    - node ./ci/sha.js
+    - node ./ci/build.js android
+  artifacts:
+    paths:
+      - android/${APP_MODULE}/build/artifacts/
+  tags:
+    - android
+  except:
+    refs:
+      - tags
+    variables:
+      - $IOS_ONLY
+
+deploy:android:upload:
+  stage: deploy
+  dependencies:
+    - build:android
+  script:
+    - node ./ci/upload.js android
+  allow_failure: true
+  only:
+    - schedules
+  tags:
+    - android
+  except:
+    variables:
+      - $IOS_ONLY
+
+deploy:android:sentry:
+  stage: deploy
+  dependencies:
+    - build:android
+  script:
+    - node ./ci/sentry.js android
+  allow_failure: true
+  only:
+    - schedules
+  tags:
+    - android
+  except:
+    variables:
+      - $IOS_ONLY
