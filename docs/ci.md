@@ -268,7 +268,7 @@ if (!fs.existsSync(ARTIFACTS_DIR)) {
 copy(APK_SOURCE_DIR, ARTIFACTS_DIR)
 ```
 
-编写 ci/upload.ts 文件，这个脚本负责上传 ipa 包到 App Store Connect 或上传 apk 包到文件服务器。
+编写 ci/upload.js 文件，这个脚本负责上传 ipa 包到 App Store Connect 或上传 apk 包到文件服务器。
 
 ```js
 // upload.js
@@ -474,7 +474,7 @@ gitlab-runner start
 
 ## 注入环境变量
 
-fastlane 需要使用 Apple ID 执行签名、部署等任务，而登录 Apple ID 是需要密码的，我们通过环境变量为 fastlane 提供密码
+我们的脚本依赖了许多环境变量，我们可以通过以下方式配置那些不会经常发生变化的环境变量。
 
 前往 **Settings -> CI / CD -> Variables**
 
@@ -486,9 +486,9 @@ fastlane 需要使用 Apple ID 执行签名、部署等任务，而登录 Apple 
 
 ## 自动触发每日构建、部署
 
-根据我们在 .gitlab-ci.yml 文件的配置，每当有 tag 推送到分支，将会自动触发构建和部署
+根据我们在 .gitlab-ci.yml 文件的配置，当有新的代码 push 或 merge 到仓库，将会自动触发构建流程。
 
-我们也可以配置每日自动构建
+我们也可以配置每日自动构建、部署。
 
 在 GitLab 上打开项目，找到左侧菜单 **CI / CD -> Schedules**
 
@@ -498,9 +498,9 @@ fastlane 需要使用 Apple ID 执行签名、部署等任务，而登录 Apple 
 
 ![](./assets/gitlab_schedule_create_1.png)
 
-在这里，我们注入了 `ENVIRONMENT` 和 `BUILD_CHANNELS` 这两个环境变量，表示要打生产环境的包，并且 Android 需要打渠道包。
+在这里，我们注入了 `ENVIRONMENT` 和 `BUILD_CHANNELS` 这两个环境变量，表示要打生产环境的包，并且 Android 需要打渠道包。是的，我们在这里配置那些会经常发生变化的环境变量。
 
-一个定时构建任务就创建好了，如果有需要，也可以点击 Play 按钮立即触发构建任务
+一个定时构建任务就创建好了，如果有需要，也可以点击 Play 按钮立即触发构建、部署任务
 
 ![](./assets/gitlab_schedule_play_1.png)
 

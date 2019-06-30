@@ -67,7 +67,7 @@ appcenter codepush deployment add Production
 appcenter codepush deployment add Staging
 ```
 
-之所以使用 Production 和 Staging，是因为使用过 code-push-cli 的人都知道，code-push-cli 默认创建的就是这俩名称
+> 之所以使用 Production 和 Staging，是因为使用过 code-push-cli 的人都知道，code-push-cli 默认创建的就是这俩名称
 
 列出 deployment key
 
