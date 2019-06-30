@@ -1,6 +1,6 @@
-本文讲述 React Native 工程化，iOS 工程需要做的准备工作，原生工程师也可以参考。
+本文讲述 React Native 工程化，Android 工程需要做的准备工作。
 
-本文基于 gradle 3.3.2 以及 react-native 0.59。
+本文基于 build tools 3.3.2 以及 react-native 0.59。
 
 本文包括以下内容
 
