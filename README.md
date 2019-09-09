@@ -14,6 +14,11 @@
   - 使用 Flavor 来实现 Android 工程的多环境配置
   - 编写原生模块，导出多环境配置到 React Native 代码
 
+- 代码规范与最佳实践
+
+  - [整洁架构](./docs/clean-architecture.md)
+  - [代码规范与最佳实践](./docs/practice.md)
+
 - 如何进行单元测试
 
   - 测什么
@@ -53,8 +58,6 @@
   - 如何注册 CodePush 热更新服务
   - 如何配置 iOS、Android、React Native 工程
   - 与 **CI / CD** 集成，自动发布热更新，并上传符号表到 Sentry
-
-- 代码规范与最佳实践
 
 - 附录
 
