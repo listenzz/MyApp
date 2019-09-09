@@ -10,6 +10,8 @@ lane :build do |options|
     # 默认打 qa 环境的包
     environment = options[:environment] || ENV['ENVIRONMENT']|| 'qa'
     export_method = options[:export_method] || 'app-store'
+    # 如果使用了 Bugly 这类内测分发服务，使用下面这行代码代替上面这行代码
+    # export_method = options[:export_method] || (environment == 'production' ? 'app-store' : 'development')
     type = export_method.gsub(/-/, '')
 
     # 设置 bundle id
