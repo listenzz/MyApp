@@ -65,7 +65,7 @@ UI 层的数据转换逻辑放在哪呢？如果采用了 MVP 或者 MVVM 模式
 
 我们在业务层定义了若干常见异常（Error）。
 
-所有的网络访问 Error，都应当转译成业务 Error， 因为业务层不依赖网络层，更不能把网络异常传递给 UI 层。
+所有的网络访问 Error，都应当转译成业务 Error，因为业务层不依赖网络层，更不能把网络异常传递给 UI 层。
 
 转译后的 Error 应当包含原始的 Error
 
@@ -170,12 +170,14 @@ export default class EventEmitter {
 emit 方法是受保护的，这意味着，无法在 Service 之外发布事件，确保了事件源的唯一性，这符合唯一真实数据源原则。
 
 ```ts
-async bindAlipayAccount(userId: number, accessToken: string) {
+export default class AccountService extends EventEmitter {
+  async bindAlipayAccount(userId: number, accessToken: string) {
     const sign = await this.accountRepository.requestAlipayAuthorizedSignature()
     const code = await this.alipayManager.requestAuthCode(sign)
     await this.accountRepository.bindAlipayAccount(userId, code, accessToken)
     const [accounts] = await this.getBindingAccountInfo()
     this.emit(BINDING_ACCOUNT_CHANGE, accounts)
+  }
 }
 ```
 
