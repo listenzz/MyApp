@@ -16,8 +16,11 @@
 
 - 代码规范与最佳实践
 
+  - [React 组件规范](./docs/coding-standards.md)
+  - [如何编写 Android 组件](./docs/best-practice.md)
+  - [如何编写 iOS 组件](./docs/best-practice.md)
   - [整洁架构](./docs/clean-architecture.md)
-  - [代码规范与最佳实践](./docs/practice.md)
+  - [未分类](./docs/coding-standards.md)
 
 - 如何进行单元测试
 

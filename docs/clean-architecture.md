@@ -121,7 +121,7 @@ export async function result<T, U = Error>(promise: Promise<T>): Promise<[U | nu
 
 当 Service 接收到到来自 Socket 的消息，或者因为用户操作时，往往会改变自己的属性状态，UI 层需要监听这些状态的变化，改变界面来呈现这些变化。
 
-我们通过**订阅/发布**模式来实现这点。
+我们通过**发布/订阅**模式来实现这点。
 
 如果 Service 需要发布事件，那么它需要继承 EventEmitter。
 
