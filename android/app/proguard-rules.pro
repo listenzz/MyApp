@@ -77,3 +77,6 @@
 -dontwarn org.slf4j.**
 -dontwarn javax.**
 -keep class io.sentry.event.Event { *; }
+
+# Gradle Build Tools 3.3
+-optimizations !code/allocation/variable

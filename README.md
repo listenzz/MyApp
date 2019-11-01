@@ -1,4 +1,6 @@
-本文档讲述 React Native 的工程化实践，包括：
+本文档讲述 React Native 的工程化实践。
+
+> master 分支的源码已经更新到支持 RN0.61.3，如果需要支持 RN0.59.10 的源码，请切换到 rn59 分支。
 
 - [在工程中集成 Typescript, ESLint, Prettier 等](./docs/init.md)
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import { Sentry, SentrySeverity } from 'react-native-sentry'
+import * as Sentry from '@sentry/react-native'
 import { Navigator, NavigationItem } from 'react-native-navigation-hybrid'
 import { ENVIRONMENT, VERSION_NAME, VERSION_CODE } from './AppInfo'
 import CodePush from 'react-native-code-push'
@@ -21,7 +21,6 @@ export default class App extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    this.sentryCrash = this.sentryCrash.bind(this)
     this.sentryNativeCrash = this.sentryNativeCrash.bind(this)
     this.jsCrash = this.jsCrash.bind(this)
     this.throw = this.throw.bind(this)
@@ -37,10 +36,6 @@ export default class App extends Component<Props, State> {
 
   componentDidDisappear() {
     CodePush.disallowRestart()
-  }
-
-  sentryCrash() {
-    Sentry.crash()
   }
 
   sentryNativeCrash() {
@@ -72,15 +67,19 @@ export default class App extends Component<Props, State> {
       Sentry.captureException(e)
     }
   }
-
   captureBreadcrumb() {
-    Sentry.captureBreadcrumb({
+    // type?: string;
+    // level?: Severity;
+    // event_id?: string;
+    // category?: string;
+    // message?: string;
+    // data?: {
+    //     [key: string]: any;
+    // };
+    // timestamp?: number;
+    Sentry.addBreadcrumb({
       message: 'something bad happen.',
-      data: {
-        x: 'something',
-        y: 'wrong',
-      },
-      level: SentrySeverity.Warning,
+      level: Sentry.Severity.Warning,
       type: 'http',
     })
   }
@@ -91,11 +90,7 @@ export default class App extends Component<Props, State> {
         <Text style={styles.welcome}>
           环境: {`${ENVIRONMENT}`} 版本: {`${VERSION_NAME} - ${VERSION_CODE}`}
         </Text>
-        <Text style={styles.welcome}>按下一个按钮，让 APP 崩溃! xx</Text>
-
-        <TouchableOpacity onPress={this.sentryCrash} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>Sentry crash</Text>
-        </TouchableOpacity>
+        <Text style={styles.welcome}>按下一个按钮，让 APP 崩溃!</Text>
 
         <TouchableOpacity onPress={this.sentryNativeCrash} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>Sentry native crash</Text>

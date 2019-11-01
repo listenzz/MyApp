@@ -9,10 +9,11 @@ project.ext.sentryCli = [
 project.ext.react = [
         entryFile      : "index.js",
         bundleInRelease: true,
-        root           : "$rn_root"
+        root           : "$rn_root",
+        enableHermes   : false,  // clean and rebuild if changing
 ]
 
-apply from: "./react.gradle"
+apply from: "../../node_modules/react-native/react.gradle"
 apply from: "./sentry.gradle"
 apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
@@ -22,6 +23,9 @@ rebuildChannel {
     baseReleaseApk = new File(project.buildDir, baseName)
     releaseOutputDir = new File(project.buildDir, "outputs/channels")
 }
+
+def jscFlavor = 'org.webkit:android-jsc:+'
+def enableHermes = project.ext.react.get("enableHermes", false)
 
 android {
     signingConfigs {
@@ -77,13 +81,19 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-code-push')
-    implementation project(':react-native-sentry')
-    implementation project(':react-native-navigation-hybrid')
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    
+    if (enableHermes) {
+        def hermesPath = "../../node_modules/hermes-engine/android/";
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
+    } else {
+        implementation jscFlavor
+    }
+
     implementation 'com.leon.channel:helper:2.0.1'
+
 }
 
 // Run this once to be able to run the application with BUCK
@@ -92,3 +102,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

@@ -2,18 +2,14 @@ package com.myapp;
 
 import android.app.Application;
 
+import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.microsoft.codepush.react.CodePush;
-
-import io.sentry.RNSentryPackage;
-import com.navigationhybrid.NavigationHybridPackage;
 import com.facebook.react.ReactNativeHost;
-import com.navigationhybrid.ReactBridgeManager;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.microsoft.codepush.react.CodePush;
+import com.navigationhybrid.ReactBridgeManager;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -28,13 +24,9 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected List<ReactPackage> getPackages() {
-            return Arrays.<ReactPackage>asList(
-                    new MainReactPackage(),
-                    new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG),
-                    new RNSentryPackage(),
-                    new NavigationHybridPackage(),
-                    new AppPackage()
-            );
+            List<ReactPackage> packages = new PackageList(this).getPackages();
+            packages.add(new AppPackage());
+            return packages;
         }
 
         @Nullable

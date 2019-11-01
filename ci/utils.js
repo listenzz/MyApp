@@ -33,7 +33,7 @@ function copy(src, dist) {
 function gitTag() {
   let tag
   try {
-    tag = execSync(`git describe --tags --abbrev=0 --always`, {
+    tag = execSync('git describe --tags --abbrev=0 --always', {
       encoding: 'utf8',
     })
   } catch {
@@ -64,7 +64,7 @@ function sh(cmd, env = process.env, cwd) {
     cwd,
   })
   if (child.status !== 0) {
-    process.exit(child.status)
+    process.exit(child.status || undefined)
   }
 }
 

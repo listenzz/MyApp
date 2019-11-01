@@ -1,5 +1,6 @@
 
 Pods/
+Podfile.lock
 Gemfile.lock
 builds/
 yarn.lock

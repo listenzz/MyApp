@@ -52,7 +52,9 @@ const CHANNELS_FILENAME = process.env.CHANNELS_FILENAME || 'channels.7z'
 const APK_SOURCE_DIR = path.resolve(BUILD_DIR, `outputs/apk/${ENVIRONMENT}/release/`)
 
 // Android js bundle 原始目录
-const JS_BUNDLE_SOURCE_DIR = path.resolve(BUILD_DIR, `generated/assets/react/${ENVIRONMENT}/release/`)
+const JS_BUNDLE_DIR = path.resolve(BUILD_DIR, `generated/assets/react/${ENVIRONMENT}/release/`)
+// Android js source map 所在目录
+const JS_SOURCE_MAP_DIR = path.resolve(BUILD_DIR, `generated/sourcemaps/react/${ENVIRONMENT}/release`)
 
 // AndroidManifest.xml
 const MANIFEST_FILENAME = 'AndroidManifest.xml'
@@ -105,7 +107,8 @@ module.exports = {
   CHANNELS_FILENAME,
   CHANNELS_SOURCE_DIR,
   APK_SOURCE_DIR,
-  JS_BUNDLE_SOURCE_DIR,
+  JS_BUNDLE_DIR,
+  JS_SOURCE_MAP_DIR,
   MANIFEST_SOURCE_PATH,
   MANIFEST_FILENAME,
   SENTRY_PROPERTIES_PATH,

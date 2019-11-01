@@ -5,7 +5,10 @@ xcodeproj = "./#{app_name}.xcodeproj"
 lane :build do |options|
     ENV['CI'] = 'true' # 确保是在 CI 环境，否则 xcode 中的脚本不会生效
     sh(%(cd #{ENV['PWD']} && rm -rf ./Pods && rm -rf ./Podfile.lock))
-    cocoapods(podfile: "./Podfile")
+    cocoapods(
+        podfile: "./Podfile",
+        # repo_update: true # 当 CI 提示找不到对应版本的库时，再打开
+    )
 
     # 默认打 qa 环境的包
     environment = options[:environment] || ENV['ENVIRONMENT']|| 'qa'

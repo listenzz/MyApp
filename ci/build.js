@@ -16,7 +16,8 @@ const {
   FILE_SERVER,
   ARTIFACTS_DIR,
   APK_SOURCE_DIR,
-  JS_BUNDLE_SOURCE_DIR,
+  JS_BUNDLE_DIR,
+  JS_SOURCE_MAP_DIR,
   MANIFEST_SOURCE_PATH,
   MANIFEST_FILENAME,
   SENTRY_DEBUG_META_SOURCE_PATH,
@@ -46,7 +47,7 @@ if (PATCH_ONLY) {
       --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
   )
   // 查看补丁部署情况
-  sh(`appcenter codepush deployment list`)
+  sh('appcenter codepush deployment list')
 
   // 发布 slack 通知
   slack(`${PLATFORM}-${APPLICATION_ID}-${ENVIRONMENT}-${VERSION_NAME} 补丁包发布成功！`)
@@ -56,7 +57,7 @@ if (PATCH_ONLY) {
 // ------------------------------- ios -------------------------------------
 if (PLATFORM === 'ios') {
   const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
-  sh(`bundle exec fastlane build`, undefined, workdir)
+  sh('bundle exec fastlane build', undefined, workdir)
   process.exit(0)
 }
 
@@ -67,7 +68,7 @@ sh(`./gradlew assemble${ENVIRONMENT_CAPITALIZE}Release`, undefined, workdir)
 
 // 打渠道包
 if (NEED_TO_BUILD_CHANNELS) {
-  sh(`./gradlew rebuildChannel`, undefined, workdir)
+  sh('./gradlew rebuildChannel', undefined, workdir)
 
   const { path7za } = require('7zip-bin')
   const { execSync } = require('child_process')
@@ -78,7 +79,7 @@ if (NEED_TO_BUILD_CHANNELS) {
    * @param {string} path
    */
   function compress(dir, path) {
-    let cmd = `${path7za} a ${path} ${dir}`.replace('\n', '')
+    const cmd = `${path7za} a ${path} ${dir}`.replace('\n', '')
     console.log(`executing command: ${cmd}`)
     const stdout = execSync(cmd, { maxBuffer: 5000 * 1024 })
     console.log(stdout.toString())
@@ -105,8 +106,11 @@ if (!fs.existsSync(ARTIFACTS_DIR)) {
 // apk
 copy(APK_SOURCE_DIR, ARTIFACTS_DIR)
 
-// jsbundle
-copy(JS_BUNDLE_SOURCE_DIR, ARTIFACTS_DIR)
+// jsBundleFile
+copy(JS_BUNDLE_DIR, ARTIFACTS_DIR)
+
+// jsSourceMapFile
+copy(JS_SOURCE_MAP_DIR, ARTIFACTS_DIR)
 
 // AndroidManifest.xml
 fs.copyFileSync(MANIFEST_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, MANIFEST_FILENAME), COPYFILE_EXCL)

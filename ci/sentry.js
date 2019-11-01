@@ -35,7 +35,7 @@ if (PLATFORM === 'ios') {
   // -------------------------------ios-------------------------------------
   const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
   sh(
-    `bundle exec fastlane upload_debug_symbol_to_sentry`,
+    'bundle exec fastlane upload_debug_symbol_to_sentry',
     { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
     workdir,
   )

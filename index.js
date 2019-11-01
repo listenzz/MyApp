@@ -3,21 +3,22 @@ import Black from './app/Black'
 import { AppState } from 'react-native'
 import { commit } from './app.json'
 import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid'
-import { Sentry } from 'react-native-sentry'
-import { ENVIRONMENT, BUILD_TYPE, BUILD_TYPE_RELEASE, VERSION_NAME, VERSION_CODE, APPLICATION_ID } from './app/AppInfo'
+import * as Sentry from '@sentry/react-native'
+import { APPLICATION_ID, ENVIRONMENT, BUILD_TYPE, BUILD_TYPE_RELEASE } from './app/AppInfo'
 import CodePush from 'react-native-code-push'
 
 if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
-  Sentry.config('https://2d17bb1ffde34fec963d29b4c3a29f99@sentry.io/1446147').install()
-  Sentry.setTagsContext({
+  Sentry.init({
+    dsn: 'https://2d17bb1ffde34fec963d29b4c3a29f99@sentry.io/1446147',
     environment: ENVIRONMENT,
-    commit: commit,
   })
+
+  Sentry.setTag('commit', commit)
 
   CodePush.getUpdateMetadata()
     .then(update => {
       if (update) {
-        Sentry.setVersion(update.appVersion + '-codepush:' + update.label)
+        Sentry.setRelease(`${APPLICATION_ID}-${update.appVersion}-codepush:${update.label}`)
       }
     })
     .catch(e => {
@@ -28,11 +29,16 @@ if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
     installMode: CodePush.InstallMode.IMMEDIATE,
   })
 
-  AppState.addEventListener('change', state => {
-    state === 'active' &&
-      CodePush.sync({
-        installMode: CodePush.InstallMode.IMMEDIATE,
-      })
+  AppState.addEventListener('change', async state => {
+    if (state === 'active') {
+      try {
+        await CodePush.sync({
+          installMode: CodePush.InstallMode.IMMEDIATE,
+        })
+      } catch (e) {
+        // ignore
+      }
+    }
   })
 }
 
