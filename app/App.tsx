@@ -58,24 +58,24 @@ export default class App extends Component<Props, State> {
 
   jsCrash() {
     const array = ['x', 'y', 'z', 'a']
-    const a = array[9].length + 9
+    const a = array[5].length + 5
     console.log(`${Number(a) + 1}`)
   }
 
   throw() {
     Sentry.addBreadcrumb({
       category: 'Info',
-      message: '即将抛出异常.',
+      message: '即将抛出异常',
       data: {
         githubAccount: 'listenzz',
         email: 'listenzz@163.com',
       },
     })
-    throw new Error('主动抛出异常')
+    throw new Error('主动抛出异常 123')
   }
 
   reject() {
-    Promise.reject(new Error('promise 被拒绝'))
+    Promise.reject(new Error('promise 被拒绝了哈'))
   }
 
   render() {
@@ -84,7 +84,7 @@ export default class App extends Component<Props, State> {
         <Text style={styles.welcome}>
           环境: {`${ENVIRONMENT}`} 版本: {this.state.version}
         </Text>
-        <Text style={styles.welcome}>按下一个按钮，让 APP 崩溃! 我要崩溃！</Text>
+        <Text style={styles.welcome}>按下一个按钮，让 APP 崩溃!</Text>
 
         <TouchableOpacity onPress={this.sentryNativeCrash} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>Sentry native crash</Text>
