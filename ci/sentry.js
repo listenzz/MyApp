@@ -24,6 +24,7 @@ if (PATCH_ONLY) {
   // 上传 sourcemap 到 sentry
   sh(
     `sentry-cli react-native appcenter \
+      --log-level INFO \
       --bundle-id ${APPLICATION_ID}-${VERSION_NAME} \
       --deployment ${deployment} ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
     { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
