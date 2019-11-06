@@ -511,3 +511,21 @@ gitlab-runner start
 ![](./assets/gitlab_pipelines.png)
 
 > 我们还可以利用 **Settings -> CI / CD -> Pipeline triggers** 来给测试同学提供一个触发构建和部署的页面，如果他们有需要的话。
+
+## 本地测试
+
+所有脚本均可以在本机进行测试
+
+cd 到项目根目录，分别输入以下命令试试
+
+调试 ios 打包脚本
+
+```
+node ./ci/build.js ios
+```
+
+调试在 gitlab-ci.yml 中配置的任务，此时会注入一些 CI 环境变量
+
+```
+gitlab-runner exec shell build:ios
+```

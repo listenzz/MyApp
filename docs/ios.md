@@ -23,6 +23,8 @@ gem install bundler
 
 从事 iOS 开发的同学应该都知道 cocoapods，尽管我们开发的是 React Native 应用，但依然需要引入诸多原生模块，这时使用 cocoapods 来管理这些依赖，就比较方便了。
 
+> 更新：RN0.60 后已经默认使用 cocoapods 来管理依赖，并实现了自动 link。本文档 cocoapods 部分已经过期。
+
 按照 [Mac 开发环境配置](https://listenzz.github.io/configue-mac-for-develop.html) 的指引，安装好 cocoapods
 
 删掉多余的 target，除了 MyApp, 其它的都删掉

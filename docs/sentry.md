@@ -115,6 +115,8 @@ end
 
 - 创建 android/app/react.gradle 文件，内容如下，该文件是对 node_modules/react-native/react.gradle 文件的拷贝和修改。
 
+> 更新，如果你的 RN 版本 >= 0.60，不再需要本文件，具体变动请查看最新源码
+
 ```groovy
 import org.apache.tools.ant.taskdefs.condition.Os
 
