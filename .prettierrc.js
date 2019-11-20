@@ -3,6 +3,5 @@ module.exports = {
   trailingComma: 'all',
   jsxBracketSameLine: true,
   singleQuote: true,
-  printWidth: 120,
-  tabWidth: 2,
+  printWidth: 100,
 }
