@@ -54,7 +54,7 @@ yarn add typescript
 ```
 
 ```
-yarn add @types/jest @types/react @types/react-native @types/react-test-renderer
+yarn add -D @types/jest @types/react @types/react-native @types/react-test-renderer
 ```
 
 在项目根目录中创建名为 tsconfig.json 的文件，复制以下内容到文件中。
@@ -129,7 +129,7 @@ yarn add @types/jest @types/react @types/react-native @types/react-test-renderer
 安装 React Native 团队为我们提供的 [eslint config](https://github.com/facebook/react-native/blob/master/packages/eslint-config-react-native-community/index.js)
 
 ```
-yarn add  eslint@5.16.0 eslint-config-prettier @react-native-community/eslint-config@0.05 --dev
+yarn add -D eslint@5.16.0 eslint-config-prettier @react-native-community/eslint-config@0.05
 ```
 
 0.05 版本的 @react-native-community/eslint-config 有些配置上的问题，我们需要稍作修正：
@@ -157,14 +157,14 @@ module.exports = {
 
 eslint-config-prettier 用来关闭 eslint 和 prettier 冲突的配置，eslint-plugin-prettier 使得 prettier 作为 eslint 的插件使用。
 
-关于 eslint plugin 和 eslint config 的区别，可以查看[这篇文章](https://juejin.im/post/5d3d3a685188257206519148)
+关于 eslint plugin 和 eslint config 的区别，请[深入理解 ESlint](https://juejin.im/post/5d3d3a685188257206519148)
 
 ## Git Hook
 
 为了确保提交给 git 的所有文件都能通过 tsc 的编译和 ESLint 检查，我们使用 husky 和 lint-staged。
 
 ```shell
-yarn add husky lint-staged --dev
+yarn add -D husky lint-staged
 ```
 
 在 package.json 添加
