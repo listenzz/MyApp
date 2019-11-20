@@ -1,12 +1,12 @@
 本文介绍：
 
-- 如何在 React Native 中如何配置使用 Typescript
+- 在 React Native 中如何配置使用 Typescript
 
-- 如何使用 ESLint 和 Prettier 来检测 ts 代码
+- 如何使用 ESLint 和 Prettier 来检查 ts 代码
 
 - 如何利用 git hook 在提交代码前先做检查
 
-- 如何配置 VSCode
+- ESLint 和 Prettier 如何与 Visual Studio Code 集成
 
 > 2019 年 11 月 6 日更新： 使用社区提供的 eslint 配置
 
@@ -151,8 +151,7 @@ module.exports = {
   trailingComma: 'all',
   jsxBracketSameLine: true,
   singleQuote: true,
-  printWidth: 120,
-  tabWidth: 2,
+  printWidth: 100,
 }
 ```
 
@@ -187,43 +186,62 @@ yarn add husky lint-staged --dev
 
 husky 对每次提交生效，tsc 会编译整个工程，lint-staged 只对需要提交的文件生效。
 
-## 自动修复代码（VS Code）
+## 与 Visual Studio Code 集成
 
 为了获得良好的开发体验，设置编辑器以便在保存文件时自动运行 ESLint 的自动修复命令（即 eslint --fix）是非常有用的。
 
-以下是 VS Code 中的 settings.json 文件中所需的配置，以便在保存文件时自动修复：
+确保安装了以下 VS Code 插件
+
+```
+dbaeumer.vscode-eslint
+esbenp.prettier-vscode
+```
+
+添加如下配置到 VS Code 中的 settings.json 文件中，以便在保存文件时自动格式化：
 
 > 按下 `Command + ,` 然后点击右上角的 **{ }** 按钮，可以打开 settings.json 文件
 
 ```js
 {
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": false,
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": false,
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": false,
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": false,
+  },
+  "editor.formatOnSave": true,
   "eslint.autoFixOnSave": true,
   "eslint.validate": [
     "javascript",
     "javascriptreact",
-    { "language": "typescript", "autoFix": true },
-    { "language": "typescriptreact", "autoFix": true }
+    {
+      "language": "typescript",
+      "autoFix": true
+    },
+    {
+      "language": "typescriptreact",
+      "autoFix": true
+    }
   ],
-  "editor.formatOnSave": true,
-  "[javascript]": {
-    "editor.formatOnSave": false
-  },
-  "[javascriptreact]": {
-    "editor.formatOnSave": false
-  },
-  "[typescript]": {
-    "editor.formatOnSave": false
-  },
-  "[typescriptreact]": {
-    "editor.formatOnSave": false
-  },
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "typescript.updateImportsOnFileMove.enabled": "always"
 }
 ```
 
 参考：
 
 [react-native-template-typescript](https://github.com/emin93/react-native-template-typescript)
+
+[Setting up ESLint with Prettier, TypeScript, and Visual Studio Code](https://levelup.gitconnected.com/setting-up-eslint-with-prettier-typescript-and-visual-studio-code-d113bbec9857)
 
 [在 typescript 项目中使用 eslint 和 prettier](https://dev.to/robertcoopercode/using-eslint-and-prettier-in-a-typescript-project-53jb)
