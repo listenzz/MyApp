@@ -67,7 +67,11 @@ export default class App extends Component<Props, State> {
   }
 
   async reject() {
-    Promise.reject(new Error('promise 被拒绝了哈'))
+    this.asyncFunc()
+  }
+
+  async asyncFunc() {
+    await Promise.reject(new Error('promise 被拒绝了哈!'))
   }
 
   render() {
