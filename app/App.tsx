@@ -62,19 +62,11 @@ export default class App extends Component<Props, State> {
     console.log(`${Number(a) + 1}`)
   }
 
-  throw() {
-    Sentry.addBreadcrumb({
-      category: 'Info',
-      message: '即将抛出异常',
-      data: {
-        githubAccount: 'listenzz',
-        email: 'listenzz@163.com',
-      },
-    })
+  async throw() {
     throw new Error('主动抛出异常 123')
   }
 
-  reject() {
+  async reject() {
     Promise.reject(new Error('promise 被拒绝了哈'))
   }
 
@@ -86,7 +78,10 @@ export default class App extends Component<Props, State> {
         </Text>
         <Text style={styles.welcome}>按下一个按钮，让 APP 崩溃!</Text>
 
-        <TouchableOpacity onPress={this.sentryNativeCrash} activeOpacity={0.2} style={styles.button}>
+        <TouchableOpacity
+          onPress={this.sentryNativeCrash}
+          activeOpacity={0.2}
+          style={styles.button}>
           <Text style={styles.buttonText}>Sentry native crash</Text>
         </TouchableOpacity>
 
