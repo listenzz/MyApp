@@ -370,7 +370,7 @@ cd android
 docker run -d --restart=always -it -p 8000:8000 -v ~/http:/app/public --name gohttpserver codeskyblue/gohttpserver --upload
 ```
 
-打开 http://127.0.0.1:8080 即可看到文件服务器
+打开 http://127.0.0.1:8000 即可看到文件服务器
 
 ![](./assets/fileserver.png)
 
