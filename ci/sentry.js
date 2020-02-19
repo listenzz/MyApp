@@ -25,7 +25,9 @@ if (PATCH_ONLY) {
   sh(
     `sentry-cli react-native appcenter \
       --log-level INFO \
-      --bundle-id ${APPLICATION_ID}-${VERSION_NAME} \
+      --bundle-id ${APPLICATION_ID} \
+      --version-name ${VERSION_NAME} \
+      --dist ${VERSION_CODE} \
       --deployment ${deployment} ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
     { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
   )

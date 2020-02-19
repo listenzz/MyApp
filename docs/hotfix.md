@@ -104,27 +104,42 @@ yarn add react-native-code-push
 ```js
 // index.js
 import { AppState } from 'react-native'
+import * as Sentry from '@sentry/react-native'
+import { APPLICATION_ID, ENVIRONMENT, BUILD_TYPE, BUILD_TYPE_RELEASE } from './app/AppInfo'
 import CodePush from 'react-native-code-push'
 
 if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
-  Sentry.config('https://2d17bb1ffde34fec963d29b4c3a29f99@sentry.io/1446147').install()
-  Sentry.setTagsContext({
+  Sentry.init({
+    dsn: 'https://5f8e3212e09f451ab9a8871840fc70aa@sentry.devops.shundaojia.com/31',
     environment: ENVIRONMENT,
-    commit: commit,
   })
 
-  CodePush.sync()
-  CodePush.getUpdateMetadata().then(update => {
-    if (update) {
-      // 与 Sentry 配合
-      Sentry.setVersion(update.appVersion + '-codepush:' + update.label)
-    }
+  Sentry.setTag('commit', commit)
+
+  CodePush.getUpdateMetadata()
+    .then(update => {
+      if (update) {
+        Sentry.setRelease(`${APPLICATION_ID}-${update.appVersion}-codepush:${update.label}`)
+      }
+    })
+    .catch(e => {
+      Sentry.captureException(e)
+    })
+
+  CodePush.sync({
+    installMode: CodePush.InstallMode.IMMEDIATE,
   })
-  AppState.addEventListener('change', state => {
-    state === 'active' &&
-      CodePush.sync({
-        installMode: CodePush.InstallMode.ON_NEXT_RESUME,
-      })
+
+  AppState.addEventListener('change', async state => {
+    if (state === 'active') {
+      try {
+        await CodePush.sync({
+          installMode: CodePush.InstallMode.IMMEDIATE,
+        })
+      } catch (e) {
+        // ignore
+      }
+    }
   })
 }
 ```
@@ -132,17 +147,6 @@ if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
 这里使用的是静默更新，如果需要提示用户或者显示进度条，请参考官方文档或其它资料。
 
 ## 配置 iOS 工程
-
-我们使用 cocoapods 来安装
-
-[installation-ios---cocoapods](https://github.com/Microsoft/react-native-code-push/blob/master/docs/setup-ios.md#plugin-installation-ios---cocoapods)
-
-在 ios/Podfile 文件添加如下依赖
-
-```ruby
-# CodePush plugin dependency
-pod 'CodePush', :path => node_modules_path + 'react-native-code-push'
-```
 
 在 ios 目录下执行
 
@@ -207,15 +211,6 @@ appcenter codepush deployment list -k
 
 ## 配置 Andriod 工程
 
-我们采用[手动配置](https://github.com/Microsoft/react-native-code-push/blob/master/docs/setup-android.md#plugin-installation-android---manual)的方式
-
-在 settings.gradle 文件中添加
-
-```groovy
-include ':react-native-code-push'
-project(':react-native-code-push').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-code-push/android/app')
-```
-
 修改 app/build.gradle 文件
 
 ```groovy
@@ -229,10 +224,6 @@ productFlavors {
         buildConfigField "String", "CODEPUSH_KEY", '"MWyeVC38WoHktu9u4Mg2TQRH8rMOHJaIp9Y5V"'
     }
 }
-
-dependencies {
-    implementation project(':react-native-code-push')
-}
 ```
 
 其中， `CODEPUSH_KEY` 可以通过 `appcenter codepush deployment list -k` 查看，**别忘了先设置好要查看的 app 哦**。
@@ -244,21 +235,7 @@ dependencies {
 import com.microsoft.codepush.react.CodePush;
 
 private final ReactNativeHost mReactNativeHost = new HybridReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-        return BuildConfig.DEBUG;
-    }
-
-    @Override
-    protected List<ReactPackage> getPackages() {
-        return Arrays.<ReactPackage>asList(
-            // ...
-            // 2. 添加 Package
-            new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG)
-        );
-    }
-
-    // 3. 重载这个方法
+    // 2. 重载这个方法
     @Nullable
     @Override
     protected String getJSBundleFile() {
@@ -328,7 +305,8 @@ sentry-cli react-native appcenter --bundle-id com.shundaojia.myapp-1.0.11 --depl
 // package.json 所在目录
 const REACT_ROOT = path.resolve(__dirname, '../')
 // codepush 上注册的 app 名字
-const APP_NAME_CODEPUSH = process.env.APP_NAME_CODEPUSH || `listenzz/${APP_NAME.toLowerCase()}-${PLATFORM}`
+const APP_NAME_CODEPUSH =
+  process.env.APP_NAME_CODEPUSH || `listenzz/${APP_NAME.toLowerCase()}-${PLATFORM}`
 // 是否只需要打补丁包
 const PATCH_ONLY = !!process.env.PATCH_ONLY
 // 是否强制更新
@@ -376,7 +354,10 @@ if (PATCH_ONLY) {
   // 上传 sourcemap 到 sentry
   sh(
     `sentry-cli react-native appcenter \
-      --bundle-id ${APPLICATION_ID}-${VERSION_NAME} \
+      --log-level INFO \
+      --bundle-id ${APPLICATION_ID} \
+      --version-name ${VERSION_NAME} \
+      --dist ${VERSION_CODE} \
       --deployment ${deployment} ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
     { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
   )

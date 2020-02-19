@@ -7,97 +7,15 @@
 - 使用 fastlane 上传生产包到 TestFlight
 - 使用 fastlane 上传测试包到 Bugly
 
-按照 [Mac 开发环境配置](https://listenzz.github.io/configue-mac-for-develop.html) 的指引，安装好 ruby, cocoapods, fastlane
+按照 [Mac 开发环境配置](https://listenzz.github.io/configue-mac-for-develop.html) 的指引，安装好 cocoapods, fastlane
 
-在 ruby 安装好后，安装 bundler
+安装 bundler
 
 ```
-gem install bundler
+sudo gem install bundler
 ```
-
-如果问你要不要覆盖 bundle，选择 yes
 
 此外还需要准备一个**未开启二步验证**的 Apple ID，添加到公司苹果开发账号的用户组，赋予 App 管理权限
-
-## 使用 cocoapods 管理依赖
-
-从事 iOS 开发的同学应该都知道 cocoapods，尽管我们开发的是 React Native 应用，但依然需要引入诸多原生模块，这时使用 cocoapods 来管理这些依赖，就比较方便了。
-
-> 更新：RN0.60 后已经默认使用 cocoapods 来管理依赖，并实现了自动 link。本文档 cocoapods 部分已经过期。
-
-按照 [Mac 开发环境配置](https://listenzz.github.io/configue-mac-for-develop.html) 的指引，安装好 cocoapods
-
-删掉多余的 target，除了 MyApp, 其它的都删掉
-
-![target](./assets/ios_target.png)
-
-删除链接的 Frameworks 和 Libraries
-
-![linked frameworks and libraries](./assets/ios_linked_frameworks_libraries.png)
-
-删除 Libraries 文件夹
-
-![](./assets/ios_libraries.jpg)
-
-在弹出的确认对话框中，选择 **Move To Trash**
-
-![move to trash](./assets/ios_move_to_trash.png)
-
-cd 到 ios 文件夹，通过以下命令，创建 Podfile 文件
-
-```
-pod init
-```
-
-可以看到 ios 文件夹里生成了个 Podfile 文件，打开它，进行编辑
-
-```ruby
-# Uncomment the next line to define a global platform for your project
-platform :ios, '9.0'
-inhibit_all_warnings!
-
-target 'MyApp' do
-
-  node_modules_path = '../node_modules/'
-
-  # RN
-  pod 'React', :path => node_modules_path + 'react-native', :subspecs => [
-  'Core',
-  'CxxBridge',
-  'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
-  'RCTAnimation',
-  'RCTActionSheet',
-  'RCTText',
-  'RCTImage',
-  'RCTSettings',
-  'RCTCameraRoll',
-  'RCTVibration',
-  'RCTNetwork',
-  'RCTLinkingIOS',
-  'RCTWebSocket', # needed for debugging
-  # Add any other subspecs you want to use in your project
-  ]
-  # Explicitly include Yoga if you are using RN >= 0.42.0
-  pod 'yoga', :path => node_modules_path +  'react-native/ReactCommon/yoga'
-  pod 'DoubleConversion', :podspec => node_modules_path + 'react-native/third-party-podspecs/DoubleConversion.podspec'
-  pod 'glog', :podspec => node_modules_path + 'react-native/third-party-podspecs/glog.podspec'
-  pod 'Folly', :podspec => node_modules_path + 'react-native/third-party-podspecs/Folly.podspec'
-
-end
-```
-
-编辑完成后执行
-
-```
-pod install
-```
-
-安装完成后，根据提示，关闭项目，然后使用 MyApp.xcworkspace 重新打开项目
-
-务必记住两点：
-
-1. 使用 CocoaPods 生成的 .xcworkspace 文件来打开工程，而不是以前的 .xcodeproj 文件。
-2. 每次更改了 Podfile 文件，需要重新执行一次 pod install 命令。
 
 ## 初始化 fastlane
 
@@ -202,6 +120,8 @@ fastlane match development --git_url 'git@git.xxxxxx.com:ios/certificates.git' -
 ![](./assets/match_xcode.jpg)
 
 就这样，我们把开发证书这事交给了 match 来管理。
+
+> 添加新的设备后，使用 bundle exec fastlane matche development --force 来刷新 Provisioning Profile
 
 ### 可能会遇到的问题
 

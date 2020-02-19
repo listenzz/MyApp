@@ -238,6 +238,8 @@ esbenp.prettier-vscode
 }
 ```
 
+建议阅读 [ReactNative 官方关于 Typescript 的指南](http://facebook.github.io/react-native/docs/typescript)
+
 参考：
 
 [react-native-template-typescript](https://github.com/emin93/react-native-template-typescript)

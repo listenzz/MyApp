@@ -5,15 +5,11 @@ Sentry 是一款开源的错误跟踪，可帮助开发人员实时监控和修�
 - 在打包时注入 Commit SHA，帮助我们还原出问题的代码
 - 上传符号表（RN - jsbundle.map, iOS - dSYM, Android - mapping.txt）
 
-> 请注意，本文档编写时，使用的 RN 版本是 0.59
-
 ## 安装 sentry-cli
 
 ```
-npm install -g @sentry/cli@1.41.0
+curl -sL https://sentry.io/get-cli/ | bash
 ```
-
-注意我们所使用的 sentry-cli 的版本
 
 ## 登录和创建 Sentry Project
 
@@ -32,9 +28,8 @@ npm install -g @sentry/cli@1.41.0
 3. 安装
 
 ```
-yarn add react-native-sentry
+yarn add @sentry/react-native
 
-react-native link react-native-sentry
 ```
 
 ## 调整 iOS 项目
@@ -43,8 +38,6 @@ react-native link react-native-sentry
 cd ios
 pod install
 ```
-
-- 将 AppDelegate.m 文件还原成 `react-native link react-native-sentry` 执行前的样子
 
 - 删除 **Upload Debug Symbols to Sentry** 这个 Build Phase
 
@@ -112,170 +105,6 @@ end
 ```
 
 ## 调整 Android 项目
-
-- 创建 android/app/react.gradle 文件，内容如下，该文件是对 node_modules/react-native/react.gradle 文件的拷贝和修改。
-
-> 更新，如果你的 RN 版本 >= 0.60，不再需要本文件，具体变动请查看最新源码
-
-```groovy
-import org.apache.tools.ant.taskdefs.condition.Os
-
-def config = project.hasProperty("react") ? project.react : [];
-
-def cliPath = config.cliPath ?: "node_modules/react-native/cli.js"
-def bundleAssetName = config.bundleAssetName ?: "index.android.bundle"
-def entryFile = config.entryFile ?: "index.android.js"
-def bundleCommand = config.bundleCommand ?: "bundle"
-def reactRoot = file(config.root ?: "../../")
-def inputExcludes = config.inputExcludes ?: ["android/**", "ios/**"]
-def bundleConfig = config.bundleConfig ? "${reactRoot}/${config.bundleConfig}" : null;
-
-
-afterEvaluate {
-    def isAndroidLibrary = plugins.hasPlugin("com.android.library")
-    def variants = isAndroidLibrary ? android.libraryVariants : android.applicationVariants
-    variants.all { def variant ->
-        // Create variant and target names
-        def targetName = variant.name.capitalize()
-        def targetPath = variant.dirName
-
-        // React js bundle directories
-        def jsBundleDir = file("$buildDir/generated/assets/react/${targetPath}")
-        def resourcesDir = file("$buildDir/generated/res/react/${targetPath}")
-
-        def jsBundleFile = file("$jsBundleDir/$bundleAssetName")
-        def jsBundleMapFile = file("$jsBundleDir/${bundleAssetName}.map")
-
-        // Additional node and packager commandline arguments
-        def nodeExecutableAndArgs = config.nodeExecutableAndArgs ?: ["node"]
-        def extraPackagerArgs = config.extraPackagerArgs ?: []
-
-        def currentBundleTask = tasks.create(
-                name: "bundle${targetName}JsAndAssets",
-                type: Exec) {
-            group = "react"
-            description = "bundle JS and assets for ${targetName}."
-
-            // Create dirs if they are not there (e.g. the "clean" task just ran)
-            doFirst {
-                jsBundleDir.deleteDir()
-                jsBundleDir.mkdirs()
-                resourcesDir.deleteDir()
-                resourcesDir.mkdirs()
-            }
-
-            // Set up inputs and outputs so gradle can cache the result
-            inputs.files fileTree(dir: reactRoot, excludes: inputExcludes)
-            outputs.dir(jsBundleDir)
-            outputs.dir(resourcesDir)
-
-            // Set up the call to the react-native cli
-            workingDir(reactRoot)
-
-            // Set up dev mode
-            def devEnabled = !(config."devDisabledIn${targetName}"
-                    || targetName.toLowerCase().contains("release"))
-
-            def extraArgs = extraPackagerArgs;
-
-            if (bundleConfig) {
-                extraArgs = extraArgs.clone()
-                extraArgs.add("--config");
-                extraArgs.add(bundleConfig);
-            }
-
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine("cmd", "/c", *nodeExecutableAndArgs, cliPath, bundleCommand, "--platform", "android", "--dev", "${devEnabled}",
-                        "--reset-cache", "--entry-file", entryFile, "--bundle-output", jsBundleFile, "--assets-dest", resourcesDir, *extraArgs)
-            } else {
-                commandLine(*nodeExecutableAndArgs, cliPath, bundleCommand, "--platform", "android", "--dev", "${devEnabled}",
-                        "--reset-cache", "--entry-file", entryFile, "--bundle-output", jsBundleFile, "--sourcemap-output", jsBundleMapFile, "--sourcemap-sources-root", reactRoot, "--assets-dest", resourcesDir, *extraArgs)
-            }
-
-            enabled config."bundleIn${targetName}" ||
-                    config."bundleIn${variant.buildType.name.capitalize()}" ?:
-                    targetName.toLowerCase().contains("release")
-        }
-
-        // Expose a minimal interface on the application variant and the task itself:
-        variant.ext.bundleJsAndAssets = currentBundleTask
-        currentBundleTask.ext.generatedResFolders = files(resourcesDir).builtBy(currentBundleTask)
-        currentBundleTask.ext.generatedAssetsFolders = files(jsBundleDir).builtBy(currentBundleTask)
-
-        // registerGeneratedResFolders for Android plugin 3.x
-        if (variant.respondsTo("registerGeneratedResFolders")) {
-            variant.registerGeneratedResFolders(currentBundleTask.generatedResFolders)
-        } else {
-            variant.registerResGeneratingTask(currentBundleTask)
-        }
-        variant.mergeResourcesProvider.get().dependsOn(currentBundleTask)
-
-        // packageApplication for Android plugin 3.x
-        def packageTask = variant.hasProperty("packageApplication") ? variant.packageApplicationProvider.get() : tasks.findByName("package${targetName}")
-        if (variant.hasProperty("packageLibrary")) {
-            packageTask = variant.packageLibrary
-        }
-
-        // pre bundle build task for Android plugin 3.2+
-        def buildPreBundleTask = tasks.findByName("build${targetName}PreBundle")
-
-
-        def resourcesDirConfigValue = config."resourcesDir${targetName}"
-        if (resourcesDirConfigValue) {
-            def currentCopyResTask = tasks.create(
-                    name: "copy${targetName}BundledResources",
-                    type: Copy) {
-                group = "react"
-                description = "copy bundled resources into custom location for ${targetName}."
-
-                from(resourcesDir)
-                into(file(resourcesDirConfigValue))
-
-                dependsOn(currentBundleTask)
-
-                enabled(currentBundleTask.enabled)
-            }
-
-            packageTask.dependsOn(currentCopyResTask)
-            if (buildPreBundleTask != null) {
-                buildPreBundleTask.dependsOn(currentCopyResTask)
-            }
-        }
-
-        def currentAssetsCopyTask = tasks.create(
-                name: "copy${targetName}BundledJs",
-                type: Copy) {
-            group = "react"
-            description = "copy bundled JS into ${targetName}."
-
-            if (config."jsBundleDir${targetName}") {
-                from(jsBundleDir)
-                into(file(config."jsBundleDir${targetName}"))
-            } else {
-                into("$buildDir/intermediates")
-                into("assets/${targetPath}") {
-                    from(jsBundleFile)
-                }
-
-                // Workaround for Android Gradle Plugin 3.2+ new asset directory
-                into("merged_assets/${variant.name}/merge${targetName}Assets/out") {
-                    from(jsBundleFile)
-                }
-            }
-
-            // mergeAssets must run first, as it clears the intermediates directory
-            dependsOn(variant.mergeAssetsProvider.get())
-
-            enabled(currentBundleTask.enabled)
-        }
-
-        packageTask.dependsOn(currentAssetsCopyTask)
-        if (buildPreBundleTask != null) {
-            buildPreBundleTask.dependsOn(currentAssetsCopyTask)
-        }
-    }
-}
-```
 
 - 创建 android/app/sentry.gradle 文件，内容如下
 
@@ -374,9 +203,7 @@ afterEvaluate {
 - 修改 anroid/app/build.gradle 文件
 
 ```diff
-- apply from: "../../node_modules/react-native/react.gradle"
 - apply from: "../../node_modules/react-native-sentry/sentry.gradle"
-+ apply from: "./react.gradle"
 + apply from: "./sentry.gradle"
 ```
 
@@ -394,14 +221,15 @@ import { AppRegistry } from 'react-native'
 import App from './App'
 import { name as appName, commit } from './app.json'
 import { ENVIRONMENT, BUILD_TYPE, BUILD_TYPE_RELEASE } from './app/AppInfo'
-import { Sentry } from 'react-native-sentry'
+import * as Sentry from '@sentry/react-native'
 
 if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
-  Sentry.config('https://2d17bb1ffde34fec963d29b4c3a29f99@sentry.io/1446147').install()
-  Sentry.setTagsContext({
+  Sentry.init({
+    dsn: 'https://2d17bb1ffde34fec963d29b4c3a29f99@sentry.io/1446147',
     environment: ENVIRONMENT,
-    commit: commit,
   })
+
+  Sentry.setTag('commit', commit)
 }
 
 AppRegistry.registerComponent(appName, () => App)
@@ -413,7 +241,7 @@ AppRegistry.registerComponent(appName, () => App)
 // App.tsx
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import { Sentry } from 'react-native-sentry'
+import * as Sentry from '@sentry/react-native'
 import { ENVIRONMENT, VERSION_NAME, VERSION_CODE } from './app/AppInfo'
 
 interface Props {}
@@ -466,7 +294,10 @@ export default class App extends Component<Props, State> {
           <Text style={styles.buttonText}>Sentry crash</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.sentryNativeCrash} activeOpacity={0.2} style={styles.button}>
+        <TouchableOpacity
+          onPress={this.sentryNativeCrash}
+          activeOpacity={0.2}
+          style={styles.button}>
           <Text style={styles.buttonText}>Sentry native crash</Text>
         </TouchableOpacity>
 
@@ -535,7 +366,10 @@ fs.writeFileSync(file, JSON.stringify(app))
 ```js
 // config.js
 // Android js bundle 原始目录
-const JS_BUNDLE_SOURCE_DIR = path.resolve(BUILD_DIR, `generated/assets/react/${ENVIRONMENT}/release/`)
+const JS_BUNDLE_SOURCE_DIR = path.resolve(
+  BUILD_DIR,
+  `generated/assets/react/${ENVIRONMENT}/release/`,
+)
 
 // AndroidManifest.xml
 const MANIFEST_FILENAME = 'AndroidManifest.xml'
@@ -560,7 +394,10 @@ const SENTRY_DEBUG_META_SOURCE_PATH = path.resolve(
 
 const MAPPING_FILENAME = 'mapping.txt'
 // android mapping.txt 原始路径
-const MAPPING_FILE_SOURCE_PATH = path.resolve(BUILD_DIR, `outputs/mapping/${ENVIRONMENT}/release/${MAPPING_FILENAME}`)
+const MAPPING_FILE_SOURCE_PATH = path.resolve(
+  BUILD_DIR,
+  `outputs/mapping/${ENVIRONMENT}/release/${MAPPING_FILENAME}`,
+)
 ```
 
 - 修改 ci/build.js 文件，在文件末尾增加如下内容
@@ -575,11 +412,19 @@ fs.copyFileSync(MANIFEST_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, MANIFEST_FILEN
 
 // sentry-debug-meta.properties
 if (fs.existsSync(SENTRY_DEBUG_META_SOURCE_PATH)) {
-  fs.copyFileSync(SENTRY_DEBUG_META_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME), COPYFILE_EXCL)
+  fs.copyFileSync(
+    SENTRY_DEBUG_META_SOURCE_PATH,
+    path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME),
+    COPYFILE_EXCL,
+  )
 }
 
 // mapping.txt
-fs.copyFileSync(MAPPING_FILE_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, MAPPING_FILENAME), COPYFILE_EXCL)
+fs.copyFileSync(
+  MAPPING_FILE_SOURCE_PATH,
+  path.resolve(ARTIFACTS_DIR, MAPPING_FILENAME),
+  COPYFILE_EXCL,
+)
 ```
 
 - 创建 ci/sentry.js 文件
