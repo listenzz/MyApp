@@ -116,13 +116,11 @@ copy(JS_SOURCE_MAP_DIR, ARTIFACTS_DIR)
 fs.copyFileSync(MANIFEST_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, MANIFEST_FILENAME), COPYFILE_EXCL)
 
 // sentry-debug-meta.properties
-if (fs.existsSync(SENTRY_DEBUG_META_SOURCE_PATH)) {
-  fs.copyFileSync(
-    SENTRY_DEBUG_META_SOURCE_PATH,
-    path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME),
-    COPYFILE_EXCL,
-  )
-}
+fs.copyFileSync(
+  SENTRY_DEBUG_META_SOURCE_PATH,
+  path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME),
+  COPYFILE_EXCL,
+)
 
 // mapping.txt
 fs.copyFileSync(

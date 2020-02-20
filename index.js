@@ -1,7 +1,7 @@
 import App from './app/App'
 import Black from './app/Black'
 import { AppState } from 'react-native'
-import { commit, version_name, version_code } from './app.json'
+import { commit, version_code } from './app.json'
 import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid'
 import * as Sentry from '@sentry/react-native'
 import {
@@ -18,11 +18,14 @@ if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
   Sentry.init({
     dsn: 'https://2d17bb1ffde34fec963d29b4c3a29f99@sentry.io/1446147',
     environment: ENVIRONMENT,
+    release: `${APPLICATION_ID}-${VERSION_NAME}`,
+    dist: `${VERSION_CODE}`,
   })
 
   Sentry.setTag('commit', commit)
-  Sentry.setRelease(`${APPLICATION_ID}-${version_name || VERSION_NAME}`)
-  Sentry.setDist(`${version_code || VERSION_CODE}`)
+  Sentry.setRelease(`${APPLICATION_ID}-${VERSION_NAME}`)
+  // 如果是热更新 version_code != VERSION_CODE
+  Sentry.setDist(`${version_code}`)
 
   CodePush.getUpdateMetadata()
     .then(update => {

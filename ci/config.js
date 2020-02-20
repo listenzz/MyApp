@@ -65,8 +65,6 @@ const MANIFEST_FILENAME = 'AndroidManifest.xml'
 const MANIFEST_SOURCE_PATH = path.resolve(
   BUILD_DIR,
   `intermediates/merged_manifests/${ENVIRONMENT}Release/armeabi-v7a/${MANIFEST_FILENAME}`,
-  // 不同 gradle 版本，这个值是不一样的，如果 gralde 版本是 3.1.4，使用下面这个配置
-  //`intermediates/merged_manifests/${ENVIRONMENT}Release/armeabi-v7a/${MANIFEST_FILENAME}`
 )
 
 // sentry properties 所在路径
@@ -75,9 +73,7 @@ const SENTRY_DEBUG_META_FILENAME = 'sentry-debug-meta.properties'
 // sentry-debug-meta.properties 原始路径
 const SENTRY_DEBUG_META_SOURCE_PATH = path.resolve(
   BUILD_DIR,
-  `intermediates/merged_assets/${ENVIRONMENT}Release/merge${ENVIRONMENT_CAPITALIZE}ReleaseAssets/out/${SENTRY_DEBUG_META_FILENAME}`,
-  // 不同 gradle 版本，这个值是不一样的，如果 gralde 版本是 3.1.4，使用下面这个配置
-  // `intermediates/merged_assets/${ENVIRONMENT}Release/merge${ENVIRONMENT_CAPITALIZE}ReleaseAssets/out/${SENTRY_DEBUG_META_FILENAME}`
+  `intermediates/merged_assets/${ENVIRONMENT}Release/out/${SENTRY_DEBUG_META_FILENAME}`,
 )
 
 const MAPPING_FILENAME = 'mapping.txt'

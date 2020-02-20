@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: 'channel'
+apply plugin: 'io.sentry.android.gradle'
 
 project.ext.sentryCli = [
         logLevel: "debug",
@@ -14,7 +15,6 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-apply from: "./sentry.gradle"
 apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 rebuildChannel {
@@ -22,6 +22,11 @@ rebuildChannel {
     def baseName = "outputs/apk/${flavor}/release/app-${flavor}-armeabi-v7a-release.apk"
     baseReleaseApk = new File(project.buildDir, baseName)
     releaseOutputDir = new File(project.buildDir, "outputs/channels")
+}
+
+sentry {
+    uploadNativeSymbols false
+    autoUpload false
 }
 
 def jscFlavor = 'org.webkit:android-jsc:+'
@@ -48,8 +53,8 @@ android {
         applicationId System.getenv("APPLICATION_ID") ?: "com.shundaojia.myapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode ((System.getenv("VERSION_CODE") ?: '1').toInteger())
-        versionName (System.getenv("VERSION_NAME") ?: '1.0.0')
+        versionCode((System.getenv("VERSION_CODE") ?: '1').toInteger())
+        versionName(System.getenv("VERSION_NAME") ?: '1.0.0')
     }
     splits {
         abi {
@@ -83,7 +88,7 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    
+
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")

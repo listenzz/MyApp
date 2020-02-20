@@ -58,7 +58,7 @@ export default class App extends Component<Props, State> {
 
   jsCrash() {
     const array = ['x', 'y', 'z', 'a']
-    const a = array[24].length + 5
+    const a = array[25].length + 5
     console.log(`${Number(a) + 1}`)
   }
 

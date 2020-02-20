@@ -106,96 +106,14 @@ end
 
 ## 调整 Android 项目
 
-- 创建 android/app/sentry.gradle 文件，内容如下
+参考 https://docs.sentry.io/platforms/android/#proguard
 
-```groovy
-import org.apache.tools.ant.taskdefs.condition.Os
+- 修改 android/build.gradle 文件
 
-def config = project.hasProperty("sentryCli") ? project.sentryCli : []
-def reactRoot = file(config.root ?: "../../")
-
-afterEvaluate {
-
-    android.applicationVariants.all { variant ->
-
-        def targetName = variant.name.capitalize()
-
-        def flavor = variant.flavorName
-
-        def proguardTask = tasks.findByName("transformClassesAndResourcesWithProguardFor${targetName}")
-        if (proguardTask == null) {
-            return
-        }
-        def dexTask = tasks.findByName("transformClassesWithDexBuilderFor${targetName}")
-        if (dexTask == null) {
-            return
-        }
-
-        def propertiesFile = "$rootDir/sentry.properties"
-        if (new File("$rootDir/sentry-$flavor" + ".properties").exists()) {
-            propertiesFile = "$rootDir/sentry-$flavor" + ".properties"
-            println "For $variant.name using: $propertiesFile"
-        }
-
-        Properties sentryProps = new Properties()
-        try {
-            sentryProps.load(new FileInputStream(propertiesFile))
-        } catch (FileNotFoundException e) {
-            println "File not found: $propertiesFile"
-        }
-
-        def cliExecutable = sentryProps.get("cli.executable", "$reactRoot/node_modules/@sentry/cli/bin/sentry-cli")
-
-        // https://docs.sentry.io/cli/dif/proguard/
-        // https://docs.sentry.io/clients/java/modules/android/
-        // https://github.com/getsentry/sentry-java/issues/528
-        // https://github.com/getsentry/sentry-java/blob/master/sentry-android-gradle-plugin/src/main/groovy/io/sentry/android/gradle/SentryPlugin.groovy
-
-        def persistIdsTask = tasks.create(
-                name: "processSentryProGuardFor${targetName}",
-                type: Exec) {
-
-            if (!System.getenv("CI")) {
-                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    commandLine("cmd", "/c", "echo", "skip processing proGuard for sentry.")
-                } else {
-                    commandLine("echo", "skip processing proGuard for sentry.")
-                }
-                return
-            }
-
-            workingDir reactRoot
-
-            def args = [
-                    cliExecutable
-            ]
-            if (config.logLevel) {
-                args.push("--log-level")
-                args.push(config.logLevel)
-            }
-
-            args.push("upload-proguard")
-            args.push("--android-manifest")
-            args.push("$buildDir/intermediates/merged_manifests/${variant.name}/armeabi-v7a/AndroidManifest.xml")
-            args.push("--write-properties")
-            args.push("${variant.mergeAssetsProvider.get().outputDir}/sentry-debug-meta.properties")
-            args.push(variant.mappingFile)
-            args.push("--no-upload")
-
-            println args
-
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine("cmd", "/c", *args)
-            } else {
-                commandLine(*args)
-            }
-            enabled true
-        }
-
-        if (proguardTask && dexTask) {
-            dexTask.dependsOn persistIdsTask
-            persistIdsTask.dependsOn proguardTask
-        }
+```diff
+buildscript {
+    dependencies {
++       classpath 'io.sentry:sentry-android-gradle-plugin:1.7.30'
     }
 }
 ```
@@ -203,8 +121,12 @@ afterEvaluate {
 - 修改 anroid/app/build.gradle 文件
 
 ```diff
-- apply from: "../../node_modules/react-native-sentry/sentry.gradle"
-+ apply from: "./sentry.gradle"
++ apply plugin: 'io.sentry.android.gradle'
+
++ sentry {
++    uploadNativeSymbols false
++    autoUpload false
++ }
 ```
 
 ## 调整 js 代码
@@ -377,8 +299,6 @@ const MANIFEST_FILENAME = 'AndroidManifest.xml'
 const MANIFEST_SOURCE_PATH = path.resolve(
   BUILD_DIR,
   `intermediates/merged_manifests/${ENVIRONMENT}Release/armeabi-v7a/${MANIFEST_FILENAME}`,
-  // 不同 gradle 版本，这个值是不一样的，如果 gralde 版本是 3.1.4，使用下面这个配置
-  //`intermediates/merged_manifests/${ENVIRONMENT}Release/armeabi-v7a/${MANIFEST_FILENAME}`
 )
 
 // sentry properties 所在路径
@@ -387,9 +307,7 @@ const SENTRY_DEBUG_META_FILENAME = 'sentry-debug-meta.properties'
 // sentry-debug-meta.properties 原始路径
 const SENTRY_DEBUG_META_SOURCE_PATH = path.resolve(
   BUILD_DIR,
-  `intermediates/merged_assets/${ENVIRONMENT}Release/merge${ENVIRONMENT_CAPITALIZE}ReleaseAssets/out/${SENTRY_DEBUG_META_FILENAME}`,
-  // 不同 gradle 版本，这个值是不一样的，如果 gralde 版本是 3.1.4，使用下面这个配置
-  // `intermediates/merged_assets/${ENVIRONMENT}Release/merge${ENVIRONMENT_CAPITALIZE}ReleaseAssets/out/${SENTRY_DEBUG_META_FILENAME}`
+  `intermediates/merged_assets/${ENVIRONMENT}Release/out/${SENTRY_DEBUG_META_FILENAME}`,
 )
 
 const MAPPING_FILENAME = 'mapping.txt'
@@ -411,13 +329,11 @@ copy(JS_BUNDLE_SOURCE_DIR, ARTIFACTS_DIR)
 fs.copyFileSync(MANIFEST_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, MANIFEST_FILENAME), COPYFILE_EXCL)
 
 // sentry-debug-meta.properties
-if (fs.existsSync(SENTRY_DEBUG_META_SOURCE_PATH)) {
-  fs.copyFileSync(
-    SENTRY_DEBUG_META_SOURCE_PATH,
-    path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME),
-    COPYFILE_EXCL,
-  )
-}
+fs.copyFileSync(
+  SENTRY_DEBUG_META_SOURCE_PATH,
+  path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME),
+  COPYFILE_EXCL,
+)
 
 // mapping.txt
 fs.copyFileSync(

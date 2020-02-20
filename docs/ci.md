@@ -30,7 +30,8 @@ const { spawnSync, execSync } = require('child_process')
 
 // 不适合放在 config.js 会引起循环依赖
 const SLACK_WEB_HOOK_URL =
-  process.env.SLACK_WEB_HOOK_URL || 'https://hooks.slack.com/services/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'
+  process.env.SLACK_WEB_HOOK_URL ||
+  'https://hooks.slack.com/services/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'
 
 /**
  *
@@ -472,7 +473,7 @@ gitlab-runner start
 
 再次刷新页面，可以看到 Runner 已经被激活
 
-> GitLab Runner 内部使用的 shell 是 bash，如果主机的默认 shell 是 zsh，需要在 ～/.bash_profile 文件中添加 `source ~/.zshrc`
+> GitLab Runner 内部使用的 shell 是 bash，如果主机的默认 shell 是 zsh，需要在 ~/.bash_profile 文件中添加 `source ~/.zshrc`
 
 ## 注入环境变量
 
