@@ -47,6 +47,7 @@ if (PLATFORM === 'ios') {
 
 // -------------------------------android-------------------------------------
 const release = `${APPLICATION_ID}-${VERSION_NAME}`
+
 // 上传 js bundle map 文件
 sh(
   `sentry-cli --log-level INFO react-native gradle \

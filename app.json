@@ -1,1 +1,7 @@
-{ "name": "MyApp", "displayName": "MyApp", "commit": "xxxxxxxx" }
+{
+  "name": "MyApp",
+  "displayName": "MyApp",
+  "commit": "xxxxxxxx",
+  "version_name": "",
+  "version_code": 0
+}

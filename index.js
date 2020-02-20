@@ -1,10 +1,17 @@
 import App from './app/App'
 import Black from './app/Black'
 import { AppState } from 'react-native'
-import { commit } from './app.json'
+import { commit, version_name, version_code } from './app.json'
 import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid'
 import * as Sentry from '@sentry/react-native'
-import { APPLICATION_ID, ENVIRONMENT, BUILD_TYPE, BUILD_TYPE_RELEASE } from './app/AppInfo'
+import {
+  APPLICATION_ID,
+  ENVIRONMENT,
+  BUILD_TYPE,
+  BUILD_TYPE_RELEASE,
+  VERSION_CODE,
+  VERSION_NAME,
+} from './app/AppInfo'
 import CodePush from 'react-native-code-push'
 
 if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
@@ -14,6 +21,8 @@ if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
   })
 
   Sentry.setTag('commit', commit)
+  Sentry.setRelease(`${APPLICATION_ID}-${version_name || VERSION_NAME}`)
+  Sentry.setDist(`${version_code || VERSION_CODE}`)
 
   CodePush.getUpdateMetadata()
     .then(update => {

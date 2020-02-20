@@ -77,6 +77,7 @@
 -dontwarn org.slf4j.**
 -dontwarn javax.**
 -keep class io.sentry.event.Event { *; }
+-keep public class com.facebook.react.common.JavascriptException
 
 # Gradle Build Tools 3.3
 -optimizations !code/allocation/variable
