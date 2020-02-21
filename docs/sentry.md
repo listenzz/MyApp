@@ -25,19 +25,9 @@ curl -sL https://sentry.io/get-cli/ | bash
 
 ![](./assets/sentry_create_2.jpg)
 
-3. 安装
-
-```
-yarn add @sentry/react-native
-
-```
+3. 根据官方指南，[安装 @sentry/react-native](https://docs.sentry.io/platforms/react-native/)
 
 ## 调整 iOS 项目
-
-```
-cd ios
-pod install
-```
 
 - 删除 **Upload Debug Symbols to Sentry** 这个 Build Phase
 
@@ -106,7 +96,11 @@ end
 
 ## 调整 Android 项目
 
-参考 https://docs.sentry.io/platforms/android/#proguard
+- 修改 android/sentry.properties
+
+```diff
+- cli.executable=node_modules/@sentry/cli/bin/sentry-cli
+```
 
 - 修改 android/build.gradle 文件
 
@@ -122,6 +116,7 @@ buildscript {
 
 ```diff
 + apply plugin: 'io.sentry.android.gradle'
+- apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
 
 + sentry {
 +    uploadNativeSymbols false
@@ -514,10 +509,11 @@ deploy:android:sentry:
 我们可以在 TAGS 一栏中找到 commit 和 environment，这正是我们通过以下代码所设置的
 
 ```js
-Sentry.setTagsContext({
+Sentry.init({
   environment: ENVIRONMENT,
-  commit: commit,
 })
+
+Sentry.setTag('commit', commit)
 ```
 
 environment 可以告诉我们，是哪个环境出了问题，commit 可以告诉我们，是基于那个 commit 打的包出了问题。
