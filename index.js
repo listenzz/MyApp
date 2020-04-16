@@ -1,5 +1,5 @@
 import App from './app/App'
-import Black from './app/Black'
+import Blank from './app/Blank'
 import { AppState } from 'react-native'
 import { commit, version_code } from './app.json'
 import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid'
@@ -64,7 +64,7 @@ ReactRegistry.startRegisterComponent()
 
 // 注意，你的每一个页面都需要注册
 ReactRegistry.registerComponent('App', () => App)
-ReactRegistry.registerComponent('Black', () => Black)
+ReactRegistry.registerComponent('Blank', () => Blank)
 
 // 重要必须
 ReactRegistry.endRegisterComponent()

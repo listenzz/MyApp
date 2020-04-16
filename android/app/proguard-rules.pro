@@ -82,3 +82,7 @@
 
 # Gradle Build Tools 3.3
 -optimizations !code/allocation/variable
+
+# hermes
+-keep class com.facebook.hermes.unicode.** { *; }
+-keep class com.facebook.jni.** { *; }

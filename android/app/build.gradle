@@ -33,14 +33,6 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false)
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'navigation'
-            keyPassword '123456'
-            storeFile file('./navigation')
-            storePassword '123456'
-        }
-    }
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -56,6 +48,7 @@ android {
         versionCode((System.getenv("VERSION_CODE") ?: '1').toInteger())
         versionName(System.getenv("VERSION_NAME") ?: '1.0.0')
     }
+
     splits {
         abi {
             reset()
@@ -64,6 +57,16 @@ android {
             include "armeabi-v7a", "x86"
         }
     }
+
+    signingConfigs {
+        config {
+            keyAlias 'navigation'
+            keyPassword '123456'
+            storeFile file('./navigation')
+            storePassword '123456'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -74,6 +77,7 @@ android {
             signingConfig signingConfigs.config
         }
     }
+
     flavorDimensions "default"
     productFlavors {
         qa {
@@ -83,11 +87,20 @@ android {
             buildConfigField "String", "CODEPUSH_KEY", '"MWyeVC38WoHktu9u4Mg2TQRH8rMOHJaIp9Y5V"'
         }
     }
+
+    packagingOptions {
+		pickFirst "lib/armeabi-v7a/libc++_shared.so"
+		pickFirst "lib/arm64-v8a/libc++_shared.so"
+		pickFirst "lib/x86/libc++_shared.so"
+		pickFirst "lib/x86_64/libc++_shared.so"
+	}
+
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
+	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";

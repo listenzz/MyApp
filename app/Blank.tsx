@@ -1,21 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ENVIRONMENT, VERSION_NAME, VERSION_CODE } from './AppInfo'
 
-interface Props {}
-interface State {
-  x: string
-}
-export default class extends Component<Props, State> {
-  render() {
-    return (
-      <View style={[styles.container]}>
-        <Text style={styles.welcome}>
-          环境: {`${ENVIRONMENT}`} 版本: {`${VERSION_NAME} - ${VERSION_CODE}`}
-        </Text>
-      </View>
-    )
-  }
+export default function Blank() {
+  return (
+    <View style={[styles.container]}>
+      <Text style={styles.welcome}>
+        环境: {`${ENVIRONMENT}`} 版本: {`${VERSION_NAME} - ${VERSION_CODE}`}
+      </Text>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
