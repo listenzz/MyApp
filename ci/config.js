@@ -9,6 +9,9 @@ const FILE_SERVER = process.env.FILE_SERVER || 'http://192.168.1.134:8000'
 // 平台 android 或 ios
 const PLATFORM = process.argv[2] || 'ios'
 
+// 确保或假装在 CI 环境
+process.env.CI = process.env.CI || 'true'
+
 // 开发环境 production qa dev
 // 不能通过 CI 直接注入 NODE_ENV ，否则会产生很奇怪的 BUG
 const ENVIRONMENT = process.env.ENVIRONMENT || 'qa'
@@ -25,7 +28,7 @@ const APP_MODULE = process.env.APP_MODULE || 'app'
 const APPLICATION_ID = process.env.APPLICATION_ID || 'com.shundaojia.myapp'
 process.env.APPLICATION_ID = APPLICATION_ID
 
-// 版本
+// 版本名
 const VERSION_NAME = process.env.VERSION_NAME || gitTag()
 process.env.VERSION_NAME = VERSION_NAME
 

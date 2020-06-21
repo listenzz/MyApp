@@ -4,14 +4,17 @@ xcodeproj = "./#{app_name}.xcodeproj"
 
 lane :build do |options|
     ENV['CI'] = 'true' # 确保是在 CI 环境，否则 xcode 中的脚本不会生效
-    sh(%(cd #{ENV['PWD']} && rm -rf ./Pods && rm -rf ./Podfile.lock))
+
+    if ENV['SHOULD_REPO_UPDATE'] == 'true'
+        sh(%(bundle exec pod repo update))
+    end
+
     cocoapods(
         podfile: "./Podfile",
-        # repo_update: true # 当 CI 提示找不到对应版本的库时，再打开
     )
 
     # 默认打 qa 环境的包
-    environment = options[:environment] || ENV['ENVIRONMENT']|| 'qa'
+    environment = options[:environment] || ENV['ENVIRONMENT'] || 'qa'
     export_method = options[:export_method] || 'app-store'
     # 如果使用了 Bugly 这类内测分发服务，使用下面这行代码代替上面这行代码
     # export_method = options[:export_method] || (environment == 'production' ? 'app-store' : 'development')

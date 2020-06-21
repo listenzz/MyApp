@@ -9,4 +9,9 @@ module.exports = {
       },
     },
   ],
+  rules: {
+    'no-shadow': 0,
+    'no-bitwise': 0,
+    'react-native/no-inline-styles': 0,
+  },
 }

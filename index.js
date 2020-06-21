@@ -16,24 +16,26 @@ import CodePush from 'react-native-code-push'
 
 if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
   Sentry.init({
-    dsn: 'https://2d17bb1ffde34fec963d29b4c3a29f99@sentry.io/1446147',
+    dsn: 'https://886086b50882460b92cab71fbada84ab@sentry.imcoding.tech/2',
     environment: ENVIRONMENT,
+    // for native code
     release: `${APPLICATION_ID}-${VERSION_NAME}`,
     dist: `${VERSION_CODE}`,
   })
 
   Sentry.setTag('commit', commit)
+  // for react code
   Sentry.setRelease(`${APPLICATION_ID}-${VERSION_NAME}`)
   // 如果是热更新 version_code != VERSION_CODE
   Sentry.setDist(`${version_code}`)
 
   CodePush.getUpdateMetadata()
-    .then(update => {
+    .then((update) => {
       if (update) {
         Sentry.setRelease(`${APPLICATION_ID}-${update.appVersion}-codepush:${update.label}`)
       }
     })
-    .catch(e => {
+    .catch((e) => {
       Sentry.captureException(e)
     })
 
@@ -41,7 +43,7 @@ if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
     installMode: CodePush.InstallMode.IMMEDIATE,
   })
 
-  AppState.addEventListener('change', async state => {
+  AppState.addEventListener('change', async (state) => {
     if (state === 'active') {
       try {
         await CodePush.sync({

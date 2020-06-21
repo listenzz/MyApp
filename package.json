@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "tsc": "tsc --noEmit",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
   },
   "husky": {
     "hooks": {
@@ -27,26 +27,25 @@
     "react": "16.11.0",
     "react-native": "^0.62.2",
     "react-native-code-push": "^6.2.0",
-    "react-native-navigation-hybrid": "^0.22.1"
+    "react-native-navigation-hybrid": "^0.23.7"
   },
   "devDependencies": {
-    "7zip-bin": "2.3.4",
+    "7zip-bin": "^5.0.3",
     "@babel/core": "^7.4.3",
     "@babel/runtime": "^7.4.3",
-    "@react-native-community/eslint-config": "0.0.5",
-    "@types/jest": "^24.0.11",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "@types/jest": "^26.0.0",
     "@types/react": "^16.9.14",
-    "@types/react-native": "^0.60.21",
+    "@types/react-native": "^0.62.7",
     "@types/react-test-renderer": "16.9.0",
-    "babel-jest": "^24.7.1",
-    "eslint": "^5.16.0",
-    "eslint-config-prettier": "^6.5.0",
-    "husky": "^3.0.9",
-    "jest": "^24.7.1",
-    "lint-staged": "^9.4.2",
-    "metro-react-native-babel-preset": "^0.58.0",
-    "react-native-testing-library": "^1.7.0",
+    "babel-jest": "^26.0.1",
+    "eslint": "^6.8.0",
+    "husky": "^4.2.5",
+    "jest": "^26.0.1",
+    "lint-staged": "^10.2.2",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-native-testing-library": "^2.1.0",
     "react-test-renderer": "16.11.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.3"
   }
 }

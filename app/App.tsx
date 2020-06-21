@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import * as Sentry from '@sentry/react-native'
 import {
@@ -8,12 +8,8 @@ import {
   InjectedProps,
 } from 'react-native-navigation-hybrid'
 import { ENVIRONMENT, VERSION_NAME, VERSION_CODE } from './AppInfo'
-import { version_name, version_code } from '../app.json'
+import { version_name, version_code, commit } from '../app.json'
 import CodePush from 'react-native-code-push'
-
-interface State {
-  version: string
-}
 
 export default withNavigationItem({
   rightBarButtonItem: {
@@ -31,24 +27,26 @@ function App({ sceneId }: InjectedProps) {
 
   useEffect(() => {
     CodePush.getUpdateMetadata()
-      .then(update => {
+      .then((update) => {
         if (update) {
           setVersion(
             `${update.appVersion}-codepush:${update.label}-${version_code || VERSION_CODE}`,
           )
         }
       })
-      .catch(e => {
+      .catch((e) => {
         Sentry.captureException(e)
       })
   }, [])
 
-  useVisibleEffect(sceneId, () => {
+  const visibleCallback = useCallback(() => {
     CodePush.allowRestart()
     return () => {
       CodePush.disallowRestart()
     }
-  })
+  }, [])
+
+  useVisibleEffect(sceneId, visibleCallback)
 
   function sentryNativeCrash() {
     Sentry.nativeCrash()
@@ -71,7 +69,7 @@ function App({ sceneId }: InjectedProps) {
   return (
     <View style={[styles.container]}>
       <Text style={styles.welcome}>
-        环境: {`${ENVIRONMENT}`} 版本: {version}
+        环境: {`${ENVIRONMENT}`} 版本: {version} commit: {commit}
       </Text>
       <Text style={styles.welcome}>按下一个按钮，让 APP 崩溃!</Text>
 

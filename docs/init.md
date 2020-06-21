@@ -32,6 +32,8 @@ npm i -g @react-native-community/cli
 npx react-native init MyApp --template react-native-template-typescript
 ```
 
+> 使用 --version 参数可以指定 RN 版本，如 `npx react-native init MyApp --template react-native-template-typescript --version 0.60`
+
 调整 tsconfig.json 文件，在 compilerOptions 中添加如下两个配置
 
 ```json
@@ -129,10 +131,8 @@ yarn add -D @types/jest @types/react @types/react-native @types/react-test-rende
 安装 React Native 团队为我们提供的 [eslint config](https://github.com/facebook/react-native/blob/master/packages/eslint-config-react-native-community/index.js)
 
 ```
-yarn add -D eslint@5.16.0 eslint-config-prettier @react-native-community/eslint-config@0.05
+yarn add -D eslint@^6.0.0  @react-native-community/eslint-config
 ```
-
-0.05 版本的 @react-native-community/eslint-config 有些配置上的问题，我们需要稍作修正：
 
 编辑或创建 .eslintrc.js 文件
 
@@ -155,9 +155,7 @@ module.exports = {
 }
 ```
 
-eslint-config-prettier 用来关闭 eslint 和 prettier 冲突的配置，eslint-plugin-prettier 使得 prettier 作为 eslint 的插件使用。
-
-关于 eslint plugin 和 eslint config 的区别，请[深入理解 ESlint](https://juejin.im/post/5d3d3a685188257206519148)
+ESLint 相关知识，请[深入理解 ESlint](https://juejin.im/post/5d3d3a685188257206519148)
 
 ## Git Hook
 
@@ -205,35 +203,39 @@ esbenp.prettier-vscode
 {
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": false,
-  },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": false,
-  },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": false,
+    "editor.tabSize": 2
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": false,
+    "editor.tabSize": 2
   },
-  "editor.formatOnSave": true,
-  "eslint.autoFixOnSave": true,
+  "[javascript]": {
+    "editor.tabSize": 2
+  },
+  "[html]": {
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.tabSize": 2
+  },
+  "[css]": {
+    "editor.tabSize": 2
+  },
+  "[yaml]": {
+    "editor.tabSize": 2
+  },
+  "[toml]": {
+    "editor.tabSize": 2
+  },
+  "editor.fontSize": 14,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
   "eslint.validate": [
     "javascript",
     "javascriptreact",
-    {
-      "language": "typescript",
-      "autoFix": true
-    },
-    {
-      "language": "typescriptreact",
-      "autoFix": true
-    }
+    "typescript",
+    "typescriptreact"
   ],
 }
 ```
