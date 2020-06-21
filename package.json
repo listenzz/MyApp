@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "start": "react-native start",
+    "android": "react-native run-android --variant qaDebug",
+    "ios": "react-native run-ios --scheme 'MyApp qa' --configuration 'Debug'",
+    "start": "react-native start --reset-cache",
     "test": "jest",
     "tsc": "tsc --noEmit",
     "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"

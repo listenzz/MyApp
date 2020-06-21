@@ -14,20 +14,6 @@
   - 使用 Flavor 来实现 Android 工程的多环境配置
   - 编写原生模块，导出多环境配置到 React Native 代码
 
-- 代码规范与最佳实践
-
-  - [React 组件规范](./docs/coding-standards.md)
-  - [如何编写 Android 组件](./docs/best-practice.md)
-  - [如何编写 iOS 组件](./docs/best-practice.md)
-  - [整洁架构](./docs/clean-architecture.md)
-  - [未分类](./docs/coding-standards.md)
-
-- 如何进行单元测试
-
-  - 测什么
-  - 不测什么
-  - 如何测
-
 - 使用 **GitLab CI / CD** 来实现持续集成与持续部署
 
   - [iOS 工程化实践的准备工作](./docs/ios.md)
@@ -61,9 +47,3 @@
   - 如何注册 CodePush 热更新服务
   - 如何配置 iOS、Android、React Native 工程
   - 与 **CI / CD** 集成，自动发布热更新，并上传符号表到 Sentry
-
-- 附录
-
-  - 搭建 Sentry 私服
-  - 搭建 CodePush 私服
-  - 搭建私有 NPM 仓库

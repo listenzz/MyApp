@@ -32,7 +32,7 @@ npm i -g @react-native-community/cli
 npx react-native init MyApp --template react-native-template-typescript
 ```
 
-> 使用 --version 参数可以指定 RN 版本，如 `npx react-native init MyApp --template react-native-template-typescript --version 0.60`
+> 使用 --version 参数可以指定 RN 版本，如 `npx react-native init MyApp --version 0.60.0`
 
 调整 tsconfig.json 文件，在 compilerOptions 中添加如下两个配置
 
@@ -52,11 +52,7 @@ Typescript 的配置项比较多，我们至少需要弄明白那些开启的选
 添加依赖
 
 ```
-yarn add typescript
-```
-
-```
-yarn add -D @types/jest @types/react @types/react-native @types/react-test-renderer
+yarn add -D typescript @types/jest @types/react @types/react-native @types/react-test-renderer
 ```
 
 在项目根目录中创建名为 tsconfig.json 的文件，复制以下内容到文件中。
@@ -131,10 +127,10 @@ yarn add -D @types/jest @types/react @types/react-native @types/react-test-rende
 安装 React Native 团队为我们提供的 [eslint config](https://github.com/facebook/react-native/blob/master/packages/eslint-config-react-native-community/index.js)
 
 ```
-yarn add -D eslint@^6.0.0  @react-native-community/eslint-config
+yarn add -D eslint@^6.8.0  @react-native-community/eslint-config
 ```
 
-编辑或创建 .eslintrc.js 文件
+创建或编辑 .eslintrc.js 文件
 
 ```js
 module.exports = {
@@ -143,7 +139,7 @@ module.exports = {
 }
 ```
 
-编辑或创建 .prettierrc.js 文件
+创建或编辑 .prettierrc.js 文件
 
 ```js
 module.exports = {
@@ -153,6 +149,15 @@ module.exports = {
   singleQuote: true,
   printWidth: 100,
 }
+```
+
+修改 package.json 文件，添加 tsc 和 lint 脚本
+
+```js
+  "scripts": {
+    "tsc": "tsc --noEmit",
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
+  },
 ```
 
 ESLint 相关知识，请[深入理解 ESlint](https://juejin.im/post/5d3d3a685188257206519148)
@@ -240,7 +245,9 @@ esbenp.prettier-vscode
 }
 ```
 
-建议阅读 [ReactNative 官方关于 Typescript 的指南](http://facebook.github.io/react-native/docs/typescript)
+建议阅读 [Using TypeScript with React Native](http://facebook.github.io/react-native/docs/typescript)
+
+---
 
 参考：
 
@@ -248,4 +255,4 @@ esbenp.prettier-vscode
 
 [Setting up ESLint with Prettier, TypeScript, and Visual Studio Code](https://levelup.gitconnected.com/setting-up-eslint-with-prettier-typescript-and-visual-studio-code-d113bbec9857)
 
-[在 typescript 项目中使用 eslint 和 prettier](https://dev.to/robertcoopercode/using-eslint-and-prettier-in-a-typescript-project-53jb)
+[在 Typescript 项目中使用 ESLint 和 Prettier](https://dev.to/robertcoopercode/using-eslint-and-prettier-in-a-typescript-project-53jb)

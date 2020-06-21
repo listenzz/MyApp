@@ -43,7 +43,7 @@ function copy(src, dist) {
     fs.mkdirSync(dist)
   }
   const files = fs.readdirSync(src)
-  files.forEach(file => {
+  files.forEach((file) => {
     const srcFile = path.join(src, file)
     const distFile = path.join(dist, file)
     const stats = fs.statSync(srcFile)
@@ -304,13 +304,13 @@ const dest = `android/${APP_NAME}/${ENVIRONMENT}/${VERSION_NAME}`
 
 // 上传 apk 基础包
 const apk = path.join(ARTIFACTS_DIR, `${APP_MODULE}-${ENVIRONMENT}-armeabi-v7a-release.apk`)
-let filename = `${APP_NAME}-${ENVIRONMENT}-armeabi-v7a-release-${VERSION_NAME}-${VERSION_CODE}.apk`
+let filename = `${APP_NAME}-${ENVIRONMENT}-${VERSION_NAME}-${VERSION_CODE}.apk`
 
-if (process.env.CI_BUILD_REF_SLUG) {
-  filename = `${APP_NAME}-${process.env.CI_BUILD_REF_SLUG}-${ENVIRONMENT}-armeabi-v7a-release-${VERSION_NAME}-${VERSION_CODE}.apk`
+if (process.env.CI_COMMIT_SHORT_SHA) {
+  filename = `${APP_NAME}-${ENVIRONMENT}-${VERSION_NAME}-${VERSION_CODE}-${process.env.CI_COMMIT_SHORT_SHA}.apk`
 }
 
-sh(`curl -F file=@${apk} -F filename=${filename} ${FILE_SERVER}/${dest}`)
+sh(`curl --http1.1 -F file=@${apk} -F filename=${filename} ${FILE_SERVER}/${dest}`)
 
 // 发布 slack 通知
 slack(`android-${APP_NAME}-${ENVIRONMENT} 有新的版本了，${FILE_SERVER}/${dest}`)
@@ -403,7 +403,6 @@ deploy:android:upload:
 
 ```
 Pods/
-Gemfile.lock
 builds/
 ```
 

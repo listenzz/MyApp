@@ -36,6 +36,14 @@
 
 ![](./assets/scheme_configuration.png)
 
+修改 ios/Podfile 文件
+
+```diff
+platform :ios, '9.0'
++ project 'MyApp', 'Debug' => :debug, 'productionDebug' => :debug
+```
+
+
 ### 创建原生模块
 
 现在，我们通过切换 scheme，就能切换 BUILD_TYPE 和 ENVIRONMENT 这些变量的值。为了让 RN 能够知道这些值，我们需要借助[原生模块](http://facebook.github.io/react-native/docs/native-modules-ios)。
@@ -296,12 +304,103 @@ export const BUILD_TYPE: BUILD_TYPE_DEBUG | BUILD_TYPE_RELEASE = AppInfo.BUILD_T
 
 ## 如何切换环境
 
-现在，我们有了 qa 和 production 两个环境，那么如何切换环境呢？
+不同环境还可以配置不同的应用图标和应用名称，有兴趣的同学可以去研究下。
 
-iOS 在点击 Run 按钮之前，选择对应环境的 scheme 即可，譬如选择 MyApp qa 就是选择了 qa 环境。
+开发时，如何切换环境呢？
 
-Android 则通过 `./gradlew assembleQaRelease` 和 `./gradlew assembleProductionRelease` 分别可以打 qa 和 production 环境的包。
+可以通过 IDE(Xcode 或 Android Studio) 或命令行的方式进行切换
 
-不同环境还可以配置不同的 App icon 和 App name，有兴趣的同学可以去研究下。
+### 通过 IDE 的方式切换环境
+
+#### 通过 Xcode 切换环境并运行应用
+
+在 Xcode 左上角，点击 scheme 按钮（在停止按钮右边），选择对应环境的 scheme 即可，譬如选择 MyApp qa 就是选择了 qa 环境。
+
+点击 Xcode 的运行按钮，即可安装和启动 iOS App。
+
+
+#### 通过 Android Studio 切换环境并运行应用
+
+在 Android Studio 左下角，找到并打开 Build Variants 选项卡，将 app module 的 Active Build Variant 切换至期待的环境即可。
+
+点击 Android Studio 上的运行按钮，即可安装和启动 Android App。
+
+### 通过命令行的方式切换环境
+
+修改 package.json 文件
+
+```json
+"scripts": {
+    "android": "react-native run-android --variant qaDebug",
+    "ios": "react-native run-ios --scheme 'MyApp qa' --configuration 'Debug'",
+    "start": "react-native start --reset-cache",
+},
+```
+
+运行 `npm run android` 即可运行 qa 环境的可调试的 Android 应用
+
+运行 `npm run ios` 即可运行 qa 环境的可调式 iOS 应用
+
+#### 可以通过以下方式运行 iOS 应用
+
+```shell
+npx react-native run-ios --scheme '对应环境的 scheme' --configuration '对应环境的 configuration'
+```
+
+譬如，以下命令，运行生产环境的可调式 iOS 应用
+
+```shell
+npx react-native run-ios --scheme 'MyApp production' --configuration 'Debug production'
+```
+
+如果想要真机调试，先要安装 ios-deploy
+
+```shell
+npm install -g ios-deploy
+```
+
+然后执行以下命令
+
+```shell
+npx react-native run-ios --scheme '对应环境的 scheme' --configuration '对应环境的 configuration' --device '你的 iPhone 名称'
+```
+
+譬如，以下命令，在一台名叫 zz 的 iPhone 上运行生产环境的可调试 iOS 应用
+
+```shell
+npx react-native run-ios --scheme 'MyApp production' --configuration 'Debug production' --device 'zz'
+```
+
+#### 可以通过以下方式运行 Android 应用
+
+```shell
+npx react-native run-android --variant 构建变体
+```
+
+譬如，以下命令，运行 qa 环境的可调试 Android 应用
+
+```shell
+npx react-native run-android --variant qaDebug
+```
+
+又譬如，以下命令，运行生产环境的可调试 Android 应用
+
+```shell
+npx react-native run-android --variant productionDebug
+```
+
+如果需要真机调试，在通过数据线连接手机和电脑后
+
+运行一次以下命令
+
+```shell
+adb reverse tcp:8081 tcp:8081
+```
+
+接下来再运行以下命令即可
+ 
+```shell
+npx react-native run-android --variant 构建变体
+```
 
 切换环境如此容易，还担心打错包吗？

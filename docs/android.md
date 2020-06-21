@@ -192,8 +192,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0" // From node_modules
 }
 
 // Run this once to be able to run the application with BUCK
