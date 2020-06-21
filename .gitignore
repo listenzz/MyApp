@@ -1,10 +1,8 @@
 
 Pods/
-Podfile.lock
-Gemfile.lock
 builds/
-yarn.lock
 coverage/
+
 # OSX
 #
 .DS_Store
@@ -36,6 +34,8 @@ build/
 .gradle
 local.properties
 *.iml
+.project
+.settings/
 
 # Visual Studio Code
 #
