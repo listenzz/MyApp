@@ -8,7 +8,7 @@
 
 ![Configurations](./assets/ios_configurations_result.png)
 
-### 创建环境变量
+### 添加用户定义设置
 
 如下图所示，点击 **+** 按钮，添加用户定义设置
 
@@ -26,9 +26,9 @@
 
 ![appsettings](./assets/info_appsettings.png)
 
-点击 **Scheme** 按钮，创建新的 scheme，命名为 **MyApp qa**，中间有个空格，这个 scheme 纯粹是对 MyApp 的复制
+点击 **Scheme** 按钮，创建新的 Scheme，命名为 **MyApp qa**，中间有个空格，这个 Scheme 纯粹是对 MyApp 的复制
 
-点击 **Scheme** 按钮，创建新的 scheme，命名为 **MyApp production**，中间有个空格。
+点击 **Scheme** 按钮，创建新的 Scheme，命名为 **MyApp production**，中间有个空格。
 
 ![](./assets/scheme_new.png)
 
@@ -43,10 +43,9 @@ platform :ios, '9.0'
 + project 'MyApp', 'Debug' => :debug, 'productionDebug' => :debug
 ```
 
-
 ### 创建原生模块
 
-现在，我们通过切换 scheme，就能切换 BUILD_TYPE 和 ENVIRONMENT 这些变量的值。为了让 RN 能够知道这些值，我们需要借助[原生模块](http://facebook.github.io/react-native/docs/native-modules-ios)。
+现在，我们通过切换 Scheme，就能切换 BUILD_TYPE 和 ENVIRONMENT 这些变量的值。为了让 RN 能够知道这些值，我们需要借助[原生模块](http://facebook.github.io/react-native/docs/native-modules-ios)。
 
 选中 MyApp 目录，右键打开菜单，选择 **New File...**
 
@@ -92,23 +91,23 @@ NS_ASSUME_NONNULL_END
 RCT_EXPORT_MODULE(AppInfo)
 
 + (BOOL)requiresMainQueueSetup {
-  return YES;
+    return YES;
 }
 
 - (dispatch_queue_t)methodQueue {
-  return dispatch_get_main_queue();
+    return dispatch_get_main_queue();
 }
 
 - (NSDictionary *)constantsToExport {
-  NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-  NSMutableDictionary *settings = [[info objectForKey:@"AppSettings"] mutableCopy];
-  NSString *versionName = [info objectForKey:@"CFBundleShortVersionString"];
-  NSNumber *versionCode = [info objectForKey:@"CFBundleVersion"];
-  NSString *bundleId = [info objectForKey:@"CFBundleIdentifier"];
-  [settings setObject:versionName forKey:@"VERSION_NAME"];
-  [settings setObject:versionCode forKey:@"VERSION_CODE"];
-  [settings setObject:bundleId forKey:@"APPLICATION_ID"];
-  return settings;
+    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+    NSMutableDictionary *settings = [[info objectForKey:@"AppSettings"] mutableCopy];
+    NSString *versionName = [info objectForKey:@"CFBundleShortVersionString"];
+    NSNumber *versionCode = [info objectForKey:@"CFBundleVersion"];
+    NSString *bundleId = [info objectForKey:@"CFBundleIdentifier"];
+    [settings setObject:versionName forKey:@"VERSION_NAME"];
+    [settings setObject:versionCode forKey:@"VERSION_CODE"];
+    [settings setObject:bundleId forKey:@"APPLICATION_ID"];
+    return settings;
 }
 
 @end
@@ -116,11 +115,11 @@ RCT_EXPORT_MODULE(AppInfo)
 
 在上面这个原生模块中，我们导出了 `BUILD_TYPE` `ENVIRONMENT` `VERSION_NAME` `VERSION_CODE` `APPLICATION_ID` 等变量，这些变量，我们稍后可以在 RN 模块中读取。
 
-## 使用 flavor 来实现 Android 工程的多环境配置
+## 使用 Flavor 来实现 Android 工程的多环境配置
 
-### 添加 flavor
+### 添加 Flavor
 
-编辑 android/app/build.gradle 文件，添加 flavor
+编辑 android/app/build.gradle 文件，添加 Flavor
 
 ```groovy
 android{
@@ -314,10 +313,9 @@ export const BUILD_TYPE: BUILD_TYPE_DEBUG | BUILD_TYPE_RELEASE = AppInfo.BUILD_T
 
 #### 通过 Xcode 切换环境并运行应用
 
-在 Xcode 左上角，点击 scheme 按钮（在停止按钮右边），选择对应环境的 scheme 即可，譬如选择 MyApp qa 就是选择了 qa 环境。
+在 Xcode 左上角，点击 Scheme 按钮，选择对应环境的 Scheme 即可，譬如选择 MyApp qa 就是选择了 qa 环境。
 
 点击 Xcode 的运行按钮，即可安装和启动 iOS App。
-
 
 #### 通过 Android Studio 切换环境并运行应用
 
@@ -398,7 +396,7 @@ adb reverse tcp:8081 tcp:8081
 ```
 
 接下来再运行以下命令即可
- 
+
 ```shell
 npx react-native run-android --variant 构建变体
 ```
