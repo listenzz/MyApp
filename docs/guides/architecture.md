@@ -1,12 +1,12 @@
-[整洁架构](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)，是一个跨平台的架构，不依赖任何第三方框架和库，它是一种编程思想。
+我们的 App 遵循[整洁架构](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)。
 
-本文所有的代码示范均基于 TypeScript，但仍然适用于原生的 Android 和 iOS 开发。
-
-![Clean-Architecture-graph](./assets/CleanArchitecture.jpg)
+![Clean-Architecture-graph](./images/CleanArchitecture.jpg)
 
 ## 依赖原则
 
-如图所示，依赖由外向内，由具体到抽象。必须谨记于心，如果发现内层依赖了外层，那么必然是代码写错了。
+如图所示，依赖由外向内，由具体到抽象。
+
+必须谨记于心，如果发现内层依赖了外层，那么必然是代码写错了。
 
 中间两层又称为业务层，它们是整个应用的核心，最外两层的东西都绕着它们转。
 
@@ -15,10 +15,6 @@
 业务层与 UI 无关，与设备无关，它们不依赖任何 React 以及 React Native 的东西，它们不知道自己运行在哪个环境中，即使将它们的代码原封不动地拷贝到一个小程序项目中，只要外层实现了内层的接口，代码就能正常运转。
 
 Devices、Web、UI 等都属于最外层，但它们彼此之间最好不要有依赖，它们应该通过内层（业务层）进行通信。
-
-## 目录结构
-
-// TODO:
 
 ## Service Pattern
 
@@ -60,6 +56,8 @@ interface AvatarItem {
 ```
 
 UI 层的数据转换逻辑放在哪呢？如果采用了 MVP 或者 MVVM 模式，就放在 Presenter 或 ViewModel 中，否则就放在和 UI Component 相同的文件中，可以是一个工具函数，也可以是一个方法。工具函数如果需要多处复用，则抽取到 helper 文件中。
+
+## Manager Pattern
 
 ## 异常处理
 
@@ -140,7 +138,7 @@ export default class EventEmitter {
 
   protected emit<T = any>(event: string, data: T) {
     this.subs[event] &&
-      this.subs[event].forEach(cb => {
+      this.subs[event].forEach((cb) => {
         cb(data)
       })
   }
@@ -159,7 +157,7 @@ export default class EventEmitter {
 
   off<T = any>(event: string, cb: EventCallback<T>) {
     if (this.subs[event]) {
-      let index = this.subs[event].findIndex(callback => callback === cb)
+      let index = this.subs[event].findIndex((callback) => callback === cb)
       this.subs[event].splice(index, 1)
       if (!this.subs[event].length) delete this.subs[event]
     }
@@ -182,48 +180,3 @@ export default class AccountService extends EventEmitter {
 ```
 
 如上面代码所示，当绑定好支付宝时，发出 `BINDING_ACCOUNT_CHANGE` 事件，对绑定账号信息关心的 UI 就可以监听这个事件来刷新界面。
-
-### 警惕滥用 EventBus
-
-EventBus 是**发布/订阅**模式的一种实现，它基于一个事件总线，所有的发布者通过它来发布事件，所有的订阅者通过它来订阅事件。它同时应用了观察者模式和中介者模式，实现了发布者和订阅者的高度解藕。
-
-EventBus 在 Android App 开发中很流行，它有多种实现，其中一个流行的库就叫做 `EventBus`，自从 RxJava 流行后，也有人通过 RxJava 来实现 EventBus，叫做 RxEventBus。
-
-在我们的发布/订阅实现中，订阅者(通常是 UI)是需要知道发布者是谁的。然而，由于 EventBus 是高度解藕的，想要发布事件，直接依赖 EventBus 即可，门槛相当低。
-
-门槛低，就容易被滥用，滥用，就会产生意大利面条般的事件代码。
-
-事件可以随处发布，意味着 UI 层发出的事件，不仅可以被 UI 组件监听，还可以被非 UI 组件监听；不仅可以被最外层的代码监听，还可以被最内层的代码监听。这违背了依赖原则。
-
-由于谁都可以发布事件，意味着同一个事件可以有多个事件源，业务层可以发布一个叫 `BINDING_ACCOUNT_CHANGE` 的事件， 数据层、UI 层、Socket 层也可以发布一个叫 `BINDING_ACCOUNT_CHANGE` 的事件。这违反了唯一真实数据源原则。
-
-乱，怎一个乱字了得！
-
-使用 EventBus 的正确姿势应该是：
-
-1. 确保单一事件源
-2. 确保依赖方向，内层不能监听外层发出的事件
-
-所幸的是，我们在一次重构中，移除了 EventBus。
-
-## MVP Pattern
-
-MVP 是应用于 UI 层的一种模式，由传统的 MVC 演变而来，主要是为了解决 UI 逻辑的单元测试问题。
-
-其中 M 代表业务层，V 代表 UI 层，P 代表 Presenter，属于适配层，位于业务层和 UI 层之间。
-
-MVP 超出了本文范畴，建议阅读其它资料了解。
-
-我们的项目中并未严格使用 MVP 模式，在我们的项目中，只有几个全局性的 Presenter，它们承担着不同的职责，并且不适合和任何一个页面捆绑。
-
-什么是全局性的 Presenter? 这种 Presenter 不依赖于任何一个具体的 V，它们依赖的是整个 App 路由。
-
-譬如，当应用启动时，到底要跳到哪个页面呢？当后台通过 Socket 给 App 发送信息时，可能需要弹出某个界面，到底谁来弹出这些界面呢？
-
-这就是全局性 Presenter 要做的事情，当 App 启动时，它们调起 Service ，根据用户登录情况，通过导航器跳转到登录页面或主页面，当收到后台发送的消息时（通过监听 Service 发出的事件），关闭或打开某些页面。
-
-## coordinator
-
-coordinator（协调者）是用来处理路由的，它的灵感来自于 [Coordinator-MVVM-Rx](https://github.com/uptechteam/Coordinator-MVVM-Rx-Example)
-
-不过我们的[导航库](https://github.com/listenzz/react-native-navigation-hybrid)足够强大，coordinator 只负责切换根页面。

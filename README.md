@@ -2,13 +2,29 @@
 
 - React Native 入门指南
 
-  - [开发环境配置](./docs/guides/setup-dev-env.md)
+  - [开发环境配置](./docs/guides/dev-env.md)
 
   - [Git 和 Git 分支模型](./docs/guides/git.md)
 
   - [运行和调试 React Native 应用](./docs/guides/debug.md)
 
-- [在工程中集成 Typescript, ESLint, Prettier 等](./docs/init.md)
+  - [Javascript 和 Typescript](./docs/guides/lang.md)
+
+  - [React 和 React Native](./docs/guides/framework.md)
+
+  - [前端工具链](./docs/guides/tool-chain.md)
+
+  <!-- - [导航组件](./docs/guides/navigation.md) -->
+
+  <!-- - [架构实践](./docs/guides/architecture.md) -->
+
+  <!-- - [单元测试](./docs/guides/unit-test.md) -->
+
+  <!-- - [Android 原生模块](./docs/guides/android.md) -->
+
+  <!-- - [iOS 原生模块](./docs/guides/ios.md) -->
+
+* [在工程中集成 Typescript, ESLint, Prettier 等](./docs/lint.md)
 
   - 使用 typescript 模版来初始化工程
   - 使用 ESLint 来检查代码
@@ -16,13 +32,13 @@
   - 使用 husky 和 lint-staged 来确保提交给 git 的文件先经过 ESLint 的检查
   - 配置 VS Code，当保存文件时自动运行 ESLint 的修复命令
 
-- [多环境配置](./docs/environment.md)
+* [多环境配置](./docs/env.md)
 
   - 使用 Configuration 和 Scheme 来实现 iOS 工程的多环境配置
   - 使用 Flavor 来实现 Android 工程的多环境配置
   - 编写原生模块，导出多环境配置到 React Native 代码
 
-- 使用 **GitLab CI / CD** 来实现持续集成与持续部署
+* 使用 **GitLab CI / CD** 来实现持续集成与持续部署
 
   - [iOS 工程化实践的准备工作](./docs/ios.md)
 
@@ -44,13 +60,13 @@
     - 自动管理 Version Name 和 Version Code
     - 每日自动构建、部署
 
-- [集成 Sentry 来跟踪代码错误](./docs/sentry.md)
+* [集成 Sentry 来跟踪代码错误](./docs/sentry.md)
 
   - 创建 Sentry 项目
   - 如何配置 iOS、Android、React Native 工程
   - 与 **CI / CD** 集成，自动注入 Commit SHA，自动上传符号表
 
-- [集成热更新(CodePush)](./docs/hotfix.md)
+* [集成热更新(CodePush)](./docs/hotfix.md)
 
   - 如何注册 CodePush 热更新服务
   - 如何配置 iOS、Android、React Native 工程

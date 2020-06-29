@@ -1,0 +1,1 @@
+导航是指支持用户导航、进入和退出应用中不同内容片段（页面）的交互。[React Navigation](https://reactnavigation.org/) 是 React Native 主流的导航组件，使用 React Native 视图组件实现。但我们使用的是 [react-native-navigation-hybrid](https://github.com/listenzz/react-native-navigation-hybrid)，该导航组件使用原生导航组件实现，性能更优，使用简单，并且支持混合导航（原生和 RN 页面互跳）。

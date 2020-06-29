@@ -22,6 +22,8 @@ $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/inst
 
 ### Node
 
+Node (Node.js) 是一个基于 Chrome V8 引擎的 JavaScript 运行时
+
 可以通过 Homebrew 来安装 Node
 
 ```shell
