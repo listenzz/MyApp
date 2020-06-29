@@ -1,4 +1,12 @@
-本文档讲述 React Native 的工程化实践。
+本文档讲述 React Native 的工程实践。
+
+- React Native 入门指南
+
+  - [开发环境配置](./docs/guides/setup-dev-env.md)
+
+  - [Git 和 Git 分支模型](./docs/guides/git.md)
+
+  - [运行和调试 React Native 应用](./docs/guides/debug.md)
 
 - [在工程中集成 Typescript, ESLint, Prettier 等](./docs/init.md)
 
