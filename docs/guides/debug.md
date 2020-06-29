@@ -145,7 +145,7 @@ To open developer menu press "d"
 
 在运行 `npm start` 的终端，输入 **d** 即可打开开发菜单
 
-<img src="../images/rn/developer_menu.png" width="50%" />
+<img src="./images/developer_menu.png" width="50%" />
 
 点击开发菜单上的 **Debug** 选项，打开 Google Chrome，根据提示，同时按下 **⌘ + ⌥ + I**，打开 Chrome 开发工具。
 
