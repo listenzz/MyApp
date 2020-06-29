@@ -16,7 +16,7 @@
 
   <!-- - [导航组件](./docs/guides/navigation.md) -->
 
-  <!-- - [架构实践](./docs/guides/architecture.md) -->
+  - [整洁架构](./docs/guides/architecture.md)
 
   <!-- - [单元测试](./docs/guides/unit-test.md) -->
 
