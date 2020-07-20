@@ -60,7 +60,7 @@
     - 自动管理 Version Name 和 Version Code
     - 每日自动构建、部署
 
-* [集成 Sentry 来跟踪代码错误](./docs/sentry.md)
+* [集成 Sentry 来监控应用崩溃问题](./docs/sentry.md)
 
   - 创建 Sentry 项目
   - 如何配置 iOS、Android、React Native 工程

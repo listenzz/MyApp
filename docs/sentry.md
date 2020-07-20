@@ -1,4 +1,6 @@
-Sentry 是一款开源的错误跟踪，可帮助开发人员实时监控和修复崩溃的工具。最重要的是，它同时支持对原生代码和 React Native 代码的错误跟踪。
+Sentry 是一款开源的崩溃监控工具，可帮助开发人员实时监控和修复导致应用崩溃的 BUG。最重要的是，它同时支持对原生代码和 React Native 代码的监控。
+
+> Sentry 可私有部署
 
 本文讲述如何将 [Sentry](https://sentry.io/welcome/) 和 **CI / CD** 集成。
 

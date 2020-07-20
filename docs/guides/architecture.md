@@ -75,6 +75,10 @@ interface AvatarItem {
 
 UI 层的数据转换逻辑放在哪呢？如果采用了 MVP 或者 MVVM 模式，就放在 Presenter 或 ViewModel 中，否则就放在和 UI Component 相同的文件中，可以是一个工具函数，也可以是一个方法。工具函数如果需要多处复用，则抽取到 helper 文件中。
 
+**学习参考资料**
+
+[浅谈 MVC、MVP 和 MVVM 架构模式](https://draveness.me/mvx/)
+
 ## Socket
 
 (Web)Socket 和设备一样，位于最外层。
