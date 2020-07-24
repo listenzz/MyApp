@@ -81,21 +81,23 @@ bundle exec fastlane match init
 
 初始化完成后，match 会在 fastlane 文件夹下创建一个叫 Matchfile 的文件。
 
-出于保密的需要，我们删除 Matchfile 文件。
+出于保密的需要，我们删除该文件中 `username` 字段
+
+```
+git_url("git@git.xxxxxx.com:ios/certificates.git")
+storage_mode("git")
+
+type("development")
+app_identifier(["com.xxxxxx.myapp"])
+```
 
 运行以下命令，创建并下载开发证书
 
-```
-bundle exec fastlane match development --git_url 'git@git.xxxxxx.com:ios/certificates.git' --app_identifier 'com.xxxxxx.myapp' --username 'xxxxxx@gmail.com'
+```sh
+bundle exec fastlane match development
 ```
 
-其中 username 就是那个未开启二步验证的 Apple ID。
-
-其他同事更新此项目时，也需要执行一次 `bundle exec fastlane match` 命令，以便把开发证书下载到他的电脑。如果管理者已经通过 `bundle exec fastlane match` 生成证书，那么开发者可以通过 --username 参数指定他自己的 Apple ID 来下载证书即可，前提是他的 Apple ID 已经添加到公司苹果开发者账号的用户组，并赋予了开发者权限。
-
-```
-fastlane match development --git_url 'git@git.xxxxxx.com:ios/certificates.git' --app_identifier 'com.xxxxxx.myapp' --username 'someone@gmail.com' --readonly
-```
+其他同事更新此项目时，也需要执行一次 `bundle exec fastlane match` 命令，以便把开发证书下载到他的电脑。使用他自己的 Apple ID 来下载证书即可，前提是他的 Apple ID 已经添加到公司苹果开发者账号的用户组，并赋予了开发者权限。
 
 如果不曾在 App Store 创建过该 bundle ID，那么会看到以下错误提示
 
@@ -113,8 +115,8 @@ fastlane match development --git_url 'git@git.xxxxxx.com:ios/certificates.git' -
 
 现在再来试试
 
-```
-bundle exec fastlane match development --git_url 'git@git.xxxxxx.com:ios/certificates.git' --app_identifier 'com.xxxxxx.myapp' --username 'xxxxxx@gmail.com'
+```sh
+bundle exec fastlane match development
 ```
 
 可能需要你输入一个密码来对证书进行加密和解密，请记住这个密码，这个密码和环境变量 `MATCH_PASSWORD` 关联。
@@ -129,8 +131,8 @@ bundle exec fastlane match development --git_url 'git@git.xxxxxx.com:ios/certifi
 
 上面，我们生成的是 development 证书，接下来，我们生成 appstore 证书
 
-```
-bundle exec fastlane match appstore --git_url 'git@git.xxxxxx.com:ios/certificates.git' --app_identifier 'com.xxxxxx.myapp' --username 'xxxxxx@gmail.com'
+```sh
+bundle exec fastlane match appstore
 ```
 
 就这样，我们把开发证书这事交给了 match 来管理。
