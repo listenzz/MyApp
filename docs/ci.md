@@ -474,6 +474,8 @@ gitlab-runner start
 
 > GitLab Runner 内部使用的 shell 是 bash，如果主机的默认 shell 是 zsh，需要在 ~/.bash_profile 文件中添加 `source ~/.zshrc`
 
+> GitLab Runner 的配置文件位于 ~/.gitlab-runner/config.toml
+
 ## 注入环境变量
 
 我们的脚本依赖了许多环境变量，我们可以通过以下方式配置那些不会经常发生变化的环境变量。
