@@ -16,7 +16,7 @@ import CodePush from 'react-native-code-push'
 
 if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
   Sentry.init({
-    dsn: 'https://886086b50882460b92cab71fbada84ab@sentry.imcoding.tech/2',
+    dsn: 'https://2d17bb1ffde34fec963d29b4c3a29f99@sentry.io/1446147',
     environment: ENVIRONMENT,
     // for native code
     release: `${APPLICATION_ID}-${VERSION_NAME}`,
