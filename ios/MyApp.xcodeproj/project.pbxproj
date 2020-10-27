@@ -135,6 +135,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				7BAE019D6B7202C3C35ECAEE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -205,6 +206,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ -z \"$CI\" ]; then\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\nelse\nexport NODE_BINARY=node\nsourcemap_path=\"$SRCROOT/build/main.jsbundle.map\"\nsourcemap_sources_root=\"$SRCROOT/../\"\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $sourcemap_path --sourcemap-sources-root $sourcemap_sources_root\"\necho $EXTRA_PACKAGER_ARGS >&2\n../node_modules/react-native/scripts/react-native-xcode.sh\n\nbundle_path=\"$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/main.jsbundle\"\nbuild_dir=\"$SRCROOT/build\"\nif [ -e \"$bundle_path\" ]; then\ncp \"$bundle_path\" \"$build_dir\"\nelse\necho \"可能 ts 代码有错误，无法通过编译。\"\nexit 3\nfi\nfi\n";
+		};
+		7BAE019D6B7202C3C35ECAEE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MyApp/Pods-MyApp-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MyApp/Pods-MyApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		B341250A7A278E2C5FCE8B5A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
