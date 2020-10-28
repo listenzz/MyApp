@@ -26,8 +26,6 @@ public class AppInfo extends ReactContextBaseJavaModule {
     public Map<String, Object> getConstants() {
         HashMap<String, Object> constants = new HashMap<>();
         constants.put("ENVIRONMENT", BuildConfig.FLAVOR);
-        constants.put("VERSION_NAME", BuildConfig.VERSION_NAME);
-        constants.put("VERSION_CODE", BuildConfig.VERSION_CODE);
         constants.put("APPLICATION_ID", BuildConfig.APPLICATION_ID);
         constants.put("BUILD_TYPE", BuildConfig.BUILD_TYPE);
         return constants;

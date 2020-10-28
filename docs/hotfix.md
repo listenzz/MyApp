@@ -6,7 +6,7 @@
 
 我们使用微软提供的热更新服务 [react-native-code-push](https://github.com/Microsoft/react-native-code-push)。
 
-这个服务有个配套的命令行应用 code-push-cli，但我们需要配合 sentry 使用，这里采用的是微软的另外一个命令行应用 [appcenter-cli](https://github.com/Microsoft/appcenter-cli)。
+这个服务有个配套的命令行应用 code-push-cli，但我们需要配合 Sentry 使用，这里采用的是微软的另外一个命令行应用 [appcenter-cli](https://github.com/Microsoft/appcenter-cli)。
 
 安装 appcenter-cli
 
@@ -99,60 +99,65 @@ yarn add react-native-code-push
 
 [Supported React Native platforms](https://github.com/Microsoft/react-native-code-push#supported-react-native-platforms)
 
-修改 index.js
+新建一个 react hook
 
-```js
-// index.js
-import { AppState } from 'react-native'
-import * as Sentry from '@sentry/react-native'
-import { APPLICATION_ID, ENVIRONMENT, BUILD_TYPE, BUILD_TYPE_RELEASE } from './app/AppInfo'
+```ts
+// useCodePush.ts
+import { useCallback, useEffect } from 'react'
+import { AppState, AppStateStatus } from 'react-native'
 import CodePush from 'react-native-code-push'
+import { useVisibleEffect } from 'react-native-navigation-hybrid'
 
-if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
-  Sentry.init({
-    dsn: 'https://5f8e3212e09f451ab9a8871840fc70aa@sentry.devops.shundaojia.com/31',
-    environment: ENVIRONMENT,
-  })
-
-  Sentry.setTag('commit', commit)
-
-  CodePush.getUpdateMetadata()
-    .then(update => {
-      if (update) {
-        Sentry.setRelease(`${APPLICATION_ID}-${update.appVersion}-codepush:${update.label}`)
-      }
-    })
-    .catch(e => {
-      Sentry.captureException(e)
-    })
-
-  CodePush.sync({
-    installMode: CodePush.InstallMode.IMMEDIATE,
-  })
-
-  AppState.addEventListener('change', async state => {
-    if (state === 'active') {
+export function useCodePush(sceneId: string) {
+  useEffect(() => {
+    async function syncCode(status: AppStateStatus) {
       try {
-        await CodePush.sync({
-          installMode: CodePush.InstallMode.IMMEDIATE,
-        })
+        if (status === 'active') {
+          await CodePush.sync({
+            installMode: CodePush.InstallMode.IMMEDIATE,
+          })
+        }
       } catch (e) {
         // ignore
       }
     }
-  })
+
+    syncCode(AppState.currentState)
+
+    AppState.addEventListener('change', syncCode)
+    return () => {
+      AppState.removeEventListener('change', syncCode)
+    }
+  }, [])
+
+  const visibleCallback = useCallback(() => {
+    CodePush.allowRestart()
+    return () => {
+      CodePush.disallowRestart()
+    }
+  }, [])
+
+  useVisibleEffect(sceneId, visibleCallback)
 }
 ```
 
 这里使用的是静默更新，如果需要提示用户或者显示进度条，请参考官方文档或其它资料。
 
+修改 App.tsx 文件，激活这个 hook
+
+```ts
+import { useCodePush } from './useCodePush'
+function App({ sceneId }: InjectedProps) {
+  useCodePush(sceneId)
+}
+```
+
 ## 配置 iOS 工程
 
 在 ios 目录下执行
 
-```
-cd ios
-pod install
+```sh
+bundle exec pod install
 ```
 
 pod 安装好后，修改 AppDelegate.m 文件
@@ -235,7 +240,7 @@ productFlavors {
 import com.microsoft.codepush.react.CodePush;
 
 private final ReactNativeHost mReactNativeHost = new HybridReactNativeHost(this) {
-    // 2. 重载这个方法
+// 2. 重载这个方法
     @Nullable
     @Override
     protected String getJSBundleFile() {
@@ -329,7 +334,11 @@ if (PATCH_ONLY) {
 
   // 发布补丁
   sh(
-    `appcenter codepush release-react -t ${VERSION_NAME} -o ${ARTIFACTS_DIR} -d ${deployment} -m ${MANDATORY} \
+    `appcenter codepush release-react \
+      -t ${VERSION_NAME} \
+      -o ${ARTIFACTS_DIR} \
+      -d ${deployment} \
+      -m ${MANDATORY} \
       --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
   )
   // 查看补丁部署情况
@@ -345,6 +354,8 @@ if (PATCH_ONLY) {
 
 ```js
 // ci/sentry.js
+const release = `${APPLICATION_ID}@${VERSION_NAME}+${VERSION_CODE}`
+
 if (PATCH_ONLY) {
   const deployment = ENVIRONMENT === 'production' ? 'Production' : 'Staging'
 
@@ -355,10 +366,10 @@ if (PATCH_ONLY) {
   sh(
     `sentry-cli react-native appcenter \
       --log-level INFO \
-      --bundle-id ${APPLICATION_ID} \
-      --version-name ${VERSION_NAME} \
+      --release-name ${release} \
       --dist ${VERSION_CODE} \
-      --deployment ${deployment} ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
+      --deployment ${deployment} \
+      ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
     { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
   )
   process.exit(0)

@@ -4,7 +4,7 @@ Sentry 是一款开源的崩溃监控工具，可帮助开发人员实时监控�
 
 本文讲述如何将 [Sentry](https://sentry.io/welcome/) 和 **CI / CD** 集成。
 
-- 在打包时注入 Commit SHA，帮助我们还原出问题的代码
+- 在打包时注入 Commit SHA，方便我们 checkout 出问题的代码
 - 上传符号表（RN - jsbundle.map, iOS - dSYM, Android - mapping.txt）
 
 ## 安装 sentry-cli
@@ -12,6 +12,8 @@ Sentry 是一款开源的崩溃监控工具，可帮助开发人员实时监控�
 ```
 curl -sL https://sentry.io/get-cli/ | bash
 ```
+
+> 本文使用的 sentry-cli 版本已经更新到 1.58.0 以上，使用 sentry-cli update 命令即可升级 sentry-cli
 
 ## 登录和创建 Sentry Project
 
@@ -71,7 +73,7 @@ lane :upload_debug_symbol_to_sentry do |options|
 
   bundle_output = "#{ENV['PWD']}/build/main.jsbundle"
   sourcemap_output = "#{ENV['PWD']}/build/main.jsbundle.map"
-  release = "#{app_identifier}-#{version_name}"
+  release = "#{app_identifier}@#{version_name}+#{build_number}"
 
   sh(%(
       sentry-cli --log-level INFO releases new #{release}
@@ -109,7 +111,7 @@ end
 ```diff
 buildscript {
     dependencies {
-+       classpath 'io.sentry:sentry-android-gradle-plugin:1.7.30'
++       classpath 'io.sentry:sentry-android-gradle-plugin:1.7.36'
     }
 }
 ```
@@ -128,6 +130,27 @@ buildscript {
 
 ## 调整 js 代码
 
+- 修改 app.json 文件
+
+```js
+{
+  "name": "MyApp",
+  "displayName": "MyApp",
+  "COMMIT_SHORT_SHA": "xxxxxxxx",
+  "VERSION_NAME": "1.0.0",
+  "VERSION_CODE": 1,
+  "CI": false
+}
+```
+
+- 修改 AppInfo.ts 文件
+
+`VERSION_NAME` 和 `VERSION_CODE` 不再通过桥接原生的方式获取，而是通过环境变量
+
+```ts
+export { VERSION_NAME, VERSION_CODE, COMMIT_SHORT_SHA, CI } from '../app.json'
+```
+
 - 修改 index.js 文件
 
 Sentry 项目创建成功后，会打开一个安装引导页面，将该页面拖到底部，拷贝如下代码到你的 index.js 文件中
@@ -138,17 +161,26 @@ Sentry 项目创建成功后，会打开一个安装引导页面，将该页面�
 // index.js
 import { AppRegistry } from 'react-native'
 import App from './App'
-import { name as appName, commit } from './app.json'
-import { ENVIRONMENT, BUILD_TYPE, BUILD_TYPE_RELEASE } from './app/AppInfo'
+import {
+  ENVIRONMENT,
+  APPLICATION_ID,
+  VERSION_NAME,
+  VERSION_CODE,
+  COMMIT_SHORT_SHA,
+  CI,
+} from './app/AppInfo'
 import * as Sentry from '@sentry/react-native'
 
-if (BUILD_TYPE === BUILD_TYPE_RELEASE) {
+if (CI) {
   Sentry.init({
     dsn: 'https://2d17bb1ffde34fec963d29b4c3a29f99@sentry.io/1446147',
+    enableAutoSessionTracking: true,
     environment: ENVIRONMENT,
+    release: `${APPLICATION_ID}@${VERSION_NAME}+${VERSION_CODE}`,
+    dist: `${VERSION_CODE}`,
   })
 
-  Sentry.setTag('commit', commit)
+  Sentry.setTag('commit', COMMIT_SHORT_SHA)
 }
 
 AppRegistry.registerComponent(appName, () => App)
@@ -158,82 +190,66 @@ AppRegistry.registerComponent(appName, () => App)
 
 ```tsx
 // App.tsx
-import React, { Component } from 'react'
+import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import * as Sentry from '@sentry/react-native'
-import { ENVIRONMENT, VERSION_NAME, VERSION_CODE } from './app/AppInfo'
+import { Navigator, withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
+import { ENVIRONMENT, VERSION_NAME, VERSION_CODE, COMMIT_SHORT_SHA } from './AppInfo'
 
-interface Props {}
-interface State {
-  x: string
-}
-export default class App extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.sentryCrash = this.sentryCrash.bind(this)
-    this.sentryNativeCrash = this.sentryNativeCrash.bind(this)
-    this.xxxx = this.xxxx.bind(this)
-    this.yyyy = this.yyyy.bind(this)
-  }
+export default withNavigationItem({
+  rightBarButtonItem: {
+    icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+    action: (navigator: Navigator) => {
+      navigator.push('Blank')
+    },
+  },
+})(App)
 
-  sentryCrash() {
-    Sentry.crash()
-  }
+function App({ sceneId }: InjectedProps) {
+  const version = `${VERSION_NAME}-${VERSION_CODE}`
 
-  sentryNativeCrash() {
+  function sentryNativeCrash() {
     Sentry.nativeCrash()
   }
 
-  xxxx() {
-    console.log('xxxxxxx')
-    console.log(this.state.x)
-  }
-
-  yyyy() {
+  function jsCrash() {
     const array = ['x', 'y', 'z', 'a']
-    const a = array[4].length + 4
+    const a = array[9].length + 8
     console.log(`${Number(a) + 1}`)
   }
 
-  capture() {
-    Sentry.captureException(new Error('XXXXXXXX'), {
-      logger: 'my.module',
-    })
+  function throwError() {
+    throw new Error('主动抛出异常')
   }
 
-  render() {
-    return (
-      <View style={[styles.container]}>
-        <Text style={styles.welcome}>
-          环境: {`${ENVIRONMENT}`} 版本: {`${VERSION_NAME} - ${VERSION_CODE}`}
-        </Text>
-        <Text style={styles.welcome}>按下一个按钮，让 APP 崩溃! --</Text>
-
-        <TouchableOpacity onPress={this.sentryCrash} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>Sentry crash</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={this.sentryNativeCrash}
-          activeOpacity={0.2}
-          style={styles.button}>
-          <Text style={styles.buttonText}>Sentry native crash</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.xxxx} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>xxxx</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.yyyy} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>yyyy</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.capture} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>capture</Text>
-        </TouchableOpacity>
-      </View>
-    )
+  function reject() {
+    Promise.reject(new Error('promise 被拒绝了'))
   }
+
+  return (
+    <View style={[styles.container]}>
+      <Text style={styles.welcome}>
+        环境: {`${ENVIRONMENT}`} 版本: {version} commit: {COMMIT_SHORT_SHA}
+      </Text>
+      <Text style={styles.welcome}>按下一个按钮，让 APP 崩溃!</Text>
+
+      <TouchableOpacity onPress={sentryNativeCrash} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>Sentry native crash</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={jsCrash} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>数组越界</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={throwError} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>主动抛出异常</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={reject} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>promise reject</Text>
+      </TouchableOpacity>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -272,11 +288,15 @@ const styles = StyleSheet.create({
 // sha.js
 const fs = require('fs')
 const path = require('path')
+const { VERSION_NAME, VERSION_CODE, CI } = require('./config')
 
 const file = path.resolve(__dirname, '../app.json')
 const data = fs.readFileSync(file, 'utf8')
 const app = JSON.parse(data)
-app.commit = (process.env.CI_COMMIT_SHA || 'xxxxxxxx').substr(0, 8)
+app.COMMIT_SHORT_SHA = process.env.CI_COMMIT_SHORT_SHA || 'xxxxxxxx'
+app.VERSION_NAME = VERSION_NAME
+app.VERSION_CODE = VERSION_CODE
+app.CI = !!process.env.CI
 fs.writeFileSync(file, JSON.stringify(app))
 ```
 
@@ -358,6 +378,8 @@ const {
   SENTRY_DEBUG_META_FILENAME,
 } = require('./config')
 
+const release = `${APPLICATION_ID}@${VERSION_NAME}+${VERSION_CODE}`
+
 if (PLATFORM === 'ios') {
   // -------------------------------ios-------------------------------------
   const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
@@ -370,7 +392,6 @@ if (PLATFORM === 'ios') {
 }
 
 // -------------------------------android-------------------------------------
-const release = `${APPLICATION_ID}-${VERSION_NAME}`
 // 上传 js bundle map 文件
 sh(
   `sentry-cli --log-level INFO react-native gradle \
@@ -515,7 +536,7 @@ Sentry.init({
   environment: ENVIRONMENT,
 })
 
-Sentry.setTag('commit', commit)
+Sentry.setTag('commit', COMMIT_SHORT_SHA)
 ```
 
-environment 可以告诉我们，是哪个环境出了问题，commit 可以告诉我们，是基于那个 commit 打的包出了问题。
+environment 可以告诉我们，是哪个环境出了问题，commit 可以告诉我们，是基于那个 commit 打的包出了问题，方便我们 checkout 出问题的代码。

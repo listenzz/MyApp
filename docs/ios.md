@@ -7,11 +7,9 @@
 - 使用 fastlane 上传生产包到 TestFlight
 - 使用 fastlane 上传测试包到 Bugly
 
-## 环境准备
+## 安装 cocoapods 和 fastlane
 
-按照 [Mac 开发环境配置](https://imcoding.tech/configue-mac-for-develop.html) 的指引，安装好 cocoapods 和 fastlane。
-
-> RN0.60 以后，默认使用 cocoapods 来作为 iOS 的包管理器，本文不再讲解如何引入 cocoapods。
+> RN0.60 以后，默认使用 cocoapods 来作为 iOS 的包管理器，本文不再讲解如何配置 cocoapods。
 
 安装 bundler， bundler 是 Ruby 的包管理器，如同 npm 之于 Node。cocoapods 和 fastlane 都是使用 Ruby 来编写的。
 
@@ -19,7 +17,27 @@
 sudo gem install bundler
 ```
 
-此外还需要准备一个**未开启二步验证**的 Apple ID，添加到公司苹果开发账号的用户组，赋予 App 管理权限
+在 ios 目录下，新建一个 Gemfile 文件，文件内容如下：
+
+```gemfile
+source "https://rubygems.org"
+
+gem 'fastlane'
+gem 'cocoapods'
+```
+
+Gemfile 之于 bundler，如同 package.json 之于 npm。
+
+运行以下命令，安装 fastlane 和 cocoapods
+
+```sh
+# ios 目录下
+bundle install
+```
+
+安装成功后，会看到 ios 目录下多了一个 Gemfile.lock 文件，这个文件锁定了我们在这个项目中使用的 fastlane 和 cocoapods 版本，统一的版本，方便团队协作。
+
+以后团队成员一律使用 `bundle exec pod install` 这样的命令
 
 ## 初始化 fastlane
 
@@ -29,9 +47,9 @@ sudo gem install bundler
 
 通过以下命令初始化 fastlane
 
-```
-cd ios
-fastlane init
+```sh
+# ios 目录下
+bundle exec fastlane init
 ```
 
 ![](./assets/fastlane_init.png)
@@ -40,11 +58,9 @@ fastlane init
 
 初始化完成后，可以看到 ios 文件夹下生成了一个名为 fastlane 的文件夹，里面有 Appfile 和 Fastfile 两个文件。
 
-此外，在 ios 目录下，还生成了一个叫 Gemfile 的文件 和一个叫 Gemfile.lock 的文件。Gemfile 之于 bundler，如同 package.json 之于 npm。
-
-Gemfile.lock 保证项目所依赖的 fastlane 版本，无论在哪台机器上运行，都是一致的。前提是我们使用 `bundle exec fastlane` 这样的命令。
-
 ## 用 fastlane 来管理签名
+
+> ⚠️ 准备一个**未开启二步验证**的 Apple ID，添加到公司苹果开发账号的用户组，赋予 App 管理权限
 
 fastlane 提供了一些 action 来帮组我们解决代码签名问题，其中最著名的是 [match](https://docs.fastlane.tools/actions/match/)。
 
@@ -58,8 +74,8 @@ fastlane 提供了一些 action 来帮组我们解决代码签名问题，其中
 
 运行以下命令，初始化 match
 
-```
-cd ios
+```sh
+# ios 目录下
 bundle exec fastlane match init
 ```
 
@@ -94,6 +110,7 @@ app_identifier(["com.xxxxxx.myapp"])
 运行以下命令，创建并下载开发证书
 
 ```sh
+# ios 目录下
 bundle exec fastlane match development
 ```
 
@@ -250,22 +267,10 @@ lane :build do |options|
 end
 ```
 
-因为我们在脚本中用到了 cocoapods，编辑 ios 目录下的 Gemfile 文件，添加 cocoapods 依赖，如下
-
-```ruby
-source "https://rubygems.org"
-
-gem "fastlane"
-gem 'cocoapods'
-```
-
-当我们通过 `bundle exec pod install` 这样的方式来执行 pod 命令时，确保本项目所依赖的 cocoapods 版本在所有机器上都是一致的。
-
 现在，我们来运行 fastlane build
 
 ```shell
-cd ios
-# &
+# ios 目录下运行
 bundle exec fastlane build git_url:'git@git.xxxxxx.com:ios/certificates.git' apple_id:'xxxxxx@gmail.com' export_method:'development'
 ```
 

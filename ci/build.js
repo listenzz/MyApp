@@ -43,7 +43,11 @@ if (PATCH_ONLY) {
 
   // 发布补丁
   sh(
-    `appcenter codepush release-react -t ${VERSION_NAME} -o ${ARTIFACTS_DIR} -d ${deployment} -m ${MANDATORY} \
+    `appcenter codepush release-react \
+      -t ${VERSION_NAME} \
+      -o ${ARTIFACTS_DIR} \
+      -d ${deployment} \
+      -m ${MANDATORY} \
       --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
   )
   // 查看补丁部署情况

@@ -15,6 +15,8 @@ const {
   APP_NAME_CODEPUSH,
 } = require('./config')
 
+const release = `${APPLICATION_ID}@${VERSION_NAME}+${VERSION_CODE}`
+
 if (PATCH_ONLY) {
   const deployment = ENVIRONMENT === 'production' ? 'Production' : 'Staging'
 
@@ -25,10 +27,10 @@ if (PATCH_ONLY) {
   sh(
     `sentry-cli react-native appcenter \
       --log-level INFO \
-      --bundle-id ${APPLICATION_ID} \
-      --version-name ${VERSION_NAME} \
+      --release-name ${release} \
       --dist ${VERSION_CODE} \
-      --deployment ${deployment} ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
+      --deployment ${deployment} \
+      ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
     { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
   )
   process.exit(0)
@@ -46,8 +48,6 @@ if (PLATFORM === 'ios') {
 }
 
 // -------------------------------android-------------------------------------
-const release = `${APPLICATION_ID}-${VERSION_NAME}`
-
 // 上传 js bundle map 文件
 sh(
   `sentry-cli --log-level INFO react-native gradle \

@@ -23,11 +23,7 @@ RCT_EXPORT_MODULE(AppInfo)
 - (NSDictionary *)constantsToExport {
   NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
   NSMutableDictionary *settings = [[info objectForKey:@"AppSettings"] mutableCopy];
-  NSString *versionName = [info objectForKey:@"CFBundleShortVersionString"];
-  NSNumber *versionCode = [info objectForKey:@"CFBundleVersion"];
   NSString *bundleId = [info objectForKey:@"CFBundleIdentifier"];
-  [settings setObject:versionName forKey:@"VERSION_NAME"];
-  [settings setObject:versionCode forKey:@"VERSION_CODE"];
   [settings setObject:bundleId forKey:@"APPLICATION_ID"];
   return settings;
 }

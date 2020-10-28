@@ -1,15 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import * as Sentry from '@sentry/react-native'
-import {
-  Navigator,
-  withNavigationItem,
-  useVisibleEffect,
-  InjectedProps,
-} from 'react-native-navigation-hybrid'
-import { ENVIRONMENT, VERSION_NAME, VERSION_CODE } from './AppInfo'
-import { version_name, version_code, commit } from '../app.json'
-import CodePush from 'react-native-code-push'
+import { Navigator, withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
+import { ENVIRONMENT, VERSION_NAME, VERSION_CODE, COMMIT_SHORT_SHA } from './AppInfo'
+import { useCodePush } from './useCodePush'
 
 export default withNavigationItem({
   rightBarButtonItem: {
@@ -21,32 +15,8 @@ export default withNavigationItem({
 })(App)
 
 function App({ sceneId }: InjectedProps) {
-  const [version, setVersion] = useState(
-    `${version_name || VERSION_NAME}-${version_code || VERSION_CODE}`,
-  )
-
-  useEffect(() => {
-    CodePush.getUpdateMetadata()
-      .then((update) => {
-        if (update) {
-          setVersion(
-            `${update.appVersion}-codepush:${update.label}-${version_code || VERSION_CODE}`,
-          )
-        }
-      })
-      .catch((e) => {
-        Sentry.captureException(e)
-      })
-  }, [])
-
-  const visibleCallback = useCallback(() => {
-    CodePush.allowRestart()
-    return () => {
-      CodePush.disallowRestart()
-    }
-  }, [])
-
-  useVisibleEffect(sceneId, visibleCallback)
+  useCodePush(sceneId)
+  const version = `${VERSION_NAME}-${VERSION_CODE}`
 
   function sentryNativeCrash() {
     Sentry.nativeCrash()
@@ -54,22 +24,22 @@ function App({ sceneId }: InjectedProps) {
 
   function jsCrash() {
     const array = ['x', 'y', 'z', 'a']
-    const a = array[27].length + 5
+    const a = array[9].length + 8
     console.log(`${Number(a) + 1}`)
   }
 
   function throwError() {
-    throw new Error('主动抛出异常 125')
+    throw new Error('主动抛出异常')
   }
 
   function reject() {
-    Promise.reject(new Error('promise 被拒绝了哈!!'))
+    Promise.reject(new Error('promise 被拒绝了'))
   }
 
   return (
     <View style={[styles.container]}>
       <Text style={styles.welcome}>
-        环境: {`${ENVIRONMENT}`} 版本: {version} commit: {commit}
+        环境: {`${ENVIRONMENT}`} 版本: {version} commit: {COMMIT_SHORT_SHA}
       </Text>
       <Text style={styles.welcome}>按下一个按钮，让 APP 崩溃!</Text>
 

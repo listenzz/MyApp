@@ -129,7 +129,7 @@ lane :upload_debug_symbol_to_sentry do |options|
     
     bundle_output = "#{ENV['PWD']}/build/main.jsbundle"
     sourcemap_output = "#{ENV['PWD']}/build/main.jsbundle.map"
-    release = "#{app_identifier}-#{version_name}"
+    release = "#{app_identifier}@#{version_name}+#{build_number}"
 
     sh(%(
         sentry-cli --log-level INFO releases new #{release}

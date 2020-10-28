@@ -1,7 +1,8 @@
 {
   "name": "MyApp",
   "displayName": "MyApp",
-  "commit": "xxxxxxxx",
-  "version_name": "",
-  "version_code": 0
+  "COMMIT_SHORT_SHA": "xxxxxxxx",
+  "VERSION_NAME": "1.0.0",
+  "VERSION_CODE": 1,
+  "CI": false
 }
