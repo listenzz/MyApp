@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { VERSION_NAME, VERSION_CODE, CI } = require('./config')
+const { VERSION_NAME, VERSION_CODE } = require('./config')
 
 const file = path.resolve(__dirname, '../app.json')
 const data = fs.readFileSync(file, 'utf8')
