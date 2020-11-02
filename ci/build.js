@@ -25,7 +25,8 @@ const {
   MAPPING_FILE_SOURCE_PATH,
   MAPPING_FILENAME,
   APPLICATION_ID,
-  APP_NAME_CODEPUSH,
+  APP_CODEPUSH,
+  APP_TARGET_CODEPUSH,
   REACT_ROOT,
   PATCH_ONLY,
   MANDATORY,
@@ -35,16 +36,16 @@ const {
 if (PATCH_ONLY) {
   const deployment = ENVIRONMENT === 'production' ? 'Production' : 'Staging'
   console.log('--------------------------------------------------------------------------')
-  console.log(`准备发布补丁: ${PLATFORM} ${ENVIRONMENT} ${VERSION_NAME}`)
+  console.log(`准备发布补丁: ${PLATFORM} ${ENVIRONMENT} ${APP_TARGET_CODEPUSH}`)
   console.log('--------------------------------------------------------------------------')
 
   // 设置当前要操作的 app
-  sh(`appcenter apps set-current ${APP_NAME_CODEPUSH}`)
+  sh(`appcenter apps set-current ${APP_CODEPUSH}`)
 
   // 发布补丁
   sh(
     `appcenter codepush release-react \
-      -t ${VERSION_NAME} \
+      -t ${APP_TARGET_CODEPUSH} \
       -o ${ARTIFACTS_DIR} \
       -d ${deployment} \
       -m ${MANDATORY} \

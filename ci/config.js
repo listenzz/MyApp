@@ -88,13 +88,17 @@ const MAPPING_FILE_SOURCE_PATH = path.resolve(
 
 // package.json 所在目录
 const REACT_ROOT = path.resolve(__dirname, '../')
-// codepush 上注册的 app 名字
-const APP_NAME_CODEPUSH =
-  process.env.APP_NAME_CODEPUSH || `listenzz/${APP_NAME.toLowerCase()}-${PLATFORM}`
+// appcenter owner
+const APP_OWNER_CODEPUSH = process.env.APP_OWNER_CODEPUSH || 'listenzz'
+// appcenter 上注册的 app 名字
+const APP_NAME_CODEPUSH = process.env.APP_NAME_CODEPUSH || `${APP_NAME.toLowerCase()}-${PLATFORM}`
+const APP_CODEPUSH = `${APP_OWNER_CODEPUSH}/${APP_NAME_CODEPUSH}`
 // 是否只需要打补丁包
 const PATCH_ONLY = !!process.env.PATCH_ONLY
 // 是否强制更新
 const MANDATORY = !!process.env.MANDATORY
+// 热更新目标 https://docs.microsoft.com/en-us/appcenter/distribution/codepush/cli#target-binary-version-parameter
+const APP_TARGET_CODEPUSH = process.env.APP_TARGET_CODEPUSH || VERSION_NAME
 
 module.exports = {
   BUGLY_DIST_URL,
@@ -123,7 +127,8 @@ module.exports = {
   MAPPING_FILE_SOURCE_PATH,
   MAPPING_FILENAME,
   REACT_ROOT,
-  APP_NAME_CODEPUSH,
+  APP_CODEPUSH,
+  APP_TARGET_CODEPUSH,
   PATCH_ONLY,
   MANDATORY,
 }
