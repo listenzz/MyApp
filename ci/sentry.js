@@ -12,16 +12,13 @@ const {
   SENTRY_DEBUG_META_FILENAME,
   ENVIRONMENT,
   PATCH_ONLY,
-  APP_CODEPUSH,
+  APP_NAME_CODEPUSH,
 } = require('./config')
 
 const release = `${APPLICATION_ID}@${VERSION_NAME}+${VERSION_CODE}`
 
 if (PATCH_ONLY) {
   const deployment = ENVIRONMENT === 'production' ? 'Production' : 'Staging'
-
-  // 设置当前要操作的 app
-  sh(`appcenter apps set-current ${APP_CODEPUSH}`)
 
   // 上传 sourcemap 到 sentry
   sh(
@@ -30,7 +27,7 @@ if (PATCH_ONLY) {
       --release-name ${release} \
       --dist ${VERSION_CODE} \
       --deployment ${deployment} \
-      ${APP_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
+      ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
     { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
   )
   process.exit(0)

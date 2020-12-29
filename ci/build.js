@@ -25,7 +25,7 @@ const {
   MAPPING_FILE_SOURCE_PATH,
   MAPPING_FILENAME,
   APPLICATION_ID,
-  APP_CODEPUSH,
+  APP_NAME_CODEPUSH,
   APP_TARGET_CODEPUSH,
   REACT_ROOT,
   PATCH_ONLY,
@@ -39,23 +39,23 @@ if (PATCH_ONLY) {
   console.log(`准备发布补丁: ${PLATFORM} ${ENVIRONMENT} ${APP_TARGET_CODEPUSH}`)
   console.log('--------------------------------------------------------------------------')
 
-  // 设置当前要操作的 app
-  sh(`appcenter apps set-current ${APP_CODEPUSH}`)
-
   // 发布补丁
   sh(
     `appcenter codepush release-react \
-      -t ${APP_TARGET_CODEPUSH} \
+      -a ${APP_NAME_CODEPUSH} \
+      -t "${APP_TARGET_CODEPUSH}" \
       -o ${ARTIFACTS_DIR} \
       -d ${deployment} \
       -m ${MANDATORY} \
       --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
   )
   // 查看补丁部署情况
-  sh('appcenter codepush deployment list')
+  sh(`appcenter codepush deployment list -a ${APP_NAME_CODEPUSH}`)
 
   // 发布 slack 通知
-  slack(`${PLATFORM}-${APPLICATION_ID}-${ENVIRONMENT}-${VERSION_NAME} 补丁包发布成功！`)
+  slack(
+    `${PLATFORM}-${APPLICATION_ID}-${ENVIRONMENT}-${VERSION_NAME} 补丁包发布成功！本补丁对 ${APP_TARGET_CODEPUSH} 生效`,
+  )
   process.exit(0)
 }
 

@@ -309,17 +309,16 @@ sentry-cli react-native appcenter --bundle-id com.shundaojia.myapp-1.0.11 --depl
 // ci/config.js
 // package.json 所在目录
 const REACT_ROOT = path.resolve(__dirname, '../')
-// appcenter owner
-const APP_OWNER_CODEPUSH = process.env.APP_OWNER_CODEPUSH || 'listenzz'
+
 // appcenter 上注册的 app 名字
-const APP_NAME_CODEPUSH = process.env.APP_NAME_CODEPUSH || `${APP_NAME.toLowerCase()}-${PLATFORM}`
-const APP_CODEPUSH = `${APP_OWNER_CODEPUSH}/${APP_NAME_CODEPUSH}`
+const APP_NAME_CODEPUSH =
+  process.env.APP_NAME_CODEPUSH || `listenzz/${APP_NAME.toLowerCase()}-${PLATFORM}`
+// 热更新目标 https://docs.microsoft.com/en-us/appcenter/distribution/codepush/cli#target-binary-version-parameter
+const APP_TARGET_CODEPUSH = process.env.APP_TARGET_CODEPUSH || VERSION_NAME
 // 是否只需要打补丁包
 const PATCH_ONLY = !!process.env.PATCH_ONLY
 // 是否强制更新
 const MANDATORY = !!process.env.MANDATORY
-// 热更新目标 https://docs.microsoft.com/en-us/appcenter/distribution/codepush/cli#target-binary-version-parameter
-const APP_TARGET_CODEPUSH = process.env.APP_TARGET_CODEPUSH || VERSION_NAME
 ```
 
 在 ci/build.js 中，添加如下代码
@@ -333,23 +332,23 @@ if (PATCH_ONLY) {
   console.log(`准备发布补丁: ${PLATFORM} ${ENVIRONMENT} ${APP_TARGET_CODEPUSH}`)
   console.log('--------------------------------------------------------------------------')
 
-  // 设置当前要操作的 app
-  sh(`appcenter apps set-current ${APP_CODEPUSH}`)
-
   // 发布补丁
   sh(
     `appcenter codepush release-react \
-      -t ${APP_TARGET_CODEPUSH} \
+      -a ${APP_NAME_CODEPUSH} \
+      -t "${APP_TARGET_CODEPUSH}" \
       -o ${ARTIFACTS_DIR} \
       -d ${deployment} \
       -m ${MANDATORY} \
       --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
   )
   // 查看补丁部署情况
-  sh(`appcenter codepush deployment list`)
+  sh(`appcenter codepush deployment list -a ${APP_NAME_CODEPUSH}`)
 
   // 发布 slack 通知
-  slack(`${PLATFORM}-${APPLICATION_ID}-${ENVIRONMENT}-${VERSION_NAME} 补丁包发布成功！`)
+  slack(
+    `${PLATFORM}-${APPLICATION_ID}-${ENVIRONMENT}-${VERSION_NAME} 补丁包发布成功！本补丁对 ${APP_TARGET_CODEPUSH} 生效`,
+  )
   process.exit(0)
 }
 ```
@@ -363,9 +362,6 @@ const release = `${APPLICATION_ID}@${VERSION_NAME}+${VERSION_CODE}`
 if (PATCH_ONLY) {
   const deployment = ENVIRONMENT === 'production' ? 'Production' : 'Staging'
 
-  // 设置当前要操作的 app
-  sh(`appcenter apps set-current ${APP_CODEPUSH}`)
-
   // 上传 sourcemap 到 sentry
   sh(
     `sentry-cli react-native appcenter \
@@ -373,7 +369,7 @@ if (PATCH_ONLY) {
       --release-name ${release} \
       --dist ${VERSION_CODE} \
       --deployment ${deployment} \
-      ${APP_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
+      ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
     { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
   )
   process.exit(0)
