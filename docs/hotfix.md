@@ -54,17 +54,11 @@ appcenter apps create -p React-Native -o iOS -d myapp-ios
 appcenter apps list
 ```
 
-设置当前要操作的 app
-
-```
-appcenter apps set-current listenzz/myapp-android
-```
-
 创建生产环境和测试环境的 deployment key
 
 ```
-appcenter codepush deployment add Production
-appcenter codepush deployment add Staging
+appcenter codepush deployment add -a listenzz/myapp-android Production
+appcenter codepush deployment add -a listenzz/myapp-android Staging
 ```
 
 > 之所以使用 Production 和 Staging，是因为使用过 code-push-cli 的人都知道，code-push-cli 默认创建的就是这俩名称
@@ -72,7 +66,7 @@ appcenter codepush deployment add Staging
 列出 deployment key
 
 ```
-appcenter codepush deployment list -k
+appcenter codepush deployment list -k -a listenzz/myapp-android
 ```
 
 ![add deployment](./assets/appcenter_deployment_add.png)
@@ -80,12 +74,10 @@ appcenter codepush deployment list -k
 列出当前 app 最近发布过的补丁包，如果之前没使用 code-push 发布过补丁的话，那么现在应该是空的
 
 ```
-appcenter codepush deployment list
+appcenter codepush deployment list -a listenzz/myapp-android
 ```
 
 ![list deployment](./assets/appcenter_deployment_list.png)
-
-**别忘了使用 `appcenter apps set-current` 重设置当前要操作的 app，为另一个平台创建 deployment key。**
 
 ## 配置 RN 工程
 
@@ -190,16 +182,10 @@ pod 安装好后，修改 AppDelegate.m 文件
 }
 ```
 
-设置当前要操作的 app 为 ios 平台的 app
-
-```
-appcenter apps set-current listenzz/myapp-ios
-```
-
 列出当前 app 的 deployment keys
 
 ```
-appcenter codepush deployment list -k
+appcenter codepush deployment list -k -a listenzz/myapp-ios
 ```
 
 添加字段名为 CODEPUSH_KEY 的 User-Defined 配置
@@ -231,7 +217,7 @@ productFlavors {
 }
 ```
 
-其中， `CODEPUSH_KEY` 可以通过 `appcenter codepush deployment list -k` 查看，**别忘了先设置好要查看的 app 哦**。
+其中， `CODEPUSH_KEY` 可以通过 `appcenter codepush deployment list -k -a <appOwner/appName>` 查看。
 
 修改 MainApplication.java 文件
 
@@ -258,14 +244,13 @@ private final ReactNativeHost mReactNativeHost = new HybridReactNativeHost(this)
 先对 UI 做些修改，然后通过以下命令发布补丁包
 
 ```
-appcenter apps set-current listenzz/myapp-ios
-appcenter codepush release-react -t 1.0.11 -o ./build -d Staging
+appcenter codepush release-react -a listenzz/myapp-ios -t 1.0.11 -o ./build -d Staging
 ```
 
 发布成功后，通过以下命令查看发布结果
 
 ```
-appcenter codepush deployment list
+appcenter codepush deployment list -a listenzz/myapp-ios
 ```
 
 ![no installs](./assets/appcenter_deployment_no_installs.png)
@@ -277,7 +262,7 @@ appcenter codepush deployment list
 再次输入以下命令
 
 ```
-appcenter codepush deployment list
+appcenter codepush deployment list -a listenzz/myapp-ios
 ```
 
 可以看到有一个用户正在等待更新
@@ -296,7 +281,7 @@ appcenter codepush deployment list
 
 ```shell
 export SENTRY_PROPERTIES=./ios/sentry.properties
-sentry-cli react-native appcenter --bundle-id com.shundaojia.myapp-1.0.11 --deployment Staging listenzz/myapp-ios ios ./build/codePush
+sentry-cli react-native appcenter --release-name com.shundaojia.myapp@1.0.11 --deployment Staging listenzz/myapp-ios ios ./build/codePush
 ```
 
 ## 将热更新功能与 CI / CD 集成
