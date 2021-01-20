@@ -189,7 +189,7 @@ xcodeproj = "./#{app_name}.xcodeproj"
 lane :build do |options|
     ENV['CI'] = 'true' # 确保是在 CI 环境，否则 xcode 中的脚本不会生效
 
-    if ENV['SHOULD_REPO_UPDATE'] == 'true'
+    if ENV['SHOULD_POD_REPO_UPDATE'] == 'true'
         sh(%(bundle exec pod repo update))
     end
 
