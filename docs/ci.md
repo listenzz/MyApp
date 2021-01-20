@@ -219,6 +219,9 @@ const {
 // ------------------------------- ios -------------------------------------
 if (PLATFORM === 'ios') {
   const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
+  if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
+    sh(`gem install bundler && bundle install`, undefined, workdir)
+  }
   sh(`bundle exec fastlane build`, undefined, workdir)
   process.exit(0)
 }
