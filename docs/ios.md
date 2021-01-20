@@ -7,6 +7,39 @@
 - 使用 fastlane 上传生产包到 TestFlight
 - 使用 fastlane 上传测试包到 Bugly
 
+## 使用 Homebrew 安装 Ruby
+
+Mac OS 自带 ruby，不过限制过多，在执行某些命令时，需要 sudo。 我们使用 homebrew 重新安装一个。
+
+```zsh
+brew install ruby@2.6
+```
+
+安装完成后，根据提示，执行如下命令
+
+```zsh
+echo 'export PATH="/usr/local/opt/ruby@2.6/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+最后执行
+
+```zsh
+brew link --overwrite ruby@2.6
+```
+
+查看 ruby 和 gem 的版本
+
+```zsh
+ruby -v
+# ruby 2.6.6p146 (2020-03-31 revision 67876) [x86_64-darwin19]
+```
+
+```zsh
+gem -v
+# 3.0.3
+```
+
 ## 安装 cocoapods 和 fastlane
 
 > RN0.60 以后，默认使用 cocoapods 来作为 iOS 的包管理器，本文不再讲解如何配置 cocoapods。
@@ -14,7 +47,7 @@
 安装 bundler， bundler 是 Ruby 的包管理器，如同 npm 之于 Node。cocoapods 和 fastlane 都是使用 Ruby 来编写的。
 
 ```
-sudo gem install bundler
+gem install bundler
 ```
 
 在 ios 目录下，新建一个 Gemfile 文件，文件内容如下：
