@@ -257,7 +257,7 @@ lane :build do |options|
         xcodeproj: xcodeproj
     )
 
-    git_url = options[:git_url] || ENV['CERTIFICATES_GIT_URL']
+    git_url = options[:git_url] || ENV['MATCH_GIT_URL']
     username = options[:apple_id] || ENV['FASTLANE_USER']
 
     match(

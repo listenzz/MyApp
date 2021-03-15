@@ -485,11 +485,11 @@ gitlab-runner start
 
 前往 **Settings -> CI / CD -> Variables**
 
-分别注入 `FASTLANE_USER` `FASTLANE_PASSWORD` `CERTIFICATES_GIT_URL` `MATCH_PASSWORD` `BUGLY_DIST_URL` `FILE_SERVER` 等环境变量
+分别注入 `FASTLANE_USER` `FASTLANE_PASSWORD` `MATCH_GIT_URL` `MATCH_PASSWORD` `BUGLY_DIST_URL` `FILE_SERVER` 等环境变量
 
 ![](./assets/gitlab_variables_1.png)
 
-其中，`FASTLANE_USER` 是 Apple ID，`FASTLANE_PASSWORD` 是 Apple ID 的登录密码，`CERTIFICATES_GIT_URL` 是我们通过 match 管理的 ios 开发证书的 git 地址，`MATCH_PASSWORD` 是我们为 match 设置的密码。
+其中，`FASTLANE_USER` 是 Apple ID，`FASTLANE_PASSWORD` 是 Apple ID 的登录密码，`MATCH_GIT_URL` 是我们通过 match 管理的 ios 开发证书的 git 地址，`MATCH_PASSWORD` 是我们为 match 设置的密码。
 
 ## 自动触发每日构建、部署
 
