@@ -32,11 +32,14 @@ function copy(src, dist) {
 }
 
 function gitTag() {
-  let tag
+  let tag = 'x.x.x'
   try {
     tag = execSync('git describe --tags --abbrev=0 --always', {
       encoding: 'utf8',
     })
+    if (!tag.match(/\d+\.\d+\.\d+/)) {
+      throw new Error('Tag 不合法')
+    }
   } catch {
     tag = '1.0.0'
   }
