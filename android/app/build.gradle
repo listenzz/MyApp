@@ -4,14 +4,14 @@ apply plugin: 'io.sentry.android.gradle'
 
 project.ext.sentryCli = [
         logLevel: "debug",
-        root    : "$rn_root"
+        root: "$rn_root"
 ]
 
 project.ext.react = [
-        entryFile      : "index.js",
+        entryFile: "index.js",
         bundleInRelease: true,
-        root           : "$rn_root",
-        enableHermes   : false,  // clean and rebuild if changing
+        root: "$rn_root",
+        enableHermes: true,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"

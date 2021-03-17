@@ -40,6 +40,7 @@ if (PATCH_ONLY) {
   console.log('--------------------------------------------------------------------------')
 
   // 发布补丁
+  // appcenter-cli 根据 build.gradle 文件中是否含有字符串 “enableHermes: true” 来判断是否开启 hermes
   sh(
     `appcenter codepush release-react \
       -a ${APP_NAME_CODEPUSH} \
@@ -49,6 +50,22 @@ if (PATCH_ONLY) {
       -m ${MANDATORY} \
       --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
   )
+
+  if (PLATFORM === 'android') {
+    // https://github.com/getsentry/sentry-react-native/issues/761#issuecomment-587498344
+    const packagerMap = `${ARTIFACTS_DIR}/CodePush/index.android.bundle.map`
+    const compilerMap = `${ARTIFACTS_DIR}/CodePush/index.android.bundle.hbc.map`
+    const sourceMap = `${ARTIFACTS_DIR}/CodePush/index.android.bundle.map`
+    if (fs.existsSync(compilerMap)) {
+      console.info(`由于开启了 hermes，接下来合并 sourcemap.`)
+      sh(
+        `node node_modules/react-native/scripts/compose-source-maps.js ${packagerMap} ${compilerMap} -o ${sourceMap}`,
+      )
+      console.info(`sourcemap 合并成功，删除多余的文件`)
+      sh(`rm ${compilerMap}`)
+    }
+  }
+
   // 查看补丁部署情况
   sh(`appcenter codepush deployment list -a ${APP_NAME_CODEPUSH}`)
 
