@@ -85,7 +85,7 @@ android {
       reset()
       enable true
       universalApk false  // If true, also generate a universal APK
-      include "armeabi-v7a", "x86"
+      include "arm64-v8a"
     }
   }
 }
@@ -154,7 +154,7 @@ android {
             reset()
             enable true
             universalApk false  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86"
+            include "arm64-v8a"
         }
     }
 
@@ -297,7 +297,7 @@ apply plugin: 'channel'
 
 rebuildChannel {
     def flavor = System.getenv("ENVIRONMENT") ?: 'production'
-    def baseName = "outputs/apk/${flavor}/release/app-${flavor}-armeabi-v7a-release.apk"
+    def baseName = "outputs/apk/${flavor}/release/app-${flavor}-arm64-v8a-release.apk"
     baseReleaseApk = new File(project.buildDir, baseName)
     releaseOutputDir = new File(project.buildDir, "outputs/channels")
 }

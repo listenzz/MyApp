@@ -306,7 +306,7 @@ if (PLATFORM === 'ios') {
 const dest = `android/${APP_NAME}/${ENVIRONMENT}/${VERSION_NAME}`
 
 // 上传 apk 基础包
-const apk = path.join(ARTIFACTS_DIR, `${APP_MODULE}-${ENVIRONMENT}-armeabi-v7a-release.apk`)
+const apk = path.join(ARTIFACTS_DIR, `${APP_MODULE}-${ENVIRONMENT}-arm64-v8a-release.apk`)
 let filename = `${APP_NAME}-${ENVIRONMENT}-${VERSION_NAME}-${VERSION_CODE}.apk`
 
 if (process.env.CI_COMMIT_SHORT_SHA) {

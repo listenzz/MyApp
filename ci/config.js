@@ -67,7 +67,7 @@ const MANIFEST_FILENAME = 'AndroidManifest.xml'
 // AndroidManifest.xml 原始路径
 const MANIFEST_SOURCE_PATH = path.resolve(
   BUILD_DIR,
-  `intermediates/merged_manifests/${ENVIRONMENT}Release/armeabi-v7a/${MANIFEST_FILENAME}`,
+  `intermediates/merged_manifests/${ENVIRONMENT}Release/arm64-v8a/${MANIFEST_FILENAME}`,
 )
 
 // sentry properties 所在路径
