@@ -491,6 +491,28 @@ gitlab-runner start
 
 其中，`FASTLANE_USER` 是 Apple ID，`FASTLANE_PASSWORD` 是 Apple ID 的登录密码，`MATCH_GIT_URL` 是我们通过 match 管理的 ios 开发证书的 git 地址，`MATCH_PASSWORD` 是我们为 match 设置的密码。
 
+`FASTLANE_SESSION` 和 `FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD` 用于解决 Apple ID 二因素登录问题。
+
+#### 获取 FASTLANE_SESSION
+
+运行以下命令，获取 `FASTLANE_SESSION`，记得把 `user@email.com` 替换成你的 Apple ID。
+
+```sh
+fastlane spaceauth -u user@email.com
+```
+
+执行成功后，问你要不要把获得的 session 字符串拷贝到剪贴板，选择 y。
+
+> `FASTLANE_SESSION` 可能有期限，记得更新
+
+#### 获取 FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD
+
+前往 [Apple ID 管理页面](https://appleid.apple.com/)
+
+找到**安全**选卡，点击**App 专用密码**下的**生成密码**按钮，根据指引，即可获得 `FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD`
+
+![](./assets/apple_application_specific_password.png)
+
 ## 自动触发每日构建、部署
 
 根据我们在 .gitlab-ci.yml 文件的配置，当有新的代码 push 或 merge 到仓库，将会自动触发构建流程。

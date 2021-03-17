@@ -93,8 +93,6 @@ bundle exec fastlane init
 
 ## 用 fastlane 来管理签名
 
-> ⚠️ 准备一个**未开启二步验证**的 Apple ID，添加到公司苹果开发账号的用户组，赋予 App 管理权限
-
 fastlane 提供了一些 action 来帮组我们解决代码签名问题，其中最著名的是 [match](https://docs.fastlane.tools/actions/match/)。
 
 打开 Xcode，反勾选 "Automatically manage signing"，我们将使用手动签名的方式：
@@ -257,7 +255,7 @@ lane :build do |options|
         xcodeproj: xcodeproj
     )
 
-    git_url = options[:git_url] || ENV['MATCH_GIT_URL']
+    git_url = options[:git_url]
     username = options[:apple_id] || ENV['FASTLANE_USER']
 
     match(
