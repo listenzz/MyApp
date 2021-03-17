@@ -9,7 +9,7 @@
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
-#import <NavigationHybrid/NavigationHybrid.h>
+#import <HybridNavigation/HybridNavigation.h>
 #import <CodePush/CodePush.h>
 
 @implementation AppDelegate
@@ -24,7 +24,7 @@
   jsCodeLocation = [CodePush bundleURL];
 #endif
   
-  [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+  [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.backgroundColor = UIColor.whiteColor;

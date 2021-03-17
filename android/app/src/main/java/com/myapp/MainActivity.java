@@ -1,6 +1,6 @@
 package com.myapp;
 
-import com.navigationhybrid.ReactAppCompatActivity;
+import com.reactnative.hybridnavigation.ReactAppCompatActivity;
 
 public class MainActivity extends ReactAppCompatActivity {
 

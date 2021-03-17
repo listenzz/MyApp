@@ -3731,6 +3731,13 @@ husky@^4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
+hybrid-navigation@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.npm.taobao.org/hybrid-navigation/download/hybrid-navigation-1.4.2.tgz#d307d3e21f5ee42e0c625e004ea5d57d58923629"
+  integrity sha1-0wfT4h9e5C4MYl4ATqXVfViSNik=
+  dependencies:
+    path-to-regexp "^6.1.0"
+
 iconv-lite@0.4.24, iconv-lite@^0.4.17, iconv-lite@^0.4.24:
   version "0.4.24"
   resolved "https://registry.npm.taobao.org/iconv-lite/download/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
@@ -6294,13 +6301,6 @@ react-native-code-push@6.3.0:
     plist "3.0.1"
     semver "^7.3.2"
     xcode "3.0.1"
-
-react-native-navigation-hybrid@^0.28.3:
-  version "0.28.3"
-  resolved "https://registry.npm.taobao.org/react-native-navigation-hybrid/download/react-native-navigation-hybrid-0.28.3.tgz#5a68109c3492cfb5eb5872cde5a1404f47542314"
-  integrity sha1-WmgQnDSSz7XrWHLN5aFAT0dUIxQ=
-  dependencies:
-    path-to-regexp "^6.1.0"
 
 react-native-testing-library@^2.1.0:
   version "2.2.0"

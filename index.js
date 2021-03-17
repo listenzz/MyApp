@@ -1,6 +1,6 @@
 import App from './app/App'
 import Blank from './app/Blank'
-import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid'
+import { ReactRegistry, Garden, Navigator } from 'hybrid-navigation'
 import * as Sentry from '@sentry/react-native'
 import {
   ENVIRONMENT,

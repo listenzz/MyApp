@@ -98,7 +98,7 @@ yarn add react-native-code-push
 import { useCallback, useEffect } from 'react'
 import { AppState, AppStateStatus } from 'react-native'
 import CodePush from 'react-native-code-push'
-import { useVisibleEffect } from 'react-native-navigation-hybrid'
+import { useVisibleEffect } from 'hybrid-navigation'
 
 export function useCodePush(sceneId: string) {
   useEffect(() => {

@@ -8,7 +8,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.microsoft.codepush.react.CodePush;
-import com.navigationhybrid.ReactBridgeManager;
+import com.reactnative.hybridnavigation.ReactBridgeManager;
 
 import java.util.List;
 
