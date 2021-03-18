@@ -8,6 +8,7 @@ const {
   ENVIRONMENT_CAPITALIZE,
   PLATFORM,
   APP_NAME,
+  APP_MODULE,
   VERSION_NAME,
   VERSION_CODE,
   NEED_TO_BUILD_CHANNELS,
@@ -30,7 +31,21 @@ const {
   REACT_ROOT,
   PATCH_ONLY,
   MANDATORY,
+  ENABLE_HERMES,
 } = require('./config')
+
+if (ENABLE_HERMES) {
+  if (PLATFORM === 'android') {
+    const gradleFile = path.resolve(__dirname, `../android/${APP_MODULE}/build.gradle`)
+    if (!fs.existsSync(gradleFile)) {
+      console.error(`找不到${gradleFile}文件，疑似路径错误，请修复`)
+      process.exit(0)
+    }
+    let gradle = fs.readFileSync(gradleFile, 'utf8')
+    gradle = gradle.replace('enableHermes: false', 'enableHermes: true')
+    fs.writeFileSync(gradleFile, gradle)
+  }
+}
 
 // ------------------------------- patch -------------------------------------
 if (PATCH_ONLY) {

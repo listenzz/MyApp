@@ -12,6 +12,8 @@ const PLATFORM = process.argv[2] || 'ios'
 // 确保或假装在 CI 环境
 process.env.CI = process.env.CI || 'true'
 
+const ENABLE_HERMES = Boolean(process.env.ENABLE_HERMES || 'true')
+
 // 开发环境 production qa dev
 // 不能通过 CI 直接注入 NODE_ENV ，否则会产生很奇怪的 BUG
 const ENVIRONMENT = process.env.ENVIRONMENT || 'qa'
@@ -105,6 +107,7 @@ module.exports = {
   PLATFORM,
   ENVIRONMENT,
   ENVIRONMENT_CAPITALIZE,
+  ENABLE_HERMES,
   APP_NAME,
   APP_MODULE,
   APPLICATION_ID,
