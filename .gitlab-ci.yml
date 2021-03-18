@@ -2,7 +2,7 @@ before_script:
   - export
   - export http_proxy=http://127.0.0.1:1087
   - export https_proxy=http://127.0.0.1:1087
-  - export no_proxy=qq.com,shundaojia.com,taobao.org,amap.com,alipayobjects.com,aliyuncs.com
+  - export no_proxy=shundaojia.com,apple.com,qq.com,taobao.org,amap.com,alipayobjects.com,aliyuncs.com,umeng.com,cdn.cocoapods.org,cdn.jsdelivr.net
 
 stages:
   - build
