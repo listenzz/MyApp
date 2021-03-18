@@ -27,7 +27,11 @@
   [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  self.window.backgroundColor = UIColor.whiteColor;
+  if (@available(iOS 13.0, *)) {
+      self.window.backgroundColor = [UIColor systemBackgroundColor];
+  } else {
+      self.window.backgroundColor = UIColor.whiteColor;
+  }
   UIViewController *rootViewController = [UIViewController new];
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];

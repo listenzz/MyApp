@@ -11,7 +11,7 @@ project.ext.react = [
         entryFile: "index.js",
         bundleInRelease: true,
         root: "$rn_root",
-        enableHermes: true,  // clean and rebuild if changing
+        enableHermes: false,  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -54,7 +54,7 @@ android {
             reset()
             enable true
             universalApk false  // If true, also generate a universal APK
-            include "arm64-v8a", "x86"
+            include "arm64-v8a", "x86_64"
         }
     }
 
@@ -87,14 +87,6 @@ android {
             buildConfigField "String", "CODEPUSH_KEY", '"MWyeVC38WoHktu9u4Mg2TQRH8rMOHJaIp9Y5V"'
         }
     }
-
-    packagingOptions {
-		pickFirst "lib/armeabi-v7a/libc++_shared.so"
-		pickFirst "lib/arm64-v8a/libc++_shared.so"
-		pickFirst "lib/x86/libc++_shared.so"
-		pickFirst "lib/x86_64/libc++_shared.so"
-	}
-
 }
 
 dependencies {

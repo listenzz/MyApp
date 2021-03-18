@@ -17,7 +17,7 @@ function copy(src, dist) {
     fs.mkdirSync(dist)
   }
   const files = fs.readdirSync(src)
-  files.forEach((file) => {
+  files.forEach(file => {
     const srcFile = path.join(src, file)
     const distFile = path.join(dist, file)
     const stats = fs.statSync(srcFile)
