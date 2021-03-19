@@ -2,14 +2,7 @@ import App from './app/App'
 import Blank from './app/Blank'
 import { ReactRegistry, Garden, Navigator } from 'hybrid-navigation'
 import * as Sentry from '@sentry/react-native'
-import {
-  ENVIRONMENT,
-  APPLICATION_ID,
-  VERSION_NAME,
-  VERSION_CODE,
-  COMMIT_SHORT_SHA,
-  CI,
-} from './app/AppInfo'
+import { ENVIRONMENT, APPLICATION_ID, VERSION_NAME, VERSION_CODE, COMMIT_SHORT_SHA, CI } from './app/AppInfo'
 
 // 配置 Sentry
 if (CI) {

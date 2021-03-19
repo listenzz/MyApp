@@ -37,10 +37,6 @@ local.properties
 .project
 .settings/
 
-# Visual Studio Code
-#
-.vscode/
-
 # node.js
 #
 node_modules/

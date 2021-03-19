@@ -73,9 +73,7 @@ if (PATCH_ONLY) {
     const sourceMap = `${ARTIFACTS_DIR}/CodePush/index.android.bundle.map`
     if (fs.existsSync(compilerMap)) {
       console.info(`由于开启了 hermes，接下来合并 sourcemap.`)
-      sh(
-        `node node_modules/react-native/scripts/compose-source-maps.js ${packagerMap} ${compilerMap} -o ${sourceMap}`,
-      )
+      sh(`node node_modules/react-native/scripts/compose-source-maps.js ${packagerMap} ${compilerMap} -o ${sourceMap}`)
       console.info(`sourcemap 合并成功，删除多余的文件`)
       sh(`rm ${compilerMap}`)
     }
@@ -156,15 +154,7 @@ copy(JS_SOURCE_MAP_DIR, ARTIFACTS_DIR)
 fs.copyFileSync(MANIFEST_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, MANIFEST_FILENAME), COPYFILE_EXCL)
 
 // sentry-debug-meta.properties
-fs.copyFileSync(
-  SENTRY_DEBUG_META_SOURCE_PATH,
-  path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME),
-  COPYFILE_EXCL,
-)
+fs.copyFileSync(SENTRY_DEBUG_META_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME), COPYFILE_EXCL)
 
 // mapping.txt
-fs.copyFileSync(
-  MAPPING_FILE_SOURCE_PATH,
-  path.resolve(ARTIFACTS_DIR, MAPPING_FILENAME),
-  COPYFILE_EXCL,
-)
+fs.copyFileSync(MAPPING_FILE_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, MAPPING_FILENAME), COPYFILE_EXCL)

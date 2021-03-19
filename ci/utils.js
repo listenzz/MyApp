@@ -4,8 +4,7 @@ const { spawnSync, execSync } = require('child_process')
 
 // 不适合放在 config.js 会引起循环依赖
 const SLACK_WEB_HOOK_URL =
-  process.env.SLACK_WEB_HOOK_URL ||
-  'https://hooks.slack.com/services/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'
+  process.env.SLACK_WEB_HOOK_URL || 'https://hooks.slack.com/services/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'
 
 /**
  *

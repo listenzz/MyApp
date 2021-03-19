@@ -3,8 +3,7 @@ module.exports = {
     'react-native-code-push': {
       platforms: {
         android: {
-          packageInstance:
-            'new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG)',
+          packageInstance: 'new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG)',
         },
       },
     },

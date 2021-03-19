@@ -59,10 +59,7 @@ const APK_SOURCE_DIR = path.resolve(BUILD_DIR, `outputs/apk/${ENVIRONMENT}/relea
 // Android js bundle 原始目录
 const JS_BUNDLE_DIR = path.resolve(BUILD_DIR, `generated/assets/react/${ENVIRONMENT}/release/`)
 // Android js source map 所在目录
-const JS_SOURCE_MAP_DIR = path.resolve(
-  BUILD_DIR,
-  `generated/sourcemaps/react/${ENVIRONMENT}/release`,
-)
+const JS_SOURCE_MAP_DIR = path.resolve(BUILD_DIR, `generated/sourcemaps/react/${ENVIRONMENT}/release`)
 
 // AndroidManifest.xml
 const MANIFEST_FILENAME = 'AndroidManifest.xml'
@@ -83,17 +80,13 @@ const SENTRY_DEBUG_META_SOURCE_PATH = path.resolve(
 
 const MAPPING_FILENAME = 'mapping.txt'
 // android mapping.txt 原始路径
-const MAPPING_FILE_SOURCE_PATH = path.resolve(
-  BUILD_DIR,
-  `outputs/mapping/${ENVIRONMENT}/release/${MAPPING_FILENAME}`,
-)
+const MAPPING_FILE_SOURCE_PATH = path.resolve(BUILD_DIR, `outputs/mapping/${ENVIRONMENT}/release/${MAPPING_FILENAME}`)
 
 // package.json 所在目录
 const REACT_ROOT = path.resolve(__dirname, '../')
 
 // appcenter 上注册的 app 名字
-const APP_NAME_CODEPUSH =
-  process.env.APP_NAME_CODEPUSH || `listenzz/${APP_NAME.toLowerCase()}-${PLATFORM}`
+const APP_NAME_CODEPUSH = process.env.APP_NAME_CODEPUSH || `listenzz/${APP_NAME.toLowerCase()}-${PLATFORM}`
 // 热更新目标 https://docs.microsoft.com/en-us/appcenter/distribution/codepush/cli#target-binary-version-parameter
 const APP_TARGET_CODEPUSH = process.env.APP_TARGET_CODEPUSH || VERSION_NAME
 // 是否只需要打补丁包

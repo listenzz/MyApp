@@ -296,8 +296,7 @@ sentry-cli react-native appcenter --release-name com.shundaojia.myapp@1.0.11 --d
 const REACT_ROOT = path.resolve(__dirname, '../')
 
 // appcenter 上注册的 app 名字
-const APP_NAME_CODEPUSH =
-  process.env.APP_NAME_CODEPUSH || `listenzz/${APP_NAME.toLowerCase()}-${PLATFORM}`
+const APP_NAME_CODEPUSH = process.env.APP_NAME_CODEPUSH || `listenzz/${APP_NAME.toLowerCase()}-${PLATFORM}`
 // 热更新目标 https://docs.microsoft.com/en-us/appcenter/distribution/codepush/cli#target-binary-version-parameter
 const APP_TARGET_CODEPUSH = process.env.APP_TARGET_CODEPUSH || VERSION_NAME
 // 是否只需要打补丁包
