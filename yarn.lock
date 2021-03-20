@@ -47,7 +47,7 @@
     semver "^5.4.1"
     source-map "^0.5.0"
 
-"@babel/core@^7.1.6", "@babel/core@^7.12.9":
+"@babel/core@^7.1.6", "@babel/core@^7.13.10":
   version "7.13.10"
   resolved "https://registry.npm.taobao.org/@babel/core/download/@babel/core-7.13.10.tgz?cache=0&sync_timestamp=1615243069218&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fcore%2Fdownload%2F%40babel%2Fcore-7.13.10.tgz#07de050bbd8193fcd8a3c27918c0890613a94559"
   integrity sha1-B94FC72Bk/zYo8J5GMCJBhOpRVk=
@@ -873,7 +873,7 @@
     pirates "^4.0.0"
     source-map-support "^0.5.16"
 
-"@babel/runtime@^7.12.5":
+"@babel/runtime@^7.13.10":
   version "7.13.10"
   resolved "https://registry.npm.taobao.org/@babel/runtime/download/@babel/runtime-7.13.10.tgz?cache=0&sync_timestamp=1615243066705&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.13.10.tgz#47d42a57b6095f4468da440388fdbad8bebf0d7d"
   integrity sha1-R9QqV7YJX0Ro2kQDiP262L6/DX0=
@@ -1603,17 +1603,17 @@
   resolved "https://registry.npm.taobao.org/@types/prop-types/download/@types/prop-types-15.7.3.tgz?cache=0&sync_timestamp=1605055564732&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fprop-types%2Fdownload%2F%40types%2Fprop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha1-KrDV2i5YFflLC51LldHl8kOrLKc=
 
-"@types/react-native@^0.63.30":
-  version "0.63.43"
-  resolved "https://registry.npm.taobao.org/@types/react-native/download/@types/react-native-0.63.43.tgz#0278dd540f8479b35ae5d6ef373dd9b3be4cffb1"
-  integrity sha1-AnjdVA+EebNa5dbvNz3Zs75M/7E=
+"@types/react-native@^0.64.0":
+  version "0.64.0"
+  resolved "https://registry.npm.taobao.org/@types/react-native/download/@types/react-native-0.64.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Freact-native%2Fdownload%2F%40types%2Freact-native-0.64.0.tgz#8c4aab67fca2197eacc73e403239be85c909d564"
+  integrity sha1-jEqrZ/yiGX6sxz5AMjm+hckJ1WQ=
   dependencies:
     "@types/react" "*"
 
-"@types/react-test-renderer@16.9.0":
-  version "16.9.0"
-  resolved "https://registry.npm.taobao.org/@types/react-test-renderer/download/@types/react-test-renderer-16.9.0.tgz#d60f530ecf4c906721511603cca711b4fa830d41"
-  integrity sha1-1g9TDs9MkGchURYDzKcRtPqDDUE=
+"@types/react-test-renderer@17.0.1":
+  version "17.0.1"
+  resolved "https://registry.npm.taobao.org/@types/react-test-renderer/download/@types/react-test-renderer-17.0.1.tgz#3120f7d1c157fba9df0118dae20cb0297ee0e06b"
+  integrity sha1-MSD30cFX+6nfARja4gywKX7g4Gs=
   dependencies:
     "@types/react" "*"
 
@@ -1625,13 +1625,19 @@
     "@types/prop-types" "*"
     csstype "^3.0.2"
 
-"@types/react@^16.9.14":
-  version "16.14.2"
-  resolved "https://registry.npm.taobao.org/@types/react/download/@types/react-16.14.2.tgz#85dcc0947d0645349923c04ccef6018a1ab7538c"
-  integrity sha1-hdzAlH0GRTSZI8BMzvYBihq3U4w=
+"@types/react@^17.0.1":
+  version "17.0.3"
+  resolved "https://registry.npm.taobao.org/@types/react/download/@types/react-17.0.3.tgz?cache=0&sync_timestamp=1615113978344&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Freact%2Fdownload%2F%40types%2Freact-17.0.3.tgz#ba6e215368501ac3826951eef2904574c262cc79"
+  integrity sha1-um4hU2hQGsOCaVHu8pBFdMJizHk=
   dependencies:
     "@types/prop-types" "*"
+    "@types/scheduler" "*"
     csstype "^3.0.2"
+
+"@types/scheduler@*":
+  version "0.16.1"
+  resolved "https://registry.npm.taobao.org/@types/scheduler/download/@types/scheduler-0.16.1.tgz?cache=0&sync_timestamp=1613384488348&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fscheduler%2Fdownload%2F%40types%2Fscheduler-0.16.1.tgz#18845205e86ff0038517aab7a18a62a6b9f71275"
+  integrity sha1-GIRSBehv8AOFF6q3oYpiprn3EnU=
 
 "@types/stack-utils@^2.0.0":
   version "2.0.0"
@@ -6249,10 +6255,10 @@ react-native-codegen@^0.0.6:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
-react-native-testing-library@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.npm.taobao.org/react-native-testing-library/download/react-native-testing-library-2.2.0.tgz#f118897671d7dfeb6d30c5897f1edff94cf4c259"
-  integrity sha1-8RiJdnHX3+ttMMWJfx7f+Uz0wlk=
+react-native-testing-library@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.npm.taobao.org/react-native-testing-library/download/react-native-testing-library-6.0.0.tgz#b6e1c2213008dc62bdf28bb1474dfaca9cece058"
+  integrity sha1-tuHCITAI3GK98ouxR036ypzs4Fg=
   dependencies:
     pretty-format "^26.0.1"
 
