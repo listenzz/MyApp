@@ -21,6 +21,10 @@ if (PATCH_ONLY) {
 if (PLATFORM === 'ios') {
   // -------------------------------ios-------------------------------------
   const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
+  if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
+    sh(`gem install bundler && bundle install`, undefined, workdir)
+  }
+
   if (ENVIRONMENT === 'production') {
     sh('bundle exec fastlane upload_ipa_to_testflight', undefined, workdir)
   } else {

@@ -36,6 +36,11 @@ if (PATCH_ONLY) {
 if (PLATFORM === 'ios') {
   // -------------------------------ios-------------------------------------
   const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
+
+  if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
+    sh(`gem install bundler && bundle install`, undefined, workdir)
+  }
+
   sh(
     'bundle exec fastlane upload_debug_symbol_to_sentry',
     { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
