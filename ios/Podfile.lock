@@ -1,10 +1,10 @@
 PODS:
   - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
-  - CodePush (6.3.0):
+  - CodePush (7.0.1):
     - Base64 (~> 1.1)
     - JWT (~> 3.0.0-beta.12)
-    - React
+    - React-Core
     - SSZipArchive (~> 2.2.2)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.64.0)
@@ -277,12 +277,12 @@ PODS:
     - React-cxxreact (= 0.64.0)
     - React-jsi (= 0.64.0)
     - React-perflogger (= 0.64.0)
-  - RNSentry (1.9.0):
+  - RNSentry (2.4.2):
     - React-Core
-    - Sentry (~> 5.2.0)
-  - Sentry (5.2.2):
-    - Sentry/Core (= 5.2.2)
-  - Sentry/Core (5.2.2)
+    - Sentry (= 6.1.4)
+  - Sentry (6.1.4):
+    - Sentry/Core (= 6.1.4)
+  - Sentry/Core (6.1.4)
   - SSZipArchive (2.2.3)
   - Yoga (1.14.0)
 
@@ -396,7 +396,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
-  CodePush: 69186fd1143f7e5e5c6f65383cf14f4927e28213
+  CodePush: 9bb93f52a44ee80b72739d89dead9c7e86c3bd3a
   DoubleConversion: cde416483dac037923206447da6e1454df403714
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
   FBReactNativeSpec: 4f919e301c6e265a15439cd0f758ba319feca52e
@@ -426,8 +426,8 @@ SPEC CHECKSUMS:
   React-RCTVibration: 0fd6b21751a33cb72fce1a4a33ab9678416d307a
   React-runtimeexecutor: cad74a1eaa53ee6e7a3620231939d8fe2c6afcf0
   ReactCommon: cfe2b7fd20e0dbd2d1185cd7d8f99633fbc5ff05
-  RNSentry: 1adaa43b01c6a3ab5091d4d1add66b7c58558898
-  Sentry: 8fa58a051237554f22507fb483b9a1de0171a2dc
+  RNSentry: e86fb2e2fec0365644f4b582938bf66be515acce
+  Sentry: 9d055e2de30a77685e86b219acf02e59b82091fc
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
 

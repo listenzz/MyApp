@@ -23,11 +23,11 @@
     ]
   },
   "dependencies": {
-    "@sentry/react-native": "^1.9.0",
+    "@sentry/react-native": "^2.4.2",
     "hybrid-navigation": "^1.4.2",
     "react": "17.0.1",
     "react-native": "^0.64.0",
-    "react-native-code-push": "6.3.0"
+    "react-native-code-push": "^7.0.1"
   },
   "devDependencies": {
     "7zip-bin": "^5.0.3",
