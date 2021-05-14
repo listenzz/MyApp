@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/react-native'
 import { Navigator, withNavigationItem, InjectedProps } from 'hybrid-navigation'
 import { ENVIRONMENT, VERSION_NAME, VERSION_CODE, COMMIT_SHORT_SHA } from './AppInfo'
 import { useCodePush } from './useCodePush'
+import { Log } from './log'
 
 export default withNavigationItem({
   rightBarButtonItem: {
@@ -25,7 +26,7 @@ function App({ sceneId }: InjectedProps) {
   function jsCrash() {
     const array = ['x', 'y', 'z', 'a']
     const a = array[9].length + 8
-    console.log(`${Number(a) + 1}`)
+    Log.i(`${Number(a) + 1}`)
   }
 
   function throwError() {
@@ -34,6 +35,11 @@ function App({ sceneId }: InjectedProps) {
 
   function reject() {
     Promise.reject(new Error('promise 被拒绝了'))
+  }
+
+  function log() {
+    Log.i('打印日志')
+    Sentry.captureMessage('上传诊断日志' + Math.random())
   }
 
   return (
@@ -57,6 +63,10 @@ function App({ sceneId }: InjectedProps) {
 
       <TouchableOpacity onPress={reject} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}>promise reject</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={log} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>上传日志</Text>
       </TouchableOpacity>
     </View>
   )

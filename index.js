@@ -3,6 +3,7 @@ import Blank from './app/Blank'
 import { ReactRegistry, Garden, Navigator } from 'hybrid-navigation'
 import * as Sentry from '@sentry/react-native'
 import { ENVIRONMENT, APPLICATION_ID, VERSION_NAME, VERSION_CODE, COMMIT_SHORT_SHA, CI } from './app/AppInfo'
+import { Platform } from 'react-native'
 
 // 配置 Sentry
 if (CI) {
@@ -13,6 +14,18 @@ if (CI) {
     environment: ENVIRONMENT,
     release: `${APPLICATION_ID}@${VERSION_NAME}+${VERSION_CODE}`,
     dist: `${VERSION_CODE}`,
+    beforeBreadcrumb: breadcrumb => {
+      if (breadcrumb.data?.logger) {
+        delete breadcrumb.data
+      }
+      return breadcrumb
+    },
+    beforeSend: event => {
+      if (event.breadcrumbs && Platform.OS === 'android') {
+        delete event.breadcrumbs
+      }
+      return event
+    },
   })
 
   Sentry.setTag('commit', COMMIT_SHORT_SHA)

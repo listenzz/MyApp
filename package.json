@@ -32,6 +32,7 @@
   "devDependencies": {
     "7zip-bin": "^5.0.3",
     "@babel/core": "^7.13.10",
+    "@babel/plugin-proposal-export-namespace-from": "^7.14.2",
     "@babel/runtime": "^7.13.10",
     "@react-native-community/eslint-config": "^2.0.0",
     "@types/jest": "^26.0.21",

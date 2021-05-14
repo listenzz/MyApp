@@ -8,6 +8,12 @@ module.exports = {
         jest: true,
       },
     },
+    {
+      files: ['app/**/*'],
+      rules: {
+        'no-console': 2,
+      },
+    },
   ],
   rules: {
     'no-shadow': 0,

@@ -2,6 +2,7 @@ package com.myapp;
 
 import android.app.Application;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -50,6 +51,8 @@ public class MainApplication extends Application implements ReactApplication {
     public void onCreate() {
         super.onCreate();
         SoLoader.init(this, /* native exopackage */ false);
+        FLog.setMinimumLoggingLevel(FLog.INFO);
+        FLog.setLoggingDelegate(new SentryLogDelegate(BuildConfig.DEBUG));
         ReactBridgeManager bridgeManager = ReactBridgeManager.get();
         bridgeManager.install(getReactNativeHost());
     }

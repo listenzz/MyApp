@@ -8,14 +8,18 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBridge.h>
+#import <React/RCTLog.h>
 #import <React/RCTBundleURLProvider.h>
 #import <HybridNavigation/HybridNavigation.h>
 #import <CodePush/CodePush.h>
+#import <Sentry/Sentry.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [self hookLog];
+  RCTSetLogThreshold(RCTLogLevelInfo);
   
   NSURL *jsCodeLocation;
 #ifdef DEBUG
@@ -37,5 +41,42 @@
   [self.window makeKeyAndVisible];
   return YES;
 }
+
+- (void)hookLog {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        RCTLogFunction fun = RCTGetLogFunction();
+        RCTSetLogFunction(^(RCTLogLevel level, RCTLogSource source, NSString *fileName, NSNumber *lineNumber, NSString *message) {
+#if DEBUG
+          fun(level, source, fileName, lineNumber, message);
+#endif
+          if (source == RCTLogSourceNative) {
+              if (nil != [SentrySDK.currentHub getClient]) {
+                  SentryBreadcrumb *crumb =
+                      [[SentryBreadcrumb alloc] initWithLevel:[self sentryLevelForLogLevel:level]
+                                                     category:@"native"];
+                  if (fileName) {
+                        crumb.data = @{ @"filename": [fileName lastPathComponent] };
+                  }
+                  crumb.message = message;
+                  [SentrySDK addBreadcrumb:crumb];
+              }
+          }
+        });
+    });
+}
+                  
+- (SentryLevel)sentryLevelForLogLevel:(RCTLogLevel)loglevel {
+    if (loglevel == RCTLogLevelFatal) {
+        return kSentryLevelFatal;
+    } else if (loglevel == RCTLogLevelWarning) {
+        return kSentryLevelWarning;
+    } else if (loglevel == RCTLogLevelInfo) {
+        return kSentryLevelInfo;
+    } else {
+        return kSentryLevelDebug;
+    }
+}
+
 
 @end
