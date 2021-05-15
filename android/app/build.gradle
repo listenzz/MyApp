@@ -8,7 +8,7 @@ project.ext.sentryCli = [
 ]
 
 project.ext.react = [
-        entryFile: "index.js",
+        entryFile: "app/src/index.ts",
         bundleInRelease: true,
         root: "$rn_root",
         enableHermes: false,  // clean and rebuild if changing

@@ -63,6 +63,7 @@ if (PATCH_ONLY) {
       -o ${ARTIFACTS_DIR} \
       -d ${deployment} \
       -m ${MANDATORY} \
+      -e "app/src/index.ts" \
       --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
   )
 

@@ -38,7 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected String getJSMainModuleName() {
-            return "index";
+            return "app/src/index";
         }
     };
 

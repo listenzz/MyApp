@@ -2,6 +2,10 @@
   "name": "my-app",
   "version": "0.0.1",
   "private": true,
+  "workspaces": [
+    "app",
+    "packages/*"
+  ],
   "scripts": {
     "android": "react-native run-android --variant qaDebug",
     "ios": "react-native run-ios --scheme 'MyApp qa' --configuration 'Debug'",
@@ -41,6 +45,7 @@
     "@types/react-test-renderer": "17.0.1",
     "babel-jest": "^26.6.3",
     "eslint": "^7.14.0",
+    "eslint-plugin-workspaces": "^0.6.2",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
     "lint-staged": "^11.0.0",
