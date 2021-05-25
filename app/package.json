@@ -1,7 +1,0 @@
-{
-  "name": "app",
-  "version": "1.0.0",
-  "dependencies": {
-    "@sdcx/common": "1.0.0"
-  }
-}

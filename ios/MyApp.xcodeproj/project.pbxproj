@@ -193,7 +193,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -z \"$CI\" ]; then\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh app/src/index.ts\nelse\nexport NODE_BINARY=node\nsourcemap_path=\"$SRCROOT/build/main.jsbundle.map\"\nsourcemap_sources_root=\"$SRCROOT/../\"\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $sourcemap_path --sourcemap-sources-root $sourcemap_sources_root\"\necho $EXTRA_PACKAGER_ARGS >&2\n../node_modules/react-native/scripts/react-native-xcode.sh app/src/index.ts\n\nbundle_path=\"$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/main.jsbundle\"\nbuild_dir=\"$SRCROOT/build\"\nif [ -e \"$bundle_path\" ]; then\ncp \"$bundle_path\" \"$build_dir\"\nelse\necho \"可能 ts 代码有错误，无法通过编译。\"\nexit 3\nfi\nfi\n";
+			shellScript = "if [ -z \"$CI\" ]; then\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\nelse\nexport NODE_BINARY=node\nsourcemap_path=\"$SRCROOT/build/main.jsbundle.map\"\nsourcemap_sources_root=\"$SRCROOT/../\"\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $sourcemap_path --sourcemap-sources-root $sourcemap_sources_root\"\necho $EXTRA_PACKAGER_ARGS >&2\n../node_modules/react-native/scripts/react-native-xcode.sh\n\nbundle_path=\"$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/main.jsbundle\"\nbuild_dir=\"$SRCROOT/build\"\nif [ -e \"$bundle_path\" ]; then\ncp \"$bundle_path\" \"$build_dir\"\nelse\necho \"可能 ts 代码有错误，无法通过编译。\"\nexit 3\nfi\nfi\n";
 		};
 		7BAE019D6B7202C3C35ECAEE /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
