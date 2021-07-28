@@ -51,16 +51,14 @@
           fun(level, source, fileName, lineNumber, message);
 #endif
           if (source == RCTLogSourceNative) {
-              if (nil != [SentrySDK.currentHub getClient]) {
-                  SentryBreadcrumb *crumb =
-                      [[SentryBreadcrumb alloc] initWithLevel:[self sentryLevelForLogLevel:level]
-                                                     category:@"native"];
-                  if (fileName) {
-                        crumb.data = @{ @"filename": [fileName lastPathComponent] };
-                  }
-                  crumb.message = message;
-                  [SentrySDK addBreadcrumb:crumb];
+              SentryBreadcrumb *crumb =
+                  [[SentryBreadcrumb alloc] initWithLevel:[self sentryLevelForLogLevel:level]
+                                                 category:@"native"];
+              if (fileName) {
+                    crumb.data = @{ @"filename": [fileName lastPathComponent] };
               }
+              crumb.message = message;
+              [SentrySDK addBreadcrumb:crumb];
           }
         });
     });

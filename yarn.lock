@@ -1255,25 +1255,41 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@react-native-community/cli-debugger-ui@^5.0.1-alpha.1":
-  version "5.0.1-alpha.1"
-  resolved "https://registry.npm.taobao.org/@react-native-community/cli-debugger-ui/download/@react-native-community/cli-debugger-ui-5.0.1-alpha.1.tgz#09a856ccd2954cf16eea59b14dd26ae66720e4e6"
-  integrity sha1-CahWzNKVTPFu6lmxTdJq5mcg5OY=
+"@react-native-community/cli-debugger-ui@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.nlark.com/@react-native-community/cli-debugger-ui/download/@react-native-community/cli-debugger-ui-5.0.1.tgz?cache=0&sync_timestamp=1623145359166&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40react-native-community%2Fcli-debugger-ui%2Fdownload%2F%40react-native-community%2Fcli-debugger-ui-5.0.1.tgz#6b1f3367b8e5211e899983065ea2e72c1901d75f"
+  integrity sha1-ax8zZ7jlIR6JmYMGXqLnLBkB118=
   dependencies:
     serve-static "^1.13.1"
 
-"@react-native-community/cli-hermes@^5.0.1-alpha.1":
-  version "5.0.1-alpha.1"
-  resolved "https://registry.npm.taobao.org/@react-native-community/cli-hermes/download/@react-native-community/cli-hermes-5.0.1-alpha.1.tgz#3c3836d6e537baa7615618262f8da1686052667f"
-  integrity sha1-PDg21uU3uqdhVhgmL42haGBSZn8=
+"@react-native-community/cli-hermes@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.nlark.com/@react-native-community/cli-hermes/download/@react-native-community/cli-hermes-5.0.1.tgz?cache=0&sync_timestamp=1623145360857&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40react-native-community%2Fcli-hermes%2Fdownload%2F%40react-native-community%2Fcli-hermes-5.0.1.tgz#039d064bf2dcd5043beb7dcd6cdf5f5cdd51e7fc"
+  integrity sha1-A50GS/Lc1QQ7633NbN9fXN1R5/w=
   dependencies:
-    "@react-native-community/cli-platform-android" "^5.0.1-alpha.1"
-    "@react-native-community/cli-tools" "^5.0.1-alpha.1"
+    "@react-native-community/cli-platform-android" "^5.0.1"
+    "@react-native-community/cli-tools" "^5.0.1"
     chalk "^3.0.0"
     hermes-profile-transformer "^0.0.6"
     ip "^1.1.5"
 
-"@react-native-community/cli-platform-android@^5.0.1-alpha.0", "@react-native-community/cli-platform-android@^5.0.1-alpha.1":
+"@react-native-community/cli-platform-android@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.nlark.com/@react-native-community/cli-platform-android/download/@react-native-community/cli-platform-android-5.0.1.tgz?cache=0&sync_timestamp=1623145361683&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40react-native-community%2Fcli-platform-android%2Fdownload%2F%40react-native-community%2Fcli-platform-android-5.0.1.tgz#7f761e1818e5a099877ec59a1b739553fd6a6905"
+  integrity sha1-f3YeGBjloJmHfsWaG3OVU/1qaQU=
+  dependencies:
+    "@react-native-community/cli-tools" "^5.0.1"
+    chalk "^3.0.0"
+    execa "^1.0.0"
+    fs-extra "^8.1.0"
+    glob "^7.1.3"
+    jetifier "^1.6.2"
+    lodash "^4.17.15"
+    logkitty "^0.7.1"
+    slash "^3.0.0"
+    xmldoc "^1.1.2"
+
+"@react-native-community/cli-platform-android@^5.0.1-alpha.1":
   version "5.0.1-alpha.1"
   resolved "https://registry.npm.taobao.org/@react-native-community/cli-platform-android/download/@react-native-community/cli-platform-android-5.0.1-alpha.1.tgz#343ea5b469ac696268ecc1961ee44b91d1367cd1"
   integrity sha1-ND6ltGmsaWJo7MGWHuRLkdE2fNE=
@@ -1289,12 +1305,12 @@
     slash "^3.0.0"
     xmldoc "^1.1.2"
 
-"@react-native-community/cli-platform-ios@^5.0.1-alpha.0":
-  version "5.0.1-alpha.2"
-  resolved "https://registry.npm.taobao.org/@react-native-community/cli-platform-ios/download/@react-native-community/cli-platform-ios-5.0.1-alpha.2.tgz#58ab0641355cbe68a0d1737dde8c7d66eb0c0e39"
-  integrity sha1-WKsGQTVcvmig0XN93ox9ZusMDjk=
+"@react-native-community/cli-platform-ios@^5.0.1-alpha.1":
+  version "5.0.1"
+  resolved "https://registry.nlark.com/@react-native-community/cli-platform-ios/download/@react-native-community/cli-platform-ios-5.0.1.tgz?cache=0&sync_timestamp=1623145374510&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40react-native-community%2Fcli-platform-ios%2Fdownload%2F%40react-native-community%2Fcli-platform-ios-5.0.1.tgz#efa9c9b3bba0978d0a26d6442eefeffb5006a196"
+  integrity sha1-76nJs7ugl40KJtZELu/v+1AGoZY=
   dependencies:
-    "@react-native-community/cli-tools" "^5.0.1-alpha.1"
+    "@react-native-community/cli-tools" "^5.0.1"
     chalk "^3.0.0"
     glob "^7.1.3"
     js-yaml "^3.13.1"
@@ -1302,13 +1318,13 @@
     plist "^3.0.1"
     xcode "^2.0.0"
 
-"@react-native-community/cli-server-api@^5.0.1-alpha.2":
-  version "5.0.1-alpha.2"
-  resolved "https://registry.npm.taobao.org/@react-native-community/cli-server-api/download/@react-native-community/cli-server-api-5.0.1-alpha.2.tgz#a82557273bad99d188682169892aaa4b283ba149"
-  integrity sha1-qCVXJzutmdGIaCFpiSqqSyg7oUk=
+"@react-native-community/cli-server-api@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.nlark.com/@react-native-community/cli-server-api/download/@react-native-community/cli-server-api-5.0.1.tgz?cache=0&sync_timestamp=1623145360526&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40react-native-community%2Fcli-server-api%2Fdownload%2F%40react-native-community%2Fcli-server-api-5.0.1.tgz#3cf92dac766fab766afedf77df3fe4d5f51e4d2b"
+  integrity sha1-PPktrHZvq3Zq/t933z/k1fUeTSs=
   dependencies:
-    "@react-native-community/cli-debugger-ui" "^5.0.1-alpha.1"
-    "@react-native-community/cli-tools" "^5.0.1-alpha.1"
+    "@react-native-community/cli-debugger-ui" "^5.0.1"
+    "@react-native-community/cli-tools" "^5.0.1"
     compression "^1.7.1"
     connect "^3.6.5"
     errorhandler "^1.5.0"
@@ -1316,6 +1332,18 @@
     pretty-format "^26.6.2"
     serve-static "^1.13.1"
     ws "^1.1.0"
+
+"@react-native-community/cli-tools@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.nlark.com/@react-native-community/cli-tools/download/@react-native-community/cli-tools-5.0.1.tgz?cache=0&sync_timestamp=1623145359400&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40react-native-community%2Fcli-tools%2Fdownload%2F%40react-native-community%2Fcli-tools-5.0.1.tgz#9ee564dbe20448becd6bce9fbea1b59aa5797919"
+  integrity sha1-nuVk2+IESL7Na86fvqG1mqV5eRk=
+  dependencies:
+    chalk "^3.0.0"
+    lodash "^4.17.15"
+    mime "^2.4.1"
+    node-fetch "^2.6.0"
+    open "^6.2.0"
+    shell-quote "1.6.1"
 
 "@react-native-community/cli-tools@^5.0.1-alpha.1":
   version "5.0.1-alpha.1"
@@ -1329,23 +1357,23 @@
     open "^6.2.0"
     shell-quote "1.6.1"
 
-"@react-native-community/cli-types@^5.0.1-alpha.1":
-  version "5.0.1-alpha.1"
-  resolved "https://registry.npm.taobao.org/@react-native-community/cli-types/download/@react-native-community/cli-types-5.0.1-alpha.1.tgz#e8cf69966cf4e0fb5dda9bc708a52980ed1f8896"
-  integrity sha1-6M9plmz04Ptd2pvHCKUpgO0fiJY=
+"@react-native-community/cli-types@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.nlark.com/@react-native-community/cli-types/download/@react-native-community/cli-types-5.0.1.tgz?cache=0&sync_timestamp=1623145360124&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40react-native-community%2Fcli-types%2Fdownload%2F%40react-native-community%2Fcli-types-5.0.1.tgz#8c5db4011988b0836d27a5efe230cb34890915dc"
+  integrity sha1-jF20ARmIsINtJ6Xv4jDLNIkJFdw=
   dependencies:
     ora "^3.4.0"
 
-"@react-native-community/cli@^5.0.1-alpha.0":
-  version "5.0.1-alpha.2"
-  resolved "https://registry.npm.taobao.org/@react-native-community/cli/download/@react-native-community/cli-5.0.1-alpha.2.tgz#7e78378120fd4e264e4b577cbcf5e52b5beaa53b"
-  integrity sha1-fng3gSD9TiZOS1d8vPXlK1vqpTs=
+"@react-native-community/cli@^5.0.1-alpha.1":
+  version "5.0.1"
+  resolved "https://registry.nlark.com/@react-native-community/cli/download/@react-native-community/cli-5.0.1.tgz?cache=0&sync_timestamp=1623145362903&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40react-native-community%2Fcli%2Fdownload%2F%40react-native-community%2Fcli-5.0.1.tgz#1f7a66d813d5daf102e593f3c550650fa0cc8314"
+  integrity sha1-H3pm2BPV2vEC5ZPzxVBlD6DMgxQ=
   dependencies:
-    "@react-native-community/cli-debugger-ui" "^5.0.1-alpha.1"
-    "@react-native-community/cli-hermes" "^5.0.1-alpha.1"
-    "@react-native-community/cli-server-api" "^5.0.1-alpha.2"
-    "@react-native-community/cli-tools" "^5.0.1-alpha.1"
-    "@react-native-community/cli-types" "^5.0.1-alpha.1"
+    "@react-native-community/cli-debugger-ui" "^5.0.1"
+    "@react-native-community/cli-hermes" "^5.0.1"
+    "@react-native-community/cli-server-api" "^5.0.1"
+    "@react-native-community/cli-tools" "^5.0.1"
+    "@react-native-community/cli-types" "^5.0.1"
     appdirsjs "^1.2.4"
     chalk "^3.0.0"
     command-exists "^1.2.8"
@@ -1403,6 +1431,11 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/eslint-plugin/download/@react-native-community/eslint-plugin-1.1.0.tgz#e42b1bef12d2415411519fd528e64b593b1363dc"
   integrity sha1-5Csb7xLSQVQRUZ/VKOZLWTsTY9w=
 
+"@react-native-community/hooks@^2.6.0":
+  version "2.6.0"
+  resolved "https://registry.npm.taobao.org/@react-native-community/hooks/download/@react-native-community/hooks-2.6.0.tgz#dd5f19601eb3684c6bcdd3df3d0c04cf44c24cff"
+  integrity sha1-3V8ZYB6zaExrzdPfPQwEz0TCTP8=
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://registry.npm.taobao.org/@react-native/assets/download/@react-native/assets-1.0.0.tgz#c6f9bf63d274bafc8e970628de24986b30a55c8e"
@@ -1418,14 +1451,14 @@
   resolved "https://registry.npm.taobao.org/@react-native/polyfills/download/@react-native/polyfills-1.0.0.tgz#05bb0031533598f9458cf65a502b8df0eecae780"
   integrity sha1-BbsAMVM1mPlFjPZaUCuN8O7K54A=
 
-"@sentry/browser@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.nlark.com/@sentry/browser/download/@sentry/browser-6.2.1.tgz?cache=0&sync_timestamp=1620638394004&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40sentry%2Fbrowser%2Fdownload%2F%40sentry%2Fbrowser-6.2.1.tgz#f9f277e6f8cad0c7efd1a01726095d63a47a1c16"
-  integrity sha1-+fJ35vjK0Mfv0aAXJgldY6R6HBY=
+"@sentry/browser@6.7.1":
+  version "6.7.1"
+  resolved "https://registry.nlark.com/@sentry/browser/download/@sentry/browser-6.7.1.tgz#e01144a08984a486ecc91d7922cc457e9c9bd6b7"
+  integrity sha1-4BFEoImEpIbsyR15IsxFfpyb1rc=
   dependencies:
-    "@sentry/core" "6.2.1"
-    "@sentry/types" "6.2.1"
-    "@sentry/utils" "6.2.1"
+    "@sentry/core" "6.7.1"
+    "@sentry/types" "6.7.1"
+    "@sentry/utils" "6.7.1"
     tslib "^1.9.3"
 
 "@sentry/cli@^1.52.4":
@@ -1440,94 +1473,94 @@
     progress "^2.0.3"
     proxy-from-env "^1.1.0"
 
-"@sentry/core@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.nlark.com/@sentry/core/download/@sentry/core-6.2.1.tgz#8b177e9bf591e2e7ddcb04f0b1403de3f5aa8755"
-  integrity sha1-ixd+m/WR4ufdywTwsUA94/Wqh1U=
+"@sentry/core@6.7.1":
+  version "6.7.1"
+  resolved "https://registry.nlark.com/@sentry/core/download/@sentry/core-6.7.1.tgz#c3aaa6415d06bec65ac446b13b84f073805633e3"
+  integrity sha1-w6qmQV0GvsZaxEaxO4Twc4BWM+M=
   dependencies:
-    "@sentry/hub" "6.2.1"
-    "@sentry/minimal" "6.2.1"
-    "@sentry/types" "6.2.1"
-    "@sentry/utils" "6.2.1"
+    "@sentry/hub" "6.7.1"
+    "@sentry/minimal" "6.7.1"
+    "@sentry/types" "6.7.1"
+    "@sentry/utils" "6.7.1"
     tslib "^1.9.3"
 
-"@sentry/hub@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.nlark.com/@sentry/hub/download/@sentry/hub-6.2.1.tgz#35bc6bf841a93f4354b3a17592c938b3dba20b73"
-  integrity sha1-Nbxr+EGpP0NUs6F1ksk4s9uiC3M=
+"@sentry/hub@6.7.1":
+  version "6.7.1"
+  resolved "https://registry.nlark.com/@sentry/hub/download/@sentry/hub-6.7.1.tgz#d46d24deec67f0731a808ca16796e6765b371bc1"
+  integrity sha1-1G0k3uxn8HMagIyhZ5bmdls3G8E=
   dependencies:
-    "@sentry/types" "6.2.1"
-    "@sentry/utils" "6.2.1"
+    "@sentry/types" "6.7.1"
+    "@sentry/utils" "6.7.1"
     tslib "^1.9.3"
 
-"@sentry/integrations@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.nlark.com/@sentry/integrations/download/@sentry/integrations-6.2.1.tgz#caa9b49de29523698668d45827633be86b2268ff"
-  integrity sha1-yqm0neKVI2mGaNRYJ2M76GsiaP8=
+"@sentry/integrations@6.7.1":
+  version "6.7.1"
+  resolved "https://registry.nlark.com/@sentry/integrations/download/@sentry/integrations-6.7.1.tgz#9a6723e35589dfdb13c2cd22259184946f0b275e"
+  integrity sha1-mmcj41WJ39sTws0iJZGElG8LJ14=
   dependencies:
-    "@sentry/types" "6.2.1"
-    "@sentry/utils" "6.2.1"
+    "@sentry/types" "6.7.1"
+    "@sentry/utils" "6.7.1"
     localforage "^1.8.1"
     tslib "^1.9.3"
 
-"@sentry/minimal@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.nlark.com/@sentry/minimal/download/@sentry/minimal-6.2.1.tgz#8f01480e1b56bc7dd54adf925e5317f233e19384"
-  integrity sha1-jwFIDhtWvH3VSt+SXlMX8jPhk4Q=
+"@sentry/minimal@6.7.1":
+  version "6.7.1"
+  resolved "https://registry.nlark.com/@sentry/minimal/download/@sentry/minimal-6.7.1.tgz#babf85ee2f167e9dcf150d750d7a0b250c98449c"
+  integrity sha1-ur+F7i8Wfp3PFQ11DXoLJQyYRJw=
   dependencies:
-    "@sentry/hub" "6.2.1"
-    "@sentry/types" "6.2.1"
+    "@sentry/hub" "6.7.1"
+    "@sentry/types" "6.7.1"
     tslib "^1.9.3"
 
-"@sentry/react-native@^2.4.2":
-  version "2.4.2"
-  resolved "https://registry.nlark.com/@sentry/react-native/download/@sentry/react-native-2.4.2.tgz#82095e33a2dcd7720c2f71f35f02329ab7351547"
-  integrity sha1-ggleM6Lc13IML3HzXwIymrc1FUc=
+"@sentry/react-native@^2.6.0":
+  version "2.6.0"
+  resolved "https://registry.nlark.com/@sentry/react-native/download/@sentry/react-native-2.6.0.tgz#1674ffa8c447581cde5e3566841841aa2bbbc25b"
+  integrity sha1-FnT/qMRHWBzeXjVmhBhBqiu7wls=
   dependencies:
-    "@sentry/browser" "6.2.1"
-    "@sentry/core" "6.2.1"
-    "@sentry/hub" "6.2.1"
-    "@sentry/integrations" "6.2.1"
-    "@sentry/react" "6.2.1"
-    "@sentry/tracing" "6.2.1"
-    "@sentry/types" "6.2.1"
-    "@sentry/utils" "6.2.1"
+    "@sentry/browser" "6.7.1"
+    "@sentry/core" "6.7.1"
+    "@sentry/hub" "6.7.1"
+    "@sentry/integrations" "6.7.1"
+    "@sentry/react" "6.7.1"
+    "@sentry/tracing" "6.7.1"
+    "@sentry/types" "6.7.1"
+    "@sentry/utils" "6.7.1"
     "@sentry/wizard" "^1.2.2"
 
-"@sentry/react@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.nlark.com/@sentry/react/download/@sentry/react-6.2.1.tgz#26587f3f47e9699003b04ac558d8aa8a2b7416d7"
-  integrity sha1-Jlh/P0fpaZADsErFWNiqiit0Ftc=
+"@sentry/react@6.7.1":
+  version "6.7.1"
+  resolved "https://registry.nlark.com/@sentry/react/download/@sentry/react-6.7.1.tgz#7d69b9509ee1c08fd20f41b2bd3452f061524c83"
+  integrity sha1-fWm5UJ7hwI/SD0GyvTRS8GFSTIM=
   dependencies:
-    "@sentry/browser" "6.2.1"
-    "@sentry/minimal" "6.2.1"
-    "@sentry/types" "6.2.1"
-    "@sentry/utils" "6.2.1"
+    "@sentry/browser" "6.7.1"
+    "@sentry/minimal" "6.7.1"
+    "@sentry/types" "6.7.1"
+    "@sentry/utils" "6.7.1"
     hoist-non-react-statics "^3.3.2"
     tslib "^1.9.3"
 
-"@sentry/tracing@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.nlark.com/@sentry/tracing/download/@sentry/tracing-6.2.1.tgz#61c18c43c5390c348b35dafe73947ab379252d8f"
-  integrity sha1-YcGMQ8U5DDSLNdr+c5R6s3klLY8=
+"@sentry/tracing@6.7.1":
+  version "6.7.1"
+  resolved "https://registry.nlark.com/@sentry/tracing/download/@sentry/tracing-6.7.1.tgz#b11f0c17a6c5dc14ef44733e5436afb686683268"
+  integrity sha1-sR8MF6bF3BTvRHM+VDavtoZoMmg=
   dependencies:
-    "@sentry/hub" "6.2.1"
-    "@sentry/minimal" "6.2.1"
-    "@sentry/types" "6.2.1"
-    "@sentry/utils" "6.2.1"
+    "@sentry/hub" "6.7.1"
+    "@sentry/minimal" "6.7.1"
+    "@sentry/types" "6.7.1"
+    "@sentry/utils" "6.7.1"
     tslib "^1.9.3"
 
-"@sentry/types@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.nlark.com/@sentry/types/download/@sentry/types-6.2.1.tgz#28c946230b2023f72307b65606d32052ad9e5353"
-  integrity sha1-KMlGIwsgI/cjB7ZWBtMgUq2eU1M=
+"@sentry/types@6.7.1":
+  version "6.7.1"
+  resolved "https://registry.nlark.com/@sentry/types/download/@sentry/types-6.7.1.tgz?cache=0&sync_timestamp=1626939943783&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40sentry%2Ftypes%2Fdownload%2F%40sentry%2Ftypes-6.7.1.tgz#c8263e1886df5e815570c4668eb40a1cfaa1c88b"
+  integrity sha1-yCY+GIbfXoFVcMRmjrQKHPqhyIs=
 
-"@sentry/utils@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.nlark.com/@sentry/utils/download/@sentry/utils-6.2.1.tgz#bfcb12c20d44bf2aeb0073b1264703c11c179ebd"
-  integrity sha1-v8sSwg1EvyrrAHOxJkcDwRwXnr0=
+"@sentry/utils@6.7.1":
+  version "6.7.1"
+  resolved "https://registry.nlark.com/@sentry/utils/download/@sentry/utils-6.7.1.tgz#909184ad580f0f6375e1e4d4a6ffd33dfe64a4d1"
+  integrity sha1-kJGErVgPD2N14eTUpv/TPf5kpNE=
   dependencies:
-    "@sentry/types" "6.2.1"
+    "@sentry/types" "6.7.1"
     tslib "^1.9.3"
 
 "@sentry/wizard@^1.2.2":
@@ -3999,10 +4032,10 @@ husky@^7.0.0:
   resolved "https://registry.nlark.com/husky/download/husky-7.0.1.tgz?cache=0&sync_timestamp=1625567131340&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fhusky%2Fdownload%2Fhusky-7.0.1.tgz#579f4180b5da4520263e8713cc832942b48e1f1c"
   integrity sha1-V59BgLXaRSAmPocTzIMpQrSOHxw=
 
-hybrid-navigation@^1.4.2:
-  version "1.4.6"
-  resolved "https://registry.nlark.com/hybrid-navigation/download/hybrid-navigation-1.4.6.tgz#abb9e5bf697878b74f52b3b67c090fed19f27473"
-  integrity sha1-q7nlv2l4eLdPUrO2fAkP7RnydHM=
+hybrid-navigation@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.nlark.com/hybrid-navigation/download/hybrid-navigation-2.1.0.tgz#01e407a864773cf9f44c762b81614fcbf930d86a"
+  integrity sha1-AeQHqGR3PPn0THYrgWFPy/kw2Go=
   dependencies:
     path-to-regexp "^6.1.0"
 
@@ -6499,15 +6532,15 @@ react-native-testing-library@^6.0.0:
   dependencies:
     pretty-format "^26.0.1"
 
-react-native@^0.64.0:
-  version "0.64.1"
-  resolved "https://registry.nlark.com/react-native/download/react-native-0.64.1.tgz#cd38f5b47b085549686f34eb0c9dcd466f307635"
-  integrity sha1-zTj1tHsIVUlobzTrDJ3NRm8wdjU=
+react-native@^0.64.2:
+  version "0.64.2"
+  resolved "https://registry.nlark.com/react-native/download/react-native-0.64.2.tgz#233b6ed84ac4749c8bc2a2d6cf63577a1c437d18"
+  integrity sha1-Iztu2ErEdJyLwqLWz2NXehxDfRg=
   dependencies:
     "@jest/create-cache-key-function" "^26.5.0"
-    "@react-native-community/cli" "^5.0.1-alpha.0"
-    "@react-native-community/cli-platform-android" "^5.0.1-alpha.0"
-    "@react-native-community/cli-platform-ios" "^5.0.1-alpha.0"
+    "@react-native-community/cli" "^5.0.1-alpha.1"
+    "@react-native-community/cli-platform-android" "^5.0.1-alpha.1"
+    "@react-native-community/cli-platform-ios" "^5.0.1-alpha.1"
     "@react-native/assets" "1.0.0"
     "@react-native/normalize-color" "1.0.0"
     "@react-native/polyfills" "1.0.0"

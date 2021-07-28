@@ -1,36 +1,33 @@
 import { useCallback, useEffect } from 'react'
-import { AppState, AppStateStatus } from 'react-native'
+import { useAppState } from '@react-native-community/hooks'
 import CodePush from 'react-native-code-push'
 import { useVisibleEffect } from 'hybrid-navigation'
+import { Log } from './log'
 
-export function useCodePush(sceneId: string) {
-  useEffect(() => {
-    async function syncCode(status: AppStateStatus) {
-      try {
-        if (status === 'active') {
-          await CodePush.sync({
-            installMode: CodePush.InstallMode.IMMEDIATE,
-          })
-        }
-      } catch (e) {
-        // ignore
+export function useCodePush() {
+  useVisibleEffect(
+    useCallback(() => {
+      CodePush.allowRestart()
+      return () => {
+        CodePush.disallowRestart()
       }
+    }, []),
+  )
+
+  const appStatus = useAppState()
+
+  useEffect(() => {
+    if (appStatus !== 'active') {
+      return
     }
+    Log.i('[CodePush] App 由后台进入前台')
 
-    syncCode(AppState.currentState)
+    sync()
+  }, [appStatus])
+}
 
-    AppState.addEventListener('change', syncCode)
-    return () => {
-      AppState.removeEventListener('change', syncCode)
-    }
-  }, [])
-
-  const visibleCallback = useCallback(() => {
-    CodePush.allowRestart()
-    return () => {
-      CodePush.disallowRestart()
-    }
-  }, [])
-
-  useVisibleEffect(sceneId, visibleCallback)
+function sync() {
+  CodePush.sync({
+    installMode: CodePush.InstallMode.IMMEDIATE,
+  }).catch(e => Log.e(e))
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import * as Sentry from '@sentry/react-native'
-import { Navigator, withNavigationItem, InjectedProps } from 'hybrid-navigation'
+import { Navigator, withNavigationItem } from 'hybrid-navigation'
 import { ENVIRONMENT, VERSION_NAME, VERSION_CODE, COMMIT_SHORT_SHA } from './AppInfo'
 import { useCodePush } from './useCodePush'
 import { Log } from './log'
@@ -15,8 +15,8 @@ export default withNavigationItem({
   },
 })(App)
 
-function App({ sceneId }: InjectedProps) {
-  useCodePush(sceneId)
+function App() {
+  useCodePush()
   const version = `${VERSION_NAME}-${VERSION_CODE}`
 
   function sentryNativeCrash() {
