@@ -14,6 +14,9 @@ process.env.CI = process.env.CI || 'true'
 
 const ENABLE_HERMES = Boolean(process.env.ENABLE_HERMES || 'true')
 
+const BUILD_TYPE = process.env.BUILD_TYPE || 'release'
+process.env.BUILD_TYPE = BUILD_TYPE
+
 // 开发环境 production qa dev
 // 不能通过 CI 直接注入 NODE_ENV ，否则会产生很奇怪的 BUG
 const ENVIRONMENT = process.env.ENVIRONMENT || 'qa'
@@ -100,6 +103,7 @@ module.exports = {
   APPLICATION_ID,
   VERSION_NAME,
   VERSION_CODE,
+  BUILD_TYPE,
   ARTIFACTS_DIR,
   BUILD_DIR,
   APK_SOURCE_DIR,

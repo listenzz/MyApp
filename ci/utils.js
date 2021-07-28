@@ -69,6 +69,7 @@ function sh(cmd, env = process.env, cwd) {
   if (child.status !== 0) {
     process.exit(child.status || undefined)
   }
+  return child.stdout && child.stdout.toString('utf-8')
 }
 
 /**
