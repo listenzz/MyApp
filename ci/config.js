@@ -47,12 +47,6 @@ const BUILD_DIR =
 // 制品目录
 const ARTIFACTS_DIR = PLATFORM === 'ios' ? BUILD_DIR : path.resolve(BUILD_DIR, 'artifacts')
 
-// 是否需要打渠道包
-const NEED_TO_BUILD_CHANNELS = !!process.env.BUILD_CHANNELS
-// 渠道包原始目录
-const CHANNELS_SOURCE_DIR = path.join(BUILD_DIR, 'outputs/channels')
-const CHANNELS_FILENAME = process.env.CHANNELS_FILENAME || 'channels.7z'
-
 // Android APK 原始目录
 const APK_SOURCE_DIR = path.resolve(BUILD_DIR, `outputs/apk/${ENVIRONMENT}/release/`)
 
@@ -108,9 +102,6 @@ module.exports = {
   VERSION_CODE,
   ARTIFACTS_DIR,
   BUILD_DIR,
-  NEED_TO_BUILD_CHANNELS,
-  CHANNELS_FILENAME,
-  CHANNELS_SOURCE_DIR,
   APK_SOURCE_DIR,
   JS_BUNDLE_DIR,
   JS_SOURCE_MAP_DIR,

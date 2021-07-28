@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"7zip-bin@^5.0.3":
-  version "5.1.1"
-  resolved "https://registry.npm.taobao.org/7zip-bin/download/7zip-bin-5.1.1.tgz#9274ec7460652f9c632c59addf24efb1684ef876"
-  integrity sha1-knTsdGBlL5xjLFmt3yTvsWhO+HY=
-
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.nlark.com/@babel/code-frame/download/@babel/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
