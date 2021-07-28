@@ -80,7 +80,7 @@ const SENTRY_DEBUG_META_SOURCE_PATH = path.resolve(
 
 const MAPPING_FILENAME = 'mapping.txt'
 // android mapping.txt 原始路径
-const MAPPING_FILE_SOURCE_PATH = path.resolve(BUILD_DIR, `outputs/mapping/${ENVIRONMENT}/release/${MAPPING_FILENAME}`)
+const MAPPING_FILE_SOURCE_PATH = path.resolve(BUILD_DIR, `outputs/mapping/${ENVIRONMENT}Release/${MAPPING_FILENAME}`)
 
 // package.json 所在目录
 const REACT_ROOT = path.resolve(__dirname, '../')

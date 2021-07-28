@@ -10,20 +10,18 @@ buildscript {
     }
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath('com.android.tools.build:gradle:3.5.4')
-        classpath 'com.leon.channel:plugin:2.0.3'
-        classpath 'io.sentry:sentry-android-gradle-plugin:1.7.36'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath('com.android.tools.build:gradle:4.2.2')
+        classpath "io.sentry:sentry-android-gradle-plugin:2.1.0"
     }
 }
 
 allprojects {
     repositories {
         mavenLocal()
+        mavenCentral()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url("$rootDir/../node_modules/react-native/android")
@@ -32,7 +30,6 @@ allprojects {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
-
         google()
         jcenter()
         maven { url 'https://www.jitpack.io' }

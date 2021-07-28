@@ -1,5 +1,4 @@
 apply plugin: "com.android.application"
-apply plugin: 'channel'
 apply plugin: 'io.sentry.android.gradle'
 
 project.ext.sentryCli = [
@@ -17,16 +16,9 @@ project.ext.react = [
 apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
-rebuildChannel {
-    def flavor = System.getenv("ENVIRONMENT") ?: 'production'
-    def baseName = "outputs/apk/${flavor}/release/app-${flavor}-arm64-v8a-release.apk"
-    baseReleaseApk = new File(project.buildDir, baseName)
-    releaseOutputDir = new File(project.buildDir, "outputs/channels")
-}
-
 sentry {
-    uploadNativeSymbols false
-    autoUpload false
+    uploadNativeSymbols=false
+    autoUpload=false
 }
 
 def jscFlavor = 'org.webkit:android-jsc:+'
@@ -92,7 +84,7 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
-	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
@@ -101,9 +93,6 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-
-    implementation 'com.leon.channel:helper:2.0.1'
-
 }
 
 // Run this once to be able to run the application with BUCK
@@ -113,4 +102,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); 
+applyNativeModulesAppBuildGradle(project)
