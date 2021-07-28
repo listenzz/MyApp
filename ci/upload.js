@@ -29,8 +29,14 @@ if (PLATFORM === 'ios') {
   if (ENVIRONMENT === 'production') {
     sh('bundle exec fastlane upload_ipa_to_testflight', { cwd: workdir })
   } else {
-    sh('bundle exec fastlane upload_ipa_to_bugly', { cwd: workdir })
-    slack(`ios-${APP_NAME}-${ENVIRONMENT} 有新的版本了，${BUGLY_DIST_URL}`)
+    const result = sh('bundle exec fastlane upload_ipa_to_bugly', { cwd: workdir, stdio: 'pipe', encoding: 'utf8' })
+    console.log(result)
+    if (result.includes('"rtcode":0')) {
+      slack(`ios-${APP_NAME}-${ENVIRONMENT} 有新的版本了，${BUGLY_DIST_URL}`)
+    } else {
+      console.log('%c上传到 bugly 失败', 'color:"#FF4444"; font-size:24px')
+      process.exit(1)
+    }
   }
   process.exit(0)
 }
