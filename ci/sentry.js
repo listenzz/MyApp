@@ -28,7 +28,9 @@ if (PATCH_ONLY) {
       --dist ${VERSION_CODE} \
       --deployment ${deployment} \
       ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
-    { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
+    {
+      env: { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
+    },
   )
   process.exit(0)
 }
@@ -38,14 +40,16 @@ if (PLATFORM === 'ios') {
   const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
 
   if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
-    sh(`gem install bundler && bundle install`, undefined, workdir)
+    sh(`gem install bundler && bundle install`, { cwd: workdir })
   }
 
-  sh(
-    'bundle exec fastlane upload_debug_symbol_to_sentry',
-    { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
-    workdir,
-  )
+  sh('bundle exec fastlane upload_debug_symbol_to_sentry', {
+    env: {
+      ...process.env,
+      SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH,
+    },
+    cwd: workdir,
+  })
   process.exit(0)
 }
 
@@ -57,7 +61,9 @@ sh(
     --sourcemap ${ARTIFACTS_DIR}/index.android.bundle.map \
     --release ${release} \
     --dist ${VERSION_CODE}`,
-  { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
+  {
+    env: { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
+  },
 )
 
 // 上传 java 符号表
@@ -65,5 +71,7 @@ sh(
   `sentry-cli --log-level INFO upload-proguard \
     --android-manifest ${ARTIFACTS_DIR}/${MANIFEST_FILENAME} \
     --write-properties ${ARTIFACTS_DIR}/${SENTRY_DEBUG_META_FILENAME} ${ARTIFACTS_DIR}/${MAPPING_FILENAME}`,
-  { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
+  {
+    env: { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
+  },
 )

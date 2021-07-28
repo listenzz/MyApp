@@ -56,20 +56,19 @@ function capitalize(str) {
 /**
  *
  * @param {string} cmd
- * @param {{}} [env]
- * @param {string} [cwd]
+ * @param {{}} [options]
  */
-function sh(cmd, env = process.env, cwd) {
-  const child = spawnSync(cmd, {
+function sh(cmd, options = {}) {
+  const defaultOptions = {
     stdio: 'inherit',
     shell: true,
-    env,
-    cwd,
-  })
+  }
+
+  const child = spawnSync(cmd, { ...defaultOptions, ...options })
   if (child.status !== 0) {
     process.exit(child.status || undefined)
   }
-  return child.stdout && child.stdout.toString('utf-8')
+  return child.stdout
 }
 
 /**

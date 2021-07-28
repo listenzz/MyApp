@@ -87,16 +87,16 @@ if (PATCH_ONLY) {
 if (PLATFORM === 'ios') {
   const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
   if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
-    sh(`gem install bundler && bundle install`, undefined, workdir)
+    sh(`gem install bundler && bundle install`, { cwd: workdir })
   }
-  sh('bundle exec fastlane build', undefined, workdir)
+  sh('bundle exec fastlane build', { cwd: workdir })
   process.exit(0)
 }
 
 // ------------------------------- android -------------------------------------
 // 打基础包
 const workdir = process.env.ANDROID_DIR || path.resolve(__dirname, '../android')
-sh(`./gradlew assemble${ENVIRONMENT_CAPITALIZE}Release`, undefined, workdir)
+sh(`./gradlew assemble${ENVIRONMENT_CAPITALIZE}Release`, { cwd: workdir })
 
 // 整理制品
 // Android 构建会产生许多中间物，它们都保存在 build 文件夹中，

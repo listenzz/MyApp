@@ -23,13 +23,13 @@ if (PLATFORM === 'ios') {
   // -------------------------------ios-------------------------------------
   const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
   if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
-    sh(`gem install bundler && bundle install`, undefined, workdir)
+    sh(`gem install bundler && bundle install`, { cwd: workdir })
   }
 
   if (ENVIRONMENT === 'production') {
-    sh('bundle exec fastlane upload_ipa_to_testflight', undefined, workdir)
+    sh('bundle exec fastlane upload_ipa_to_testflight', { cwd: workdir })
   } else {
-    sh('bundle exec fastlane upload_ipa_to_bugly', undefined, workdir)
+    sh('bundle exec fastlane upload_ipa_to_bugly', { cwd: workdir })
     slack(`ios-${APP_NAME}-${ENVIRONMENT} 有新的版本了，${BUGLY_DIST_URL}`)
   }
   process.exit(0)
@@ -59,15 +59,16 @@ function uploadApk(abi) {
 
   console.info(`准备上传 ${filename}`)
 
-  const result = sh(`curl -F file=@${apk} -F filename=${filename} ${FILE_SERVER}/${dest}`)
+  const result = sh(`curl -F file=@${apk} -F filename=${filename} ${FILE_SERVER}/${dest}`, {
+    stdio: 'pipe',
+    encoding: 'utf8',
+  })
 
   try {
     console.info(`上传结果 ${result}`)
     const res = JSON.parse(result)
     if (res && res.success) {
-      console.info(`上传 ${filename} 成功`)
     } else {
-      console.info(`上传 ${filename} 失败`)
       process.exit(1)
     }
   } catch (e) {
