@@ -45,7 +45,9 @@
 - (void)hookLog {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+#if DEBUG
         RCTLogFunction fun = RCTGetLogFunction();
+#endif
         RCTSetLogFunction(^(RCTLogLevel level, RCTLogSource source, NSString *fileName, NSNumber *lineNumber, NSString *message) {
 #if DEBUG
           fun(level, source, fileName, lineNumber, message);

@@ -43,40 +43,52 @@ lane :build do |options|
 
     git_url = options[:git_url] || ENV['MATCH_GIT_URL']
     username = options[:apple_id] || ENV['FASTLANE_USER']
+    team_id = options[:team_id] || ENV["FASTLANE_TEAM_ID"]
 
+    # 下载 provisioning profile
     match(
         type: 'development', 
-        readonly: true, 
-        app_identifier: app_identifier, 
-        git_url: git_url, 
-        username: username
-    )
-    match(
-        type: type, 
+        team_id: team_id,
         readonly: true, 
         app_identifier: app_identifier, 
         git_url: git_url, 
         username: username
     )
 
-    profile_name = ENV["sigh_#{app_identifier}#{type}_profile-name"];
+    match(
+        type: type, 
+        team_id: team_id,
+        readonly: true, 
+        app_identifier: app_identifier, 
+        git_url: git_url, 
+        username: username
+    )
+
+    profile_name = ENV["sigh_#{app_identifier}#{type}_profile-name"] || "match Development #{app_identifier}";
     output_name = "#{environment}-#{version_name}-#{build_number}"
     # 要求项目 scheme 的命名规则是 app 名称 + 空格 + 环境
     scheme = options[:scheme] || "#{app_name} #{environment}"
 
     sh(%(cd #{ENV['PWD']} && rm -rf ./build && mkdir build))
+
+    # 配置签名
+    update_code_signing_settings(
+        team_id: team_id,
+        use_automatic_signing: false,
+        path: xcodeproj,
+        code_sign_identity: export_method == 'appstore' ? "iPhone Distribution" : "iPhone Developer",
+        bundle_identifier: app_identifier,
+        profile_name: profile_name,
+    )
+
+    # 打包
     gym(
         export_method: export_method,
-        export_options: {
-            method: export_method,
-            provisioningProfiles: { 
-                app_identifier => profile_name,
-            }
-        },
         include_symbols: true,
         include_bitcode: false,
         xcargs: 'DEBUG_INFORMATION_FORMAT="dwarf-with-dsym"',
         scheme: scheme,
+        workspace: "#{app_name}.xcworkspace",
         output_name: output_name,
         clean: true,
         output_directory: "./build"
