@@ -8,13 +8,7 @@
     "start": "react-native start --reset-cache",
     "test": "jest",
     "tsc": "tsc --noEmit",
-    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
-    "prepare": "husky install"
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx,jsx}": [
-      "eslint . --fix"
-    ]
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@react-native-community/hooks": "^2.6.0",
@@ -35,9 +29,7 @@
     "@types/react-test-renderer": "17.0.1",
     "babel-jest": "^27.0.6",
     "eslint": "^7.31.0",
-    "husky": "^7.0.0",
     "jest": "^27.0.6",
-    "lint-staged": "^11.1.1",
     "metro-react-native-babel-preset": "^0.66.2",
     "react-native-testing-library": "^6.0.0",
     "react-test-renderer": "17.0.1",
