@@ -30,6 +30,27 @@ function copy(src, dist) {
   })
 }
 
+function uploadFile(file, filename, dest) {
+  console.info(`准备上传 ${filename}`)
+
+  const result = sh(`curl -F file=@${file} -F filename=${filename} ${dest}`, {
+    stdio: 'pipe',
+    encoding: 'utf8',
+  })
+
+  try {
+    console.info(`上传结果 ${result}`)
+    const res = JSON.parse(result)
+    if (res && res.success) {
+    } else {
+      process.exit(1)
+    }
+  } catch (e) {
+    console.warn(e.message)
+    process.exit(1)
+  }
+}
+
 function gitTag() {
   let tag = 'x.x.x'
   try {
@@ -85,6 +106,7 @@ function slack(message) {
 
 module.exports = {
   copy,
+  uploadFile,
   gitTag,
   capitalize,
   sh,

@@ -99,18 +99,6 @@ lane :test do
     puts last_git_tag
 end
 
-lane :upload_ipa_to_bugly do |options|
-    file_name, basename = app_info
-    bugly_exp_id = options[:bugly_exp_id] || ENV['BUGLY_EXP_ID']
-    bugly_app_key = options[:bugly_app_key] || ENV['BUGLY_APP_KEY']
-    command = %(cd #{ENV['PWD']} && \
-        curl --insecure -X "PUT" \
-        -F "file=@#{file_name}" \
-        -F "exp_id=#{bugly_exp_id}" \
-        https://api.bugly.qq.com/beta/apiv1/exp?app_key=#{bugly_app_key})
-    sh(command)
-end
-
 lane :upload_ipa_to_testflight do |options|
     file_name, basename, version_name, build_number, dir_name = app_info
     username = options[:apple_id] || ENV['FASTLANE_USER']

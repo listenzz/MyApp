@@ -36,7 +36,6 @@ deploy:ios:upload:
     - build:ios
   script:
     - node ./ci/upload.js ios
-  allow_failure: true
   only:
     - schedules
   tags:
@@ -51,7 +50,6 @@ deploy:ios:sentry:
     - build:ios
   script:
     - node ./ci/sentry.js ios
-  allow_failure: true
   only:
     - schedules
   tags:
@@ -83,7 +81,6 @@ deploy:android:upload:
     - build:android
   script:
     - node ./ci/upload.js android
-  allow_failure: true
   only:
     - schedules
   tags:
@@ -98,7 +95,6 @@ deploy:android:sentry:
     - build:android
   script:
     - node ./ci/sentry.js android
-  allow_failure: true
   only:
     - schedules
   tags:

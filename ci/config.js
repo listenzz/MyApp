@@ -1,9 +1,6 @@
 const path = require('path')
 const { capitalize, gitTag } = require('./utils')
 
-// bugly 内测分发
-const BUGLY_DIST_URL = process.env.BUGLY_DIST_URL || 'https://beta.bugly.qq.com/xxxx'
-
 // 文件服务器
 const FILE_SERVER = process.env.FILE_SERVER || 'http://192.168.1.134:8000'
 // 平台 android 或 ios
@@ -92,7 +89,6 @@ const PATCH_ONLY = !!process.env.PATCH_ONLY
 const MANDATORY = !!process.env.MANDATORY
 
 module.exports = {
-  BUGLY_DIST_URL,
   FILE_SERVER,
   PLATFORM,
   ENVIRONMENT,
