@@ -1,4 +1,4 @@
-const { sh, slack } = require('../utils')
+const { sh, slack } = require('../../utils')
 
 const {
   ENVIRONMENT,
@@ -10,7 +10,7 @@ const {
   APP_TARGET_CODEPUSH,
   REACT_ROOT,
   MANDATORY,
-} = require('../config')
+} = require('../../config')
 
 const deployment = ENVIRONMENT === 'production' ? 'Production' : 'Staging'
 console.log('--------------------------------------------------------------------------')

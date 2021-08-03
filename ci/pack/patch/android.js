@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { sh, slack } = require('../utils')
+const { sh, slack } = require('../../utils')
 
 const {
   ENVIRONMENT,
@@ -14,10 +14,10 @@ const {
   REACT_ROOT,
   MANDATORY,
   ENABLE_HERMES,
-} = require('../config')
+} = require('../../config')
 
 if (ENABLE_HERMES) {
-  const gradleFile = path.resolve(__dirname, `../../android/${APP_MODULE}/build.gradle`)
+  const gradleFile = path.join(REACT_ROOT, `android/${APP_MODULE}/build.gradle`)
   if (!fs.existsSync(gradleFile)) {
     console.error(`找不到${gradleFile}文件，疑似路径错误，请修复`)
     process.exit(0)

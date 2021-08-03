@@ -1,6 +1,8 @@
-const { PLATFORM } = require('../config')
+const { PLATFORM, PATCH_ONLY } = require('../config')
 
-if (PLATFORM === 'ios') {
+if (PATCH_ONLY) {
+  require('./patch')
+} else if (PLATFORM === 'ios') {
   require('./ios')
 } else {
   require('./android')

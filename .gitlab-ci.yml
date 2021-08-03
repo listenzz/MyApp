@@ -21,7 +21,7 @@ build:ios:
   script:
     - yarn install
     - node ./ci/sha.js
-    - node ./ci/build.js ios
+    - node ./ci/pack ios
   tags:
     - ios
   except:
@@ -35,7 +35,7 @@ deploy:ios:upload:
   dependencies:
     - build:ios
   script:
-    - node ./ci/upload.js ios
+    - node ./ci/upload ios
   only:
     - schedules
   tags:
@@ -49,7 +49,7 @@ deploy:ios:sentry:
   dependencies:
     - build:ios
   script:
-    - node ./ci/sentry.js ios
+    - node ./ci/sentry ios
   only:
     - schedules
   tags:
@@ -63,7 +63,7 @@ build:android:
   script:
     - yarn install
     - node ./ci/sha.js
-    - node ./ci/build.js android
+    - node ./ci/pack android
   artifacts:
     paths:
       - android/${APP_MODULE}/build/artifacts/
@@ -80,7 +80,7 @@ deploy:android:upload:
   dependencies:
     - build:android
   script:
-    - node ./ci/upload.js android
+    - node ./ci/upload android
   only:
     - schedules
   tags:
@@ -94,7 +94,7 @@ deploy:android:sentry:
   dependencies:
     - build:android
   script:
-    - node ./ci/sentry.js android
+    - node ./ci/sentry android
   only:
     - schedules
   tags:

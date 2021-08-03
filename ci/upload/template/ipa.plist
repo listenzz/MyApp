@@ -13,22 +13,6 @@
                         <key>url</key>
                         <string>{IpaUrl}</string>
                     </dict>
-                    <dict>
-                        <key>kind</key>
-                        <string>display-image</string>
-                        <key>needs-shine</key>
-                        <false/>
-                        <key>url</key>
-                        <string>{IconUrl}</string>
-                    </dict>
-                    <dict>
-                        <key>kind</key>
-                        <string>full-size-image</string>
-                        <key>needs-shine</key>
-                        <false/>
-                        <key>url</key>
-                        <string>{IconUrl}</string>
-                    </dict>
                 </array>
                 <key>metadata</key>
                 <dict>

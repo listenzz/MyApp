@@ -1,7 +1,9 @@
 const path = require('path')
 const { sh } = require('../utils')
+const { REACT_ROOT } = require('../config')
 
-const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../../ios')
+const workdir = process.env.IOS_DIR || path.join(REACT_ROOT, 'ios')
+
 if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
   sh(`gem install bundler && bundle install`, { cwd: workdir })
 }

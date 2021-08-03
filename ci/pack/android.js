@@ -17,10 +17,11 @@ const {
   MAPPING_FILE_SOURCE_PATH,
   MAPPING_FILENAME,
   ENABLE_HERMES,
+  REACT_ROOT,
 } = require('../config')
 
 if (ENABLE_HERMES) {
-  const gradleFile = path.resolve(__dirname, `../../android/${APP_MODULE}/build.gradle`)
+  const gradleFile = path.join(REACT_ROOT, `android/${APP_MODULE}/build.gradle`)
   if (!fs.existsSync(gradleFile)) {
     console.error(`找不到${gradleFile}文件，疑似路径错误，请修复`)
     process.exit(0)
@@ -30,9 +31,9 @@ if (ENABLE_HERMES) {
   fs.writeFileSync(gradleFile, gradle)
 }
 
-const workdir = process.env.ANDROID_DIR || path.resolve(__dirname, '../../android')
+const workdir = process.env.ANDROID_DIR || path.join(REACT_ROOT, 'android')
 
-// 打基础包
+// 打包
 sh(`./gradlew assemble${ENVIRONMENT_CAPITALIZE}Release`, { cwd: workdir })
 
 // 整理制品

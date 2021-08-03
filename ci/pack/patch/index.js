@@ -1,4 +1,4 @@
-const { PLATFORM } = require('../config')
+const { PLATFORM } = require('../../config')
 
 if (PLATFORM === 'ios') {
   require('./ios')

@@ -9,10 +9,11 @@ const {
   FILE_SERVER,
   ARTIFACTS_DIR,
   APPLICATION_ID,
+  REACT_ROOT,
 } = require('../config')
 
 if (ENVIRONMENT === 'production') {
-  const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../../ios')
+  const workdir = process.env.IOS_DIR || path.join(REACT_ROOT, 'ios')
   if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
     sh(`gem install bundler && bundle install`, { cwd: workdir })
   }
@@ -28,9 +29,8 @@ if (ENVIRONMENT === 'production') {
   const dest = `ios/${APP_NAME}/${ENVIRONMENT}/${VERSION_NAME}`
 
   const plist = fs
-    .readFileSync(path.resolve(__dirname, '../template/ipa.plist'), 'utf8')
+    .readFileSync(path.resolve(__dirname, './template/ipa.plist'), 'utf8')
     .replace('{IpaUrl}', `${FILE_SERVER}/${dest}/${filename}.ipa`)
-    .replace(/{IconUrl}/g, `${FILE_SERVER}/${APP_NAME}/${ENVIRONMENT}/icon.png`)
     .replace('{BundleIdentifier}', APPLICATION_ID)
     .replace('{BundleVersion}', VERSION_NAME)
     .replace('{AppName}', APP_NAME)
@@ -38,7 +38,7 @@ if (ENVIRONMENT === 'production') {
   fs.writeFileSync(`${file}.plist`, plist)
 
   const html = fs
-    .readFileSync(path.resolve(__dirname, '../template/ipa.html'), 'utf8')
+    .readFileSync(path.resolve(__dirname, './template/ipa.html'), 'utf8')
     .replace('{AppName}', APP_NAME)
     .replace('{PListUrl}', `${FILE_SERVER}/${dest}/${filename}.plist`)
     .replace('{AppVersion}', `${APP_NAME}-${filename}`)
