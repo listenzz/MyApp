@@ -49,6 +49,7 @@ copy(APK_SOURCE_DIR, ARTIFACTS_DIR)
 // jsBundleFile
 copy(JS_BUNDLE_DIR, ARTIFACTS_DIR)
 
+// ---------------以下 for Sentry------------------
 // jsSourceMapFile
 copy(JS_SOURCE_MAP_DIR, ARTIFACTS_DIR)
 

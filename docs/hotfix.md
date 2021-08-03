@@ -305,69 +305,52 @@ const PATCH_ONLY = !!process.env.PATCH_ONLY
 const MANDATORY = !!process.env.MANDATORY
 ```
 
-在 ci/build.js 中，添加如下代码
+添加 ci/pack/patch/android.js 文件，关键代码如下
 
 ```js
-// ci/build.js
-// ------------------------------- patch -------------------------------------
-if (PATCH_ONLY) {
-  const deployment = ENVIRONMENT === 'production' ? 'Production' : 'Staging'
-  console.log('--------------------------------------------------------------------------')
-  console.log(`准备发布补丁: ${PLATFORM} ${ENVIRONMENT} ${APP_TARGET_CODEPUSH}`)
-  console.log('--------------------------------------------------------------------------')
-
-  // 发布补丁
-  sh(
-    `appcenter codepush release-react \
-      -a ${APP_NAME_CODEPUSH} \
-      -t "${APP_TARGET_CODEPUSH}" \
-      -o ${ARTIFACTS_DIR} \
-      -d ${deployment} \
-      -m ${MANDATORY} \
-      --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
-  )
-  // 查看补丁部署情况
-  sh(`appcenter codepush deployment list -a ${APP_NAME_CODEPUSH}`)
-
-  // 发布 slack 通知
-  slack(
-    `${PLATFORM}-${APPLICATION_ID}-${ENVIRONMENT}-${VERSION_NAME} 补丁包发布成功！本补丁对 ${APP_TARGET_CODEPUSH} 生效`,
-  )
-  process.exit(0)
-}
+// 发布补丁
+// appcenter-cli 根据 build.gradle 文件中是否含有字符串 “enableHermes: true” 来判断是否开启 hermes
+sh(
+  `appcenter codepush release-react \
+    -a ${APP_NAME_CODEPUSH} \
+    -t "${APP_TARGET_CODEPUSH}" \
+    -o ${ARTIFACTS_DIR} \
+    -d ${deployment} \
+    -m ${MANDATORY} \
+    --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
+)
 ```
 
-在 ci/sentry.js 中，添加如下代码
+添加 ci/pack/patch/ios.js 文件，关键代码如下
 
 ```js
-// ci/sentry.js
-const release = `${APPLICATION_ID}@${VERSION_NAME}+${VERSION_CODE}`
-
-if (PATCH_ONLY) {
-  const deployment = ENVIRONMENT === 'production' ? 'Production' : 'Staging'
-
-  // 上传 sourcemap 到 sentry
-  sh(
-    `sentry-cli react-native appcenter \
-      --log-level INFO \
-      --release-name ${release} \
-      --dist ${VERSION_CODE} \
-      --deployment ${deployment} \
-      ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
-    { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
-  )
-  process.exit(0)
-}
+// 发布补丁
+sh(
+  `appcenter codepush release-react \
+    -a ${APP_NAME_CODEPUSH} \
+    -t "${APP_TARGET_CODEPUSH}" \
+    -o ${ARTIFACTS_DIR} \
+    -d ${deployment} \
+    -m ${MANDATORY} \
+    --extra-bundler-option="--sourcemap-sources-root=${REACT_ROOT}"`,
+)
 ```
 
-在 upload.js 中，添加如下代码
+添加 ci/sentry/patch.js 文件，关键代码如下
 
 ```js
-// ci/upload.js
-if (PATCH_ONLY) {
-  console.log('TODO:// 上传补丁包到文件服务器')
-  process.exit(0)
-}
+// 上传 sourcemap 到 sentry
+sh(
+  `sentry-cli react-native appcenter \
+    --log-level INFO \
+    --release-name ${release} \
+    --dist ${VERSION_CODE} \
+    --deployment ${deployment} \
+    ${APP_NAME_CODEPUSH} ${PLATFORM} ${ARTIFACTS_DIR}/CodePush`,
+  {
+    env: { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
+  },
+)
 ```
 
 现在，就差一个按钮了

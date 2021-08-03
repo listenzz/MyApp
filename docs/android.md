@@ -4,8 +4,6 @@
 
 - 生成签名密钥
 - 混淆配置
-- 多渠道打包
-- 自建文件服务器
 
 ## 生成签名密钥
 
@@ -84,8 +82,8 @@ android {
     abi {
       reset()
       enable true
-      universalApk false  // If true, also generate a universal APK
-      include "arm64-v8a"
+      universalApk true  // If true, also generate a universal APK
+      include "arm64-v8a", "armeabi-v7a", "x86_64"
     }
   }
 }
@@ -153,8 +151,8 @@ android {
         abi {
             reset()
             enable true
-            universalApk false  // If true, also generate a universal APK
-            include "arm64-v8a"
+            universalApk true  // If true, also generate a universal APK
+            include "arm64-v8a", "armeabi-v7a", "x86_64"
         }
     }
 
@@ -276,102 +274,4 @@ cd android
 
 构建成功后，可以在 anroid/app/build/outputs/apk/production/release 下，看到两个 APK 包，一个可以安装在真机上，一个可以安装在模拟器上。
 
-## 多渠道打包
-
-Android 应用有打渠道包的传统，国内开源了不少方案，这里选用的是 [腾讯多渠道打包工具](https://github.com/Tencent/VasDolly)
-
-1. 修改 android/build.gradle 文件，添加依赖
-
-```groovy
-buildscript {
-    dependencies {
-        classpath 'com.leon.channel:plugin:2.0.1'
-    }
-}
-```
-
-2. 修改 anroid/app/build.gradle 文件，其中 `System.getenv("ENVIRONMENT")` 是用来获取环境变量的，后续我们会通过 CI 变量来控制到底要打哪个环境(production、qa、dev...)的包。
-
-```groovy
-apply plugin: 'channel'
-
-rebuildChannel {
-    def flavor = System.getenv("ENVIRONMENT") ?: 'production'
-    def baseName = "outputs/apk/${flavor}/release/app-${flavor}-arm64-v8a-release.apk"
-    baseReleaseApk = new File(project.buildDir, baseName)
-    releaseOutputDir = new File(project.buildDir, "outputs/channels")
-}
-
-android {
-
-}
-
-dependencies {
-    implementation 'com.leon.channel:helper:2.0.1'
-}
-```
-
-3. 创建 android/channel.txt 文件，列举你要发布的渠道，例如：
-
-```
-tencent
-qihoo
-baidu
-xiaomi
-huawei
-vivo
-oppo
-alibaba
-meizu
-nduo
-le
-yingyonghui
-sougou
-liqu
-anzhi
-lenove
-mumayi
-gionee
-ThreeGmenhu
-```
-
-4. 修改 android/gradle.properties 文件
-
-```
-channel_file=channel.txt
-```
-
-5. 构建渠道包
-
-执行如下命令
-
-```
-cd android
-./gredlew rebuildChannel
-```
-
-很快，可以看到，在 android/app/build/outputs/channels 文件夹中，生成了一堆渠道包
-
-## 自建文件服务器
-
-和 iOS 不同，Android 应用并不需要 Google 签名后才可以分发测试，我们只需要把 APK 包上传至文件服务器，测试组同学通过扫码安装即可。
-
-我们在 GitHub 找到了一个开源的文件服务器，[Go Http File server](https://github.com/codeskyblue/gohttpserver)。
-
-我们使用 [Docker](https://www.docker.com/) 来部署该服务器，Docker 和 Git 一样，是现代程序员的必备技能，如果不是专业的后端工程师，掌握 Image, Container, Dockerfile, Docker Compose 即可。
-
-1.  [下载 Docker 并安装](https://hub.docker.com/editions/community/docker-ce-desktop-mac)
-
-2.  运行以下命令，启动文件服务器
-
-```
-docker run -d --restart=always -it -p 8000:8000 -v ~/http:/app/public --name gohttpserver codeskyblue/gohttpserver --upload
-```
-
-打开 http://127.0.0.1:8000 即可看到文件服务器
-
-![](./assets/fileserver.png)
-
-但我们通常通过内网 ip 在另外一台机器访问文件服务器，通过 **系统偏好设置 -> 网络** 即可查知本机 ip
-
-下一章，我们将会讲述如何通过 CI / CD 上传 APK 到文件服务器。
+使用 `adb install` 命令安装即可

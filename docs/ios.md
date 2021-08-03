@@ -2,10 +2,9 @@
 
 本文包括以下内容
 
-- 使用 cocoapods 来管理依赖
-- 使用 fastlane 来管理签名和打包
-- 使用 fastlane 上传生产包到 TestFlight
-- 使用 fastlane 上传测试包到 Bugly
+- 搭建基于 Ruby 的开发环境
+- 使用 fastlane 来管理证书和打包
+- 使用 fastlane 上传 ipa 到 TestFlight
 
 ## 使用 Homebrew 安装 Ruby
 
@@ -72,110 +71,91 @@ bundle install
 
 以后团队成员一律使用 `bundle exec pod install` 这样的命令
 
-## 初始化 fastlane
+> 其他团队成员，cd 到 ios 目录下，运行 gem install bundler && bundle install 即可安装相同版本的 fastlane 和 cocoapods
 
-本文开始编写时，fastlane 的版本是 2.120.0
+## 创建 fastlane 文件夹
 
-[fastlane](https://docs.fastlane.tools/) 是 iOS 非常便捷的签名打包工具。
+[fastlane](https://docs.fastlane.tools/) 是用 Ruby 语言编写的一个命令行工具，可以自动化几乎所有 iOS 开发所需要的操作，例如自动打包和签名 App，自动上传到 App Store 等等。
 
-通过以下命令初始化 fastlane
+在 ios 文件夹创建一个名为 fastlane 的文件夹，在该文件夹里面创建一个名为 Fastfile 的文件，注意大小写。
 
-```sh
-# ios 目录下
-bundle exec fastlane init
-```
+## Action
 
-![](./assets/fastlane_init.png)
+fastlane 为我们提供了诸多 Action，它们是 iOS 项目开发中需要用到的基本操作，常见的 Action 有
 
-选择 4 ，我们通过手动的方式来配置
+- [match](https://docs.fastlane.tools/actions/match/)，为整个团队自动管理、同步证书和 Provisioning Profile
 
-初始化完成后，可以看到 ios 文件夹下生成了一个名为 fastlane 的文件夹，里面有 Appfile 和 Fastfile 两个文件。
+- [gym](https://docs.fastlane.tools/actions/gym/)，用于自动构建和打包 App
 
-## 用 fastlane 来管理签名
+- [pilot](https://docs.fastlane.tools/actions/testflight/)，用于自动把 App 部署到 TestFlight 并管理测试用户
 
-fastlane 提供了一些 action 来帮组我们解决代码签名问题，其中最著名的是 [match](https://docs.fastlane.tools/actions/match/)。
+- deliver，用于自动把 App 上传到 App Store
 
-打开 Xcode，反勾选 "Automatically manage signing"，我们将使用手动签名的方式：
+可以通过 bundle exec fastlane action --help 命令来查看 action 有哪些子命令和参数。
 
-![](./assets/match_disable_auto_siging.jpg)
-
-如果是旧项目，先删除原有 profile 文件
-
-打开 Finder，前往文件夹（shift + command + G） ~/Library/MobileDevice/Provisioning Profiles，删除里面的文件。
-
-运行以下命令，初始化 match
+如：
 
 ```sh
 # ios 目录下
-bundle exec fastlane match init
+bunlde exec fastlane match --help
 ```
 
-![](./assets/match_init_git.png)
+使用向下箭头查看更多信息，使用 q 退出查看。
 
-选择 git
+## match
 
-![](./assets/match_init_git_repo.png)
+我们通过 [match](https://docs.fastlane.tools/actions/match/) 来管理证书和 Provisioning Profile 文件。
 
-我们在公司的 GitLab 服务器 ios 分组下创建了一个名为 certificates 的仓库：
+通过 `bunlde exec fastlane match --help` 命令查看帮助信息可知，我们可以通过 `development` 子命令生成开发证书和 provisioning profile 文件。
 
-`git@git.xxxxxx.com:ios/certificates.git`
+```sh
+bundle exec fastlane match development
+```
+
+执行该命令时，需要传递若干参数，参数可以通过命令行参数或者环境变量的方式传递。通过 `bundle exec fastlane action match` 命令查看可以传递的参数及其对应的环境变量。
+
+譬如 git_url 参数可以通过 `bundle exec fastlane match development --git_url git@git.xxxxxx.com:ios/certificates.git` 的形式传递，也可以通过环境变量。
+
+通过环境变量的方式传递参数比较方便，因为可以在多个以及多次命令之间复用参数。
+
+通过环境变量传递也有多种形式，本文使用 .env 文件来传递环境变量。
+
+在 fastlane 文件夹里面创建一个名为 .env 变量，注意不要少了一个点。并将 .env 加入到 .gitignore 文件中，因为这里面涉及敏感信息，我们不希望将它加入到版本控制里面。
+
+### App Store Connect API
+
+生成证书和 provisioning profile 文件，需要开发者账号。如果你不是该账号持有人，你需要该账号持有人或管理者将你的 AppleId 加入该账号，并赋予 APP 管理权限。
+
+请根据 [Using App Store Connect API](https://docs.fastlane.tools/app-store-connect-api/) 的指引，生成 fastlane API Key JSON file。如果你们的账号从未使用过 App Store Connect API，则需要账号持有人开通这一功能。
+
+生成的 json 文件长如下这个样子，把该文件存放到你的电脑某处。
+
+```json
+{
+  "key_id": "D383SF739",
+  "issuer_id": "6053b7fe-68a8-4acb-89be-165aa6465141",
+  "key": "-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHknlhdlYdLu\n-----END PRIVATE KEY-----",
+  "duration": 1200,
+  "in_house": false
+}
+```
+
+打开 .env 文件，添加如下信息
+
+```sh
+# 指向 fastlane API Key JSON file 的文件路径
+APP_STORE_CONNECT_API_KEY_PATH=/Users/listen/AuthKey.json
+# 证书仓库
+MATCH_GIT_URL=git@git.xxxxxx.com:ios/certificates.git
+# bundle id
+MATCH_APP_IDENTIFIER=com.shundaojia.myapp
+```
+
+`git@git.xxxxxx.com:ios/certificates.git` 是我们用于存放证书和 Provisioning Profile 文件的仓库，需要预先创建。
 
 > 确保 CI 机器使用 `ssh -T git@git.xxxxxx.com` 能 ping 成功
 
 多个项目可以共享一个证书仓库，只要这些项目的 Bundle ID 不一样即可。
-
-把该仓库地址，作为参数传递给 URL of the Git Repo。
-
-初始化完成后，match 会在 fastlane 文件夹下创建一个叫 Matchfile 的文件。
-
-出于保密的需要，我们删除该文件中 `username` 字段
-
-```
-git_url("git@git.xxxxxx.com:ios/certificates.git")
-storage_mode("git")
-
-type("development")
-app_identifier(["com.xxxxxx.myapp"])
-```
-
-运行以下命令，创建并下载开发证书
-
-```sh
-# ios 目录下
-bundle exec fastlane match development
-```
-
-其他同事更新此项目时，也需要执行一次 `bundle exec fastlane match` 命令，以便把开发证书下载到他的电脑。使用他自己的 Apple ID 来下载证书即可，前提是他的 Apple ID 已经添加到公司苹果开发者账号的用户组，并赋予了开发者权限。
-
-如果不曾在 App Store 创建过该 bundle ID，那么会看到以下错误提示
-
-![](./assets/match_error_no_bundle_id.png)
-
-登录[苹果开发者官网](https://developer.apple.com/account)
-
-进入 **Certificates, IDs & Profiles**
-
-点击 **Identifiers/App IDs**
-
-点击 **+** 号，注册 App ID
-
-![](./assets/appstore_register_app_id.jpg)
-
-现在再来试试
-
-```sh
-bundle exec fastlane match development
-```
-
-可能需要你输入一个密码来对证书进行加密和解密，请记住这个密码，这个密码和环境变量 `MATCH_PASSWORD` 关联。
-
-一切顺利的话，可以看到以下提示
-
-![](./assets/match_success.png)
-
-打开 Xcode，配置好 Provisioning Profile，因为我们有 qa 和 production 两个环境，每个环境有 debug 和 release 两个 Configuration，所以我们有 4 处签名需要配置。
-
-![](./assets/match_xcode.jpg)
 
 上面，我们生成的是 development 证书，接下来，我们生成 appstore 证书
 
@@ -183,54 +163,59 @@ bundle exec fastlane match development
 bundle exec fastlane match appstore
 ```
 
-就这样，我们把开发证书这事交给了 match 来管理。
+就这样，我们把开发证书和 Provisioning Profile 文件交给了 match 来管理。
 
 > 添加新的设备后，使用 bundle exec fastlane matche development --force 来刷新 Provisioning Profile
 
-### 可能会遇到的问题
+我们可以通过手动设置签名来检验这一成果。
 
-如果之前曾经使用其它账号，而不是 xxxxxx@gmail.com 这个 Apple ID 注册过证书的话，可能会出现问题
+打开 Xcode，配置好 Provisioning Profile，因为我们有 qa 和 production 两个环境，每个环境有 debug 和 release 两个 Configuration，所以我们有 4 处签名需要配置。
 
-此时，我们需要使用
+![](./assets/match_xcode.jpg)
+
+最后，别忘了设置回自动管理签名哦，因为我们只希望通过 CI 打包时，才交给 match 管理签名文件，这样可以降低团队协作成本，其它成员不需要知道有这一回事。
+
+### 清理证书
+
+某些情况下，可能需要 revoke 掉所有证书和 provisioning profiles
 
 ```shell
-bundle exec fastlane match nuke development
-bundle exec fastlane match nuke distribution
-bundle exec fastlane match nuke enterprise
+bundle exec fastlane match nuke
 ```
 
-revoke 掉所有的证书 和 provisioning profiles
+> 该操作不会影响 AppStore 上已经发布的版本
 
-> 该操作不会影响 AppStore 上已经发布的版本，但依然可能会影响到你的同事，他需要把他本地的证书和 provisioning profiles 也清空，当然，跑 CI 的机器也需要如此操作。
+测试用的机器以及 CI 机器，需要清空本地的 provisioning profiles。清空方法：打开 Finder，前往文件夹（shift + command + G） ~/Library/MobileDevice/Provisioning Profiles，删除里面的文件。
 
-> 清空方法：打开 Finder，前往文件夹（shift + command + G） ~/Library/MobileDevice/Provisioning Profiles，删除里面的文件。
-> 同时需要删掉钥匙串中无效的证书。
+同时需要删掉钥匙串中无效的证书。
 
-## 使用 fastlane 来打包
+## Lane 和打包
 
-我们用 [gym](https://docs.fastlane.tools/actions/gym/) 这个 action 来打包
+我们单独使用 match 这个 Action 就可以实现自动管理证书和 Provisioning Profile 文件，但打包，光靠一个 [gym](https://docs.fastlane.tools/actions/gym/) 可不行，因为打包涉及好几个步骤。
 
-编辑 ios/fastlane/Fastfile 文件，创建一个名为 build 的 lane
+- 更新和安装 pod 依赖
+
+- 设置 version code
+
+- 设置 version name
+
+- 更新签名配置，或者使用开发证书，或者使用发布证书
+
+- 打包
+
+我们需要把这些操作组合成一个操作，这就是 Lane，Lane 写在 Fastfile 文件中，如下
 
 ```ruby
-app_identifier = ENV['APPLICATION_ID'] || 'com.xxxxxx.myapp'
-app_name = ENV['APP_NAME'] || 'MyApp'
-xcodeproj = "./#{app_name}.xcodeproj"
-
-lane :build do |options|
-    ENV['CI'] = 'true' # 确保是在 CI 环境，否则 xcode 中的脚本不会生效
-
-    if ENV['SHOULD_POD_REPO_UPDATE'] == 'true'
-        sh(%(bundle exec pod repo update))
-    end
-
-    cocoapods(podfile: "./Podfile")
+# ios/fastlane/Fastfile
+lane :build
+    # 安装 pod 依赖
+    cocoapods(
+        podfile: "./Podfile",
+    )
 
     # 默认打 qa 环境的包
-    environment = options[:environment] || ENV['ENVIRONMENT']|| 'qa'
-    export_method = options[:export_method] || 'app-store'
-    # 如果使用了 Bugly 这类内测分发服务，使用下面这行代码代替上面这行代码
-    # export_method = options[:export_method] || (environment == 'production' ? 'app-store' : 'development')
+    environment = ENV['ENVIRONMENT'] || 'qa'
+    export_method = (environment == 'production' ? 'app-store' : 'development')
     type = export_method.gsub(/-/, '')
 
     # 设置 bundle id
@@ -240,8 +225,8 @@ lane :build do |options|
         app_identifier: app_identifier
     )
 
-    build_number = ENV['VERSION_CODE'] || '1'
-    version_name = ENV['VERSION_NAME'] || '1.0.0'
+    build_number = ENV['VERSION_CODE'] || '272'
+    version_name = ENV['VERSION_NAME'] || '1.7.2'
 
     # 设置 version code
     increment_build_number(
@@ -255,61 +240,74 @@ lane :build do |options|
         xcodeproj: xcodeproj
     )
 
-    git_url = options[:git_url]
-    username = options[:apple_id] || ENV['FASTLANE_USER']
-
+    # 下载 provisioning profile 文件
     match(
         type: 'development',
         readonly: true,
-        app_identifier: app_identifier,
-        git_url: git_url,
-        username: username
     )
+
     match(
         type: type,
         readonly: true,
-        app_identifier: app_identifier,
-        git_url: git_url,
-        username: username
     )
 
-    profile_name = ENV["sigh_#{app_identifier}#{type}_profile-name"];
+    # 清除之前的构建物
+    sh(%(cd #{ENV['PWD']} && rm -rf ./build && mkdir build))
+
+    profile_name = ENV["sigh_#{app_identifier}#{type}_profile-name"] || "match Development #{app_identifier}"
+
+    # 配置签名
+    update_code_signing_settings(
+        use_automatic_signing: false,
+        path: xcodeproj,
+        code_sign_identity: export_method == 'appstore' ? "iPhone Distribution" : "iPhone Developer",
+        bundle_identifier: app_identifier,
+        profile_name: profile_name,
+    )
+
     output_name = "#{environment}-#{version_name}-#{build_number}"
     # 要求项目 scheme 的命名规则是 app 名称 + 空格 + 环境
     scheme = options[:scheme] || "#{app_name} #{environment}"
 
-    sh(%(cd #{ENV['PWD']} && rm -rf ./build && mkdir build))
+    # 打包
     gym(
         export_method: export_method,
-        export_options: {
-            method: export_method,
-            provisioningProfiles: {
-                app_identifier => profile_name,
-            }
-        },
         include_symbols: true,
         include_bitcode: false,
         xcargs: 'DEBUG_INFORMATION_FORMAT="dwarf-with-dsym"',
         scheme: scheme,
+        workspace: "#{app_name}.xcworkspace",
         output_name: output_name,
         clean: true,
         output_directory: "./build"
     )
 end
+
 ```
 
-现在，我们来运行 fastlane build
+这个 lane 的名字名为 build，它组合了 `cocoapods` `increment_build_number` `match` `update_code_signing_settings` `gym` 等 action。
+
+请注意，我们可以运行 `bundle exec fastlane action <action>` 这样的命令来查看这些 action 可以或需要传递什么样的参数，然后通过方法参数或环境变量的形式传递。
+
+为了顺利运行以上这些 action，修改 .env 文件，传递以下环境变量。
+
+```sh
+# 你的 team_id
+FASTLANE_TEAM_ID=RGX3H8KABF
+```
+
+我们可以像运行一个 action 那样运行它
 
 ```shell
 # ios 目录下运行
-bundle exec fastlane build git_url:'git@git.xxxxxx.com:ios/certificates.git' apple_id:'xxxxxx@gmail.com' export_method:'development'
+bundle exec fastlane build
 ```
 
 运行成功后，我们发现，在 ios/build 目录下，本次构建的制品(artifacts)：ipa 包以及 dSYM 符号表。
 
-## 使用 fastlane 来发布 ipa 包
+## 使用 fastlane 上传 ipa 到 TestFlight
 
-我们将使用苹果官方的内测服务 [TestFlight](https://developer.apple.com/testflight/)，当然，也可以选用国内的内测分发平台。
+我们将使用苹果官方的内测服务 [TestFlight](https://developer.apple.com/testflight/)，来测试生产包。
 
 fastlane 提供了一个叫 [pilot](https://docs.fastlane.tools/actions/testflight/) 的 action 来帮组我们把 ipa 包上传到 App Store Connect。
 
@@ -318,10 +316,7 @@ fastlane 提供了一个叫 [pilot](https://docs.fastlane.tools/actions/testflig
 ```ruby
 lane :upload_ipa_to_testflight do |options|
     file_name, basename, version_name, build_number, dir_name = app_info
-    username = options[:apple_id] || ENV['FASTLANE_USER']
     pilot(
-        username: username,
-        app_identifier: app_identifier,
         ipa: file_name,
         # changelog 不能过短，否则会有警告
         changelog: 'This is my changelog of things that have changed in a log.',
@@ -329,17 +324,17 @@ lane :upload_ipa_to_testflight do |options|
 end
 
 def app_info
-  dir_name = "#{ENV['PWD']}/build/*"
-  match_extension = '.ipa'
-  files = Dir[dir_name]
-  file_name = files.find do |file|
-    File.extname(file) == match_extension
-  end
+    dir_name = "#{ENV['PWD']}/build/*"
+    match_extension = '.ipa'
+    files = Dir[dir_name]
+    file_name = files.find do |file|
+        File.extname(file) == match_extension
+    end
 
-  basename = File.basename(file_name, match_extension)
-  version_name, build_number = basename.split('-').last(2)
+    basename = File.basename(file_name, match_extension)
+    version_name, build_number = basename.split('-').last(2)
 
-  return file_name, basename, version_name, build_number, dir_name
+    return file_name, basename, version_name, build_number, dir_name
 end
 ```
 
@@ -353,31 +348,11 @@ end
 
 ![](./assets/xcode_icon.png)
 
-3. 以源码方式打开 Info.plist 文件
-
-![](./assets/xcode_info.png)
-
-添加使用相册的请求描述
-
-```xml
-<key>NSPhotoLibraryUsageDescription</key>
-<string>MyApp 需要访问相册来分享图片</string>
-```
-
-留意，通过 typescript 模版创建的项目，还请求了定位权限，但描述字符串为空，这同样是无法通过审核的
-
-```xml
-<key>NSLocationWhenInUseUsageDescription</key>
-<string></string>
-```
-
-如果没使用到定位功能，删掉即可，否则像使用相册那样完善描述，在本示例中，我们选择了删除。
-
 重新打个类型为 appstore 的包再上传
 
 ```
-bundle exec fastlane build git_url:'git@git.xxxxxx.com:ios/certificates.git' apple_id:'xxxxxx@gmail.com'
-bundle exec fastlane upload_ipa_to_testflight apple_id:'xxxxxx@gmail.com'
+ENVIRONMENT=production bundle exec fastlane build
+bundle exec fastlane upload_ipa_to_testflight
 ```
 
 如果控制台出现以下消息，说明 ipa 包未能通过检测，按下 **Control + C**
@@ -418,34 +393,8 @@ ipa 包通过检测后，TestFlight 功能将被激活，前往 App Store Connen
 
 说明 ipa 未能通过检测，请根据提示修复问题
 
-## 使用 fastlane 上传测试包到 Bugly
+## 上传到 App Store?
 
-本来写完 TestFlight，本文就应该结束了，奈何发布到 TestFlight 上的包，无法用肉眼分辨哪些是生产环境的，哪些是测试环境的。
+ipa 上传到 TestFlight，通过测试后，可以直接发布。
 
-我们只好改变策略，使用 TestFlight 来分发生产环境的包，使用 Bugly 来分发测试环境的包。
-
-当然也可以使用蒲公英或其它分发平台，那为什么我们不用呢，因为之前的同事用的就是 Bugly，关于蒲公英如何与 fastlane 集成，读者可以参考[这篇文章](https://www.pgyer.com/doc/view/fastlane)。
-
-为什么不也用 Bugly 来分发生产环境的包呢？因为 TestFlight 上的包通过测试后，是可以直接发布到 App Store 的，如果使用 Bugly 的话，还需要再次打包上传到 App Store Connect。
-
-> 一个不幸的消息是，Bugly 已经不再对新应用提供内测分发服务。
-
-> 一个好消息是，因此，我不用讲怎么申请 Bugly 内测分发服务了。
-
-让我们在 Fastfile 中添加一个新的 lane
-
-```ruby
-lane :upload_ipa_to_bugly do |options|
-    file_name, basename = app_info
-    bugly_exp_id = options[:bugly_exp_id] || ENV['BUGLY_EXP_ID']
-    bugly_app_key = options[:bugly_app_key] || ENV['BUGLY_APP_KEY']
-    command = %(cd #{ENV['PWD']} && \
-        curl --insecure -X "PUT" \
-        -F "file=@#{file_name}" \
-        -F "exp_id=#{bugly_exp_id}" \
-        https://api.bugly.qq.com/beta/apiv1/exp?app_key=#{bugly_app_key})
-    sh(command)
-end
-```
-
-就这样
+因此，deliver 这个 Action 可以忽略了。

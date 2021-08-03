@@ -25,11 +25,6 @@ fastlane build
 fastlane test
 ```
 
-### upload_ipa_to_bugly
-```
-fastlane upload_ipa_to_bugly
-```
-
 ### upload_ipa_to_testflight
 ```
 fastlane upload_ipa_to_testflight

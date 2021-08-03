@@ -4,8 +4,6 @@
 
 - 如何使用 ESLint 和 Prettier 来检查 ts 代码
 
-- 如何利用 git hook 在提交代码前先做检查
-
 - ESLint 和 Prettier 如何与 Visual Studio Code 集成
 
 > 2019 年 11 月 6 日更新： 使用社区提供的 eslint 配置
@@ -33,6 +31,8 @@ npx react-native init MyApp --template react-native-template-typescript
 ```
 
 > 使用 --version 参数可以指定 RN 版本，如 `npx react-native init MyApp --version 0.60.0`
+
+> 小知识：react-native-template-typescript 既是个模版项目，也是个 npm 包，可以在 https://www.npmjs.com/ 上搜索到它。我们可以创建自己的模版，然后发布到 npm。
 
 调整 tsconfig.json 文件，在 compilerOptions 中添加如下两个配置
 
@@ -127,7 +127,7 @@ yarn add -D typescript @types/jest @types/react @types/react-native @types/react
 安装 React Native 团队为我们提供的 [eslint config](https://github.com/facebook/react-native/blob/master/packages/eslint-config-react-native-community/index.js)
 
 ```
-yarn add -D eslint@^6.8.0  @react-native-community/eslint-config
+yarn add -D eslint@^7.32.0  @react-native-community/eslint-config
 ```
 
 创建或编辑 .eslintrc.js 文件
@@ -164,30 +164,7 @@ ESLint 相关知识，请[深入理解 ESlint](https://juejin.im/post/5d3d3a6851
 
 ## Git Hook
 
-为了确保提交给 git 的所有文件都能通过 tsc 的编译和 ESLint 检查，我们使用 husky 和 lint-staged。
-
-```shell
-yarn add -D husky lint-staged
-```
-
-在 package.json 添加
-
-```js
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsc --noEmit && lint-staged",
-      "post-commit": "git update-index --again"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx,jsx}": [
-      "eslint . --fix",
-      "git add"
-    ]
-  },
-```
-
-husky 对每次提交生效，tsc 会编译整个工程，lint-staged 只对需要提交的文件生效。
+为了不妨碍 commit 效率，我们不使用 Git Hook 来自动触发 tsc 和 lint，而是将这些过程延迟到 CI 阶段。
 
 ## 与 Visual Studio Code 集成
 

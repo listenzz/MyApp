@@ -7,16 +7,18 @@ lane :build do |options|
 
     # 建议总是开启
     if ENV['SHOULD_POD_REPO_UPDATE'] == 'true'
+        # 更新 pod repo
         sh(%(bundle exec pod repo update))
     end
 
+    # 安装 pod 依赖
     cocoapods(
         podfile: "./Podfile",
     )
 
     # 默认打 qa 环境的包
-    environment = options[:environment] || ENV['ENVIRONMENT'] || 'qa'
-    export_method = options[:export_method] || (environment == 'production' ? 'app-store' : 'development')
+    environment = ENV['ENVIRONMENT'] || 'qa'
+    export_method = (environment == 'production' ? 'app-store' : 'development')
     type = export_method.gsub(/-/, '')
 
     # 设置 bundle id
@@ -41,45 +43,36 @@ lane :build do |options|
         xcodeproj: xcodeproj
     )
 
-    git_url = options[:git_url] || ENV['MATCH_GIT_URL']
-    username = options[:apple_id] || ENV['FASTLANE_USER']
-    team_id = options[:team_id] || ENV["FASTLANE_TEAM_ID"]
-
-    # 下载 provisioning profile
+    # 下载 provisioning profile 文件
     match(
         type: 'development', 
-        team_id: team_id,
         readonly: true, 
-        app_identifier: app_identifier, 
-        git_url: git_url, 
-        username: username
+        app_identifier: app_identifier,
     )
 
     match(
         type: type, 
-        team_id: team_id,
         readonly: true, 
-        app_identifier: app_identifier, 
-        git_url: git_url, 
-        username: username
+        app_identifier: app_identifier,
     )
 
-    profile_name = ENV["sigh_#{app_identifier}#{type}_profile-name"] || "match Development #{app_identifier}";
-    output_name = "#{environment}-#{version_name}-#{build_number}"
-    # 要求项目 scheme 的命名规则是 app 名称 + 空格 + 环境
-    scheme = options[:scheme] || "#{app_name} #{environment}"
-
+    # 清除之前的构建物
     sh(%(cd #{ENV['PWD']} && rm -rf ./build && mkdir build))
+
+    profile_name = ENV["sigh_#{app_identifier}#{type}_profile-name"] || "match Development #{app_identifier}"
 
     # 配置签名
     update_code_signing_settings(
-        team_id: team_id,
         use_automatic_signing: false,
         path: xcodeproj,
         code_sign_identity: export_method == 'appstore' ? "iPhone Distribution" : "iPhone Developer",
         bundle_identifier: app_identifier,
         profile_name: profile_name,
     )
+
+    output_name = "#{environment}-#{version_name}-#{build_number}"
+    # 要求项目 scheme 的命名规则是 app 名称 + 空格 + 环境
+    scheme = options[:scheme] || "#{app_name} #{environment}"
 
     # 打包
     gym(
@@ -101,10 +94,7 @@ end
 
 lane :upload_ipa_to_testflight do |options|
     file_name, basename, version_name, build_number, dir_name = app_info
-    username = options[:apple_id] || ENV['FASTLANE_USER']
     pilot(
-        username: username,
-        app_identifier: app_identifier,
         ipa: file_name,
         # changelog 不能过短，否则会有警告
         changelog: 'This is my changelog of things that have changed in a log.',
@@ -113,9 +103,7 @@ end
 
 lane :upload_ipa_to_app_store do |options|
     file_name, basename, version_name, build_number = app_info
-    username = options[:apple_id] || ENV['FASTLANE_USER']
     upload_to_app_store(
-        username: username,
         app_identifier: app_identifier,
         app_version: "#{version_name}", 
         ipa: file_name
@@ -123,9 +111,8 @@ lane :upload_ipa_to_app_store do |options|
 end
 
 lane :upload_debug_symbol_to_sentry do |options|
-
     file_name, basename, version_name, build_number, dir_name = app_info
-    
+
     bundle_output = "#{ENV['PWD']}/build/main.jsbundle"
     sourcemap_output = "#{ENV['PWD']}/build/main.jsbundle.map"
     release = "#{app_identifier}@#{version_name}+#{build_number}"

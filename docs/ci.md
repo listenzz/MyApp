@@ -4,438 +4,30 @@
 
 1. 代码提交或合并到仓库后，启动测试、构建过程
 2. 每日定时发布新包或可手动发布
-3. 可以选择构建不同环境（qa, production）的 ipa 或 apk 包
-4. iOS 自动将 ipa 发布到 App Store Connect，
-5. Android 自动将 apk 发布到自建的文件服务器并发送 slack 通知
+3. 可以选择构建不同环境（qa, production）的 ipa 或 apk
+4. iOS 自动将测试包发布到自建的文件服务器，并可扫码安装
+5. iOS 自动将生产包发布到 App Store Connect
+6. Android 自动将 apk 发布到自建的文件服务器，并可扫码安装
 
-## 安装依赖
+## 自建文件服务器
 
-安装以下依赖，稍后脚本需要用到
+为了方便交付，我们需要部署一个文件服务器。我们上传 apk 或 ipa 到该服务器，测试组同学通过扫码安装即可。
 
-```
-yarn add 7zip-bin --dev
-```
+我们在 GitHub 找到了一个开源的文件服务器，[Go Http File server](https://github.com/codeskyblue/gohttpserver)。
 
-## 编写 CI 脚本
-
-在 react-native 项目根目录下创建名为 ci 的文件夹
-
-创建 ci/utils.js 文件，其中 `SLACK_WEB_HOOK_URL` 请替换成你司的 slack web hook url。
-
-```js
-// utils.js
-const fs = require('fs')
-const path = require('path')
-const { spawnSync, execSync } = require('child_process')
-
-// 不适合放在 config.js 会引起循环依赖
-const SLACK_WEB_HOOK_URL =
-  process.env.SLACK_WEB_HOOK_URL || 'https://hooks.slack.com/services/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'
-
-/**
- *
- * @param {string} src
- * @param {string} dist
- */
-function copy(src, dist) {
-  if (!fs.existsSync(dist)) {
-    fs.mkdirSync(dist)
-  }
-  const files = fs.readdirSync(src)
-  files.forEach(file => {
-    const srcFile = path.join(src, file)
-    const distFile = path.join(dist, file)
-    const stats = fs.statSync(srcFile)
-    if (stats.isFile()) {
-      const read = fs.createReadStream(srcFile)
-      const write = fs.createWriteStream(distFile)
-      read.pipe(write)
-    } else if (stats.isDirectory()) {
-      copy(srcFile, distFile)
-    }
-  })
-}
-
-function gitTag() {
-  let tag
-  try {
-    tag = execSync(`git describe --tags --abbrev=0 --always`, {
-      encoding: 'utf8',
-    })
-  } catch {
-    tag = '1.0.0'
-  }
-  return tag.trim()
-}
-
-/**
- *
- * @param {string} str
- */
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
-/**
- *
- * @param {string} cmd
- * @param {{}} [env]
- * @param {string} [cwd]
- */
-function sh(cmd, env = process.env, cwd) {
-  const child = spawnSync(cmd, {
-    stdio: 'inherit',
-    shell: true,
-    env,
-    cwd,
-  })
-  if (child.status !== 0) {
-    process.exit(child.status)
-  }
-}
-
-/**
- *
- * @param {string} message
- */
-function slack(message) {
-  const cmd = `curl -X POST \
-    -H 'Content-type: application/json' \
-    --data '{"text":"${message}"}' \
-    ${SLACK_WEB_HOOK_URL}`
-  sh(cmd)
-}
-
-module.exports = {
-  copy,
-  gitTag,
-  capitalize,
-  sh,
-  slack,
-}
-```
-
-编写 ci/config.js 文件，这里定义了常量，通常，你需要替换 `FILE_SERVER` `BUGLY_DIST_URL` `APP_NAME` `APP_MODULE` `APPLICATION_ID` 这几个常量。
-
-```js
-// config.js
-const path = require('path')
-const { capitalize, gitTag } = require('./utils')
-
-// bugly 内测分发
-const BUGLY_DIST_URL = process.env.BUGLY_DIST_URL || 'https://beta.bugly.qq.com/xxxx'
-
-// 文件服务器
-const FILE_SERVER = process.env.FILE_SERVER || 'http://192.168.1.134:8000'
-// 平台 android 或 ios
-const PLATFORM = process.argv[2] || 'ios'
-
-// 开发环境 production qa dev
-// 不能通过 CI 直接注入 NODE_ENV ，否则会产生很奇怪的 BUG
-const ENVIRONMENT = process.env.ENVIRONMENT || 'qa'
-process.env.ENVIRONMENT = ENVIRONMENT
-
-const ENVIRONMENT_CAPITALIZE = capitalize(ENVIRONMENT)
-// app 名字
-const APP_NAME = process.env.APP_NAME || (PLATFORM === 'ios' ? 'MyApp' : 'myapp')
-process.env.APP_NAME = APP_NAME
-
-const APP_MODULE = process.env.APP_MODULE || 'app'
-
-// 应用 bundle id
-const APPLICATION_ID = process.env.APPLICATION_ID || 'com.xxxxxx.myapp'
-process.env.APPLICATION_ID = APPLICATION_ID
-
-// 版本
-const VERSION_NAME = process.env.VERSION_NAME || gitTag()
-process.env.VERSION_NAME = VERSION_NAME
-
-// 版本号
-const VERSION_CODE = (process.env.CI_PIPELINE_IID && Number(process.env.CI_PIPELINE_IID)) || 1
-process.env.VERSION_CODE = process.env.CI_PIPELINE_IID || '1'
-
-// 构建目录
-const BUILD_DIR =
-  PLATFORM === 'ios'
-    ? path.resolve(__dirname, '../ios/build')
-    : path.resolve(__dirname, `../android/${APP_MODULE}/build`)
-
-// 制品目录
-const ARTIFACTS_DIR = PLATFORM === 'ios' ? BUILD_DIR : path.resolve(BUILD_DIR, 'artifacts')
-
-// 是否需要打渠道包
-const NEED_TO_BUILD_CHANNELS = !!process.env.BUILD_CHANNELS
-// 渠道包原始目录
-const CHANNELS_SOURCE_DIR = path.join(BUILD_DIR, 'outputs/channels')
-const CHANNELS_FILENAME = process.env.CHANNELS_FILENAME || 'channels.7z'
-
-// Android APK 原始目录
-const APK_SOURCE_DIR = path.resolve(BUILD_DIR, `outputs/apk/${ENVIRONMENT}/release/`)
-
-module.exports = {
-  BUGLY_DIST_URL,
-  FILE_SERVER,
-  PLATFORM,
-  ENVIRONMENT,
-  ENVIRONMENT_CAPITALIZE,
-  APP_NAME,
-  APP_MODULE,
-  APPLICATION_ID,
-  VERSION_NAME,
-  VERSION_CODE,
-  ARTIFACTS_DIR,
-  BUILD_DIR,
-  NEED_TO_BUILD_CHANNELS,
-  CHANNELS_FILENAME,
-  CHANNELS_SOURCE_DIR,
-  APK_SOURCE_DIR,
-}
-```
-
-编写 ci/build.js 文件，这个脚本负责打包。
-
-```js
-// build.js
-const path = require('path')
-const fs = require('fs')
-const { sh, copy } = require('./utils')
-
-const {
-  ENVIRONMENT,
-  ENVIRONMENT_CAPITALIZE,
-  PLATFORM,
-  APP_NAME,
-  VERSION_NAME,
-  VERSION_CODE,
-  NEED_TO_BUILD_CHANNELS,
-  CHANNELS_SOURCE_DIR,
-  CHANNELS_FILENAME,
-  FILE_SERVER,
-  ARTIFACTS_DIR,
-  APK_SOURCE_DIR,
-} = require('./config')
-
-// ------------------------------- ios -------------------------------------
-if (PLATFORM === 'ios') {
-  const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
-  if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
-    sh(`gem install bundler && bundle install`, undefined, workdir)
-  }
-  sh(`bundle exec fastlane build`, undefined, workdir)
-  process.exit(0)
-}
-
-// ------------------------------- android -------------------------------------
-// 打基础包
-const workdir = process.env.ANDROID_DIR || path.resolve(__dirname, '../android')
-sh(`./gradlew assemble${ENVIRONMENT_CAPITALIZE}Release`, undefined, workdir)
-
-// 打渠道包
-if (NEED_TO_BUILD_CHANNELS) {
-  sh(`./gradlew rebuildChannel`, undefined, workdir)
-
-  const { path7za } = require('7zip-bin')
-  const { execSync } = require('child_process')
-
-  /**
-   * 为了避免执行 yarn install, 不适合放到 utils 中，因为有 7zip-bin 依赖
-   * @param {string} dir
-   * @param {string} path
-   */
-  function compress(dir, path) {
-    let cmd = `${path7za} a ${path} ${dir}`.replace('\n', '')
-    console.log(`executing command: ${cmd}`)
-    const stdout = execSync(cmd, { maxBuffer: 5000 * 1024 })
-    console.log(stdout.toString())
-  }
-
-  // 压缩渠道包
-  // 渠道包太大，不能上传到 artifacts
-  const channels = path.join(CHANNELS_SOURCE_DIR, CHANNELS_FILENAME)
-  compress(CHANNELS_SOURCE_DIR, channels)
-
-  // 上传渠道包
-  const dest = `android/${APP_NAME}/${ENVIRONMENT}/${VERSION_NAME}`
-  const filename = `channels-${ENVIRONMENT}-${VERSION_NAME}-${VERSION_CODE}.7z`
-  sh(`curl -F file=@${channels} -F filename=${filename} ${FILE_SERVER}/${dest}`)
-}
-
-// 整理制品
-// Android 构建会产生许多中间物，它们都保存在 build 文件夹中，
-// 我们需要抽取需要的文件，保存到指定目录让 CI 作为 artifacts 上传
-if (!fs.existsSync(ARTIFACTS_DIR)) {
-  fs.mkdirSync(ARTIFACTS_DIR)
-}
-
-// apk
-copy(APK_SOURCE_DIR, ARTIFACTS_DIR)
-```
-
-编写 ci/upload.js 文件，这个脚本负责上传 ipa 包到 App Store Connect 或上传 apk 包到文件服务器。
-
-```js
-// upload.js
-const path = require('path')
-const { sh, slack } = require('./utils')
-const {
-  ENVIRONMENT,
-  PLATFORM,
-  APP_NAME,
-  APP_MODULE,
-  VERSION_NAME,
-  VERSION_CODE,
-  FILE_SERVER,
-  ARTIFACTS_DIR,
-  BUGLY_DIST_URL,
-} = require('./config')
-
-if (PLATFORM === 'ios') {
-  // -------------------------------ios-------------------------------------
-  const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
-  if (ENVIRONMENT === 'production') {
-    sh(`bundle exec fastlane upload_ipa_to_testflight`, undefined, workdir)
-  } else {
-    sh(`bundle exec fastlane upload_ipa_to_bugly`, undefined, workdir)
-    slack(`ios-${APP_NAME}-${ENVIRONMENT} 有新的版本了，${BUGLY_DIST_URL}`)
-  }
-  process.exit(0)
-}
-
-// -------------------------------android-------------------------------------
-const dest = `android/${APP_NAME}/${ENVIRONMENT}/${VERSION_NAME}`
-
-// 上传 apk 基础包
-const apk = path.join(ARTIFACTS_DIR, `${APP_MODULE}-${ENVIRONMENT}-arm64-v8a-release.apk`)
-let filename = `${APP_NAME}-${ENVIRONMENT}-${VERSION_NAME}-${VERSION_CODE}.apk`
-
-if (process.env.CI_COMMIT_SHORT_SHA) {
-  filename = `${APP_NAME}-${ENVIRONMENT}-${VERSION_NAME}-${VERSION_CODE}-${process.env.CI_COMMIT_SHORT_SHA}.apk`
-}
-
-sh(`curl --http1.1 -F file=@${apk} -F filename=${filename} ${FILE_SERVER}/${dest}`)
-
-// 发布 slack 通知
-slack(`android-${APP_NAME}-${ENVIRONMENT} 有新的版本了，${FILE_SERVER}/${dest}`)
-```
-
-## 编写 .gitlab-ci.yml
-
-在根目录创建 .gitlab-ci.yml 文件，该文件由 [YAML 语言](http://www.ruanyifeng.com/blog/2016/07/yaml.html?f=tt) 编写，更多的配置可查看[官方文档](https://docs.gitlab.com/ee/ci/yaml/README.html)。
-
-```yml
-# .gitlab-ci.yml
-before_script:
-  - export
-
-stages:
-  - build
-  - deploy
-
-variables:
-  LC_ALL: 'en_US.UTF-8'
-  LANG: 'en_US.UTF-8'
-  APP_MODULE: app
-
-build:ios:
-  stage: build
-  artifacts:
-    paths:
-      - ios/build/
-  script:
-    - yarn install
-    - node ./ci/build.js ios
-  tags:
-    - ios
-  except:
-    refs:
-      - tags
-    variables:
-      - $ANDROID_ONLY
-
-deploy:ios:upload:
-  stage: deploy
-  dependencies:
-    - build:ios
-  script:
-    - node ./ci/upload.js ios
-  allow_failure: true
-  only:
-    - schedules
-  tags:
-    - ios
-  except:
-    variables:
-      - $ANDROID_ONLY
-
-build:android:
-  stage: build
-  script:
-    - yarn install
-    - node ./ci/build.js android
-  artifacts:
-    paths:
-      - android/${APP_MODULE}/build/artifacts/
-  tags:
-    - android
-  except:
-    refs:
-      - tags
-    variables:
-      - $IOS_ONLY
-
-deploy:android:upload:
-  stage: deploy
-  dependencies:
-    - build:android
-  script:
-    - node ./ci/upload.js android
-  allow_failure: true
-  only:
-    - schedules
-  tags:
-    - android
-  except:
-    variables:
-      - $IOS_ONLY
-```
-
-## 创建 GitLab 仓库
-
-添加如下配置到 .gitignore 中
-
-```
-Pods/
-builds/
-```
-
-我们在公司自建的 GitLab 服务器上创建一个新的项目, 根据指引，执行如下命令，将代码推到仓库。
-
-```
-cd existing_folder
-git init
-git remote add origin git@git.xxxxxx.com:react-native/myapp.git
-git add .
-git commit -m "Initial commit"
-git push -u origin master
-```
+我们把该文件服务器部署到外网，并且支持 https，因为部署 ipa 需要 https 协议。
 
 ## 安装和注册 GitLab Runner
 
 [GitLab Runner](https://docs.gitlab.com/runner/) 是用来跑构建和部署任务的，我们需要在 CI 服务器或本机[安装](https://docs.gitlab.com/runner/install/osx.html)。
 
-1. 下载 Runner
+1. 通过 Homebrew 安装 GitLab Runner
 
 ```
-sudo curl --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-amd64
+brew install gitlab-runner
 ```
 
-2. 赋予执行权限
-
-```
-sudo chmod +x /usr/local/bin/gitlab-runner
-```
-
-3. 注册 Runner
+2. 注册 Runner
 
 在 GitLab 上打开项目，找到左侧菜单 **Settings -> CI / CD -> Runners -> Expand**
 
@@ -484,33 +76,200 @@ gitlab-runner start
 
 前往 **Settings -> CI / CD -> Variables**
 
-分别注入 `FASTLANE_USER` `FASTLANE_PASSWORD` `MATCH_GIT_URL` `MATCH_PASSWORD` `BUGLY_DIST_URL` `FILE_SERVER` 等环境变量
+分别注入 `APP_STORE_CONNECT_API_KEY_PATH` `FASTLANE_TEAM_ID` `FILE_SERVER` `MATCH_GIT_URL` `SLACK_WEB_HOOT_URL` 等环境变量
 
 ![](./assets/gitlab_variables_1.png)
 
-其中，`FASTLANE_USER` 是 Apple ID，`FASTLANE_PASSWORD` 是 Apple ID 的登录密码，`MATCH_GIT_URL` 是我们通过 match 管理的 ios 开发证书的 git 地址，`MATCH_PASSWORD` 是我们为 match 设置的密码。
+还记得 fastlane 目录下那个 .env 文件吗？在跑 CI 的机器上是不需要它的，因为可以通过 CI 注入环境变量。
 
-`FASTLANE_SESSION` 和 `FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD` 用于解决 Apple ID 二因素登录问题。
+别忘了把 fastlane API Key JSON file 拷贝到 `APP_STORE_CONNECT_API_KEY_PATH` 所指向的路径。
 
-#### 获取 FASTLANE_SESSION
+## 编写 CI 脚本
 
-运行以下命令，获取 `FASTLANE_SESSION`，记得把 `user@email.com` 替换成你的 Apple ID。
+在 react-native 项目根目录下创建名为 ci 的文件夹
 
-```sh
-fastlane spaceauth -u user@email.com
+创建 ci/utils.js 文件，这个文件负责提供一些工具函数，具体内容请查看 ci/utils.js 文件。
+
+其中 `SLACK_WEB_HOOK_URL` 请替换成你司的 slack web hook url。
+
+创建 ci/config.js 文件，这里定义了常量， 某些常量的值通过读取环境变量获得。 通常，你需要替换 `FILE_SERVER` `APP_NAME` `APP_MODULE` `APPLICATION_ID` 这几个常量。具体内容请查看 ci/config.js 文件
+
+编写打包脚本，关键代码如下
+
+```js
+// android 打包脚本，具体请查看 ci/pack/android.js 文件
+const workdir = process.env.ANDROID_DIR || path.join(REACT_ROOT, 'android')
+
+sh(`./gradlew assemble${ENVIRONMENT_CAPITALIZE}Release`, { cwd: workdir })
 ```
 
-执行成功后，问你要不要把获得的 session 字符串拷贝到剪贴板，选择 y。
+```js
+// ios 打包脚本，具体请查看 ci/pack/ios.js 文件
+const workdir = process.env.IOS_DIR || path.join(REACT_ROOT, 'ios')
 
-> `FASTLANE_SESSION` 可能有期限，记得更新
+if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
+  sh(`gem install bundler && bundle install`, { cwd: workdir })
+}
+sh('bundle exec fastlane build', { cwd: workdir })
+```
 
-#### 获取 FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD
+包打好后，自然要上传到服务器，以下是上传文件的关键代码
 
-前往 [Apple ID 管理页面](https://appleid.apple.com/)
+```js
+// android 上传 apk 脚本，具体请查看 ci/upload/android.js
+const apk = path.join(ARTIFACTS_DIR, `${APP_MODULE}-${ENVIRONMENT}-${abi}-${BUILD_TYPE}.apk`)
+let filename = `${APP_NAME}-${ENVIRONMENT}-${abi}-${BUILD_TYPE}-${VERSION_NAME}-${VERSION_CODE}.apk`
 
-找到**安全**选卡，点击**App 专用密码**下的**生成密码**按钮，根据指引，即可获得 `FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD`
+if (process.env.CI_BUILD_REF_SLUG) {
+  filename = `${APP_NAME}-${process.env.CI_BUILD_REF_SLUG}-${ENVIRONMENT}-${abi}-${BUILD_TYPE}-${VERSION_NAME}-${VERSION_CODE}.apk`
+}
 
-![](./assets/apple_application_specific_password.png)
+uploadFile(apk, filename, `${FILE_SERVER}/${dest}`)
+```
+
+```js
+// ios 上传 ipa 脚本，具体请查看 ci/upload/ios.js
+uploadFile(`${file}.ipa`, `${filename}.ipa`, `${FILE_SERVER}/${dest}`)
+uploadFile(`${file}.plist`, `${filename}.plist`, `${FILE_SERVER}/${dest}`)
+uploadFile(`${file}.html`, `${filename}.html`, `${FILE_SERVER}/${dest}`)
+```
+
+iOS 除了需要上传 ipa 包，还需要上传一个 plist 文件和一个 html 文件。
+
+html 文件提供一个二维码，通过 iphone 的相机扫码后打开，点击网页上的按钮即可安装 ipa 包进行测试。
+
+html 通过模版生成，具体内容请查看 ci/upload/template/ipa.html 文件，关键代码如下
+
+```html
+<div class="container">
+  <h1>使用相机扫描二维码</h1>
+  <h3>{AppVersion}</h3>
+  <div id="qrcode"></div>
+  <div class="download">
+    <a title="iPhone" href="itms-services://?action=download-manifest&url={PListUrl}">点击下载安装</a>
+  </div>
+  <div class="server">
+    <a title="iPhone" href="{ServerUrl}">前往文件服务器</a>
+  </div>
+</div>
+```
+
+这里使用了苹果提供的 `itms-services` 协议，{PListUrl} 会被替换成 plist 文件所在 url。
+
+plist 文件通过模版生成，具体内容请查看 ci/upload/template/ipa.plist 文件，关键代码如下
+
+```xml
+<key>assets</key>
+<array>
+    <dict>
+        <key>kind</key>
+        <string>software-package</string>
+        <key>url</key>
+        <string>{IpaUrl}</string>
+    </dict>
+</array>
+```
+
+其中 {IpaUrl} 会被替换成 ipa 文件所在 url。
+
+## 编写 .gitlab-ci.yml
+
+在根目录创建 .gitlab-ci.yml 文件，该文件由 [YAML 语言](http://www.ruanyifeng.com/blog/2016/07/yaml.html?f=tt) 编写，更多的配置可查看[官方文档](https://docs.gitlab.com/ee/ci/yaml/README.html)。
+
+```yml
+# .gitlab-ci.yml
+before_script:
+  - export
+
+stages:
+  - build
+  - deploy
+
+variables:
+  LC_ALL: 'en_US.UTF-8'
+  LANG: 'en_US.UTF-8'
+  APP_MODULE: app
+
+build:ios:
+  stage: build
+  artifacts:
+    paths:
+      - ios/build/
+  script:
+    - yarn install
+    - node ./ci/build ios
+  tags:
+    - ios
+  except:
+    refs:
+      - tags
+    variables:
+      - $ANDROID_ONLY
+
+deploy:ios:upload:
+  stage: deploy
+  dependencies:
+    - build:ios
+  script:
+    - node ./ci/upload ios
+  only:
+    - schedules
+  tags:
+    - ios
+  except:
+    variables:
+      - $ANDROID_ONLY
+
+build:android:
+  stage: build
+  script:
+    - yarn install
+    - node ./ci/build android
+  artifacts:
+    paths:
+      - android/${APP_MODULE}/build/artifacts/
+  tags:
+    - android
+  except:
+    refs:
+      - tags
+    variables:
+      - $IOS_ONLY
+
+deploy:android:upload:
+  stage: deploy
+  dependencies:
+    - build:android
+  script:
+    - node ./ci/upload.js android
+  only:
+    - schedules
+  tags:
+    - android
+  except:
+    variables:
+      - $IOS_ONLY
+```
+
+## 创建 GitLab 仓库
+
+添加如下配置到 .gitignore 中
+
+```
+Pods/
+builds/
+```
+
+我们在公司自建的 GitLab 服务器上创建一个新的项目, 根据指引，执行如下命令，将代码推到仓库。
+
+```
+cd existing_folder
+git init
+git remote add origin git@git.xxxxxx.com:react-native/myapp.git
+git add .
+git commit -m "Initial commit"
+git push -u origin master
+```
 
 ## 自动触发每日构建、部署
 
@@ -526,7 +285,7 @@ fastlane spaceauth -u user@email.com
 
 ![](./assets/gitlab_schedule_create_1.png)
 
-在这里，我们注入了 `ENVIRONMENT` 和 `BUILD_CHANNELS` 这两个环境变量，表示要打生产环境的包，并且 Android 需要打渠道包。是的，我们在这里配置那些会经常发生变化的环境变量。
+在这里，我们注入了 `ENVIRONMENT` 等环境变量，表示要打生产环境的包。是的，我们在这里配置那些会经常发生变化的环境变量。
 
 一个定时构建任务就创建好了，如果有需要，也可以点击 Play 按钮立即触发构建、部署任务
 
@@ -540,16 +299,16 @@ fastlane spaceauth -u user@email.com
 
 > 我们还可以利用 **Settings -> CI / CD -> Pipeline triggers** 来给测试同学提供一个触发构建和部署的页面，如果他们有需要的话。
 
-## 本地测试
+## 本地调试
 
-所有脚本均可以在本机进行测试
+所有脚本均可以在本机进行调试
 
 cd 到项目根目录，分别输入以下命令试试
 
 调试 ios 打包脚本
 
 ```
-node ./ci/build.js ios
+node ./ci/build ios
 ```
 
 调试在 gitlab-ci.yml 中配置的任务，此时会注入一些 CI 环境变量

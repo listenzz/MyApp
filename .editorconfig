@@ -8,7 +8,7 @@ trim_trailing_whitespace = false
 insert_final_newline = false
 end_of_line = unset
 
-[*.{js,jsx,ts,tsx,json,yml,md}]
+[*.{js,jsx,ts,tsx,json,yml}]
 indent_size = 2
 
 # Windows files

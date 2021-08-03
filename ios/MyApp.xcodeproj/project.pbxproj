@@ -272,7 +272,7 @@
 				CODEPUSH_KEY = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 272;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = "";
 				ENVIRONMENT = qa;
@@ -300,7 +300,7 @@
 				CODEPUSH_KEY = "tMQ_LRSIBkPiylA1MwooA-EY1TGYHy8EkiK5N";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 272;
 				DEVELOPMENT_TEAM = "";
 				ENVIRONMENT = qa;
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -479,7 +479,7 @@
 				CODEPUSH_KEY = "";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 272;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = "";
 				ENVIRONMENT = production;
@@ -553,7 +553,7 @@
 				CODEPUSH_KEY = "_bcNPMSPFw_sEas825aWcMwCxRDUBk-QksFcE";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 272;
 				DEVELOPMENT_TEAM = "";
 				ENVIRONMENT = production;
 				HEADER_SEARCH_PATHS = "$(inherited)";

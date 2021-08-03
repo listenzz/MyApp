@@ -13,7 +13,7 @@ Sentry 是一款开源的崩溃监控工具，可帮助开发人员实时监控�
 curl -sL https://sentry.io/get-cli/ | bash
 ```
 
-> 本文使用的 sentry-cli 版本已经更新到 1.58.0 以上，使用 sentry-cli update 命令即可升级 sentry-cli
+> 本文使用的 sentry-cli 版本已经更新到 1.67.2 以上，使用 sentry-cli update 命令即可升级 sentry-cli
 
 ## 登录和创建 Sentry Project
 
@@ -111,7 +111,7 @@ end
 ```diff
 buildscript {
     dependencies {
-+       classpath 'io.sentry:sentry-android-gradle-plugin:1.7.36'
++       classpath 'io.sentry:sentry-android-gradle-plugin:2.1.0'
     }
 }
 ```
@@ -123,8 +123,8 @@ buildscript {
 - apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
 
 + sentry {
-+    uploadNativeSymbols false
-+    autoUpload false
++    uploadNativeSymbols=false
++    autoUpload=false
 + }
 ```
 
@@ -161,14 +161,7 @@ Sentry 项目创建成功后，会打开一个安装引导页面，将该页面�
 // index.js
 import { AppRegistry } from 'react-native'
 import App from './App'
-import {
-  ENVIRONMENT,
-  APPLICATION_ID,
-  VERSION_NAME,
-  VERSION_CODE,
-  COMMIT_SHORT_SHA,
-  CI,
-} from './app/AppInfo'
+import { ENVIRONMENT, APPLICATION_ID, VERSION_NAME, VERSION_CODE, COMMIT_SHORT_SHA, CI } from './app/AppInfo'
 import * as Sentry from '@sentry/react-native'
 
 if (CI) {
@@ -305,10 +298,7 @@ fs.writeFileSync(file, JSON.stringify(app))
 ```js
 // config.js
 // Android js bundle 原始目录
-const JS_BUNDLE_SOURCE_DIR = path.resolve(
-  BUILD_DIR,
-  `generated/assets/react/${ENVIRONMENT}/release/`,
-)
+const JS_BUNDLE_SOURCE_DIR = path.resolve(BUILD_DIR, `generated/assets/react/${ENVIRONMENT}/release/`)
 
 // AndroidManifest.xml
 const MANIFEST_FILENAME = 'AndroidManifest.xml'
@@ -329,16 +319,13 @@ const SENTRY_DEBUG_META_SOURCE_PATH = path.resolve(
 
 const MAPPING_FILENAME = 'mapping.txt'
 // android mapping.txt 原始路径
-const MAPPING_FILE_SOURCE_PATH = path.resolve(
-  BUILD_DIR,
-  `outputs/mapping/${ENVIRONMENT}/release/${MAPPING_FILENAME}`,
-)
+const MAPPING_FILE_SOURCE_PATH = path.resolve(BUILD_DIR, `outputs/mapping/${ENVIRONMENT}/release/${MAPPING_FILENAME}`)
 ```
 
-- 修改 ci/build.js 文件，在文件末尾增加如下内容
+- 修改 ci/pack/android.js 文件，在文件末尾增加如下内容
 
 ```js
-// ci/build.js
+// ci/pack/android.js
 // jsbundle
 copy(JS_BUNDLE_SOURCE_DIR, ARTIFACTS_DIR)
 
@@ -346,52 +333,15 @@ copy(JS_BUNDLE_SOURCE_DIR, ARTIFACTS_DIR)
 fs.copyFileSync(MANIFEST_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, MANIFEST_FILENAME), COPYFILE_EXCL)
 
 // sentry-debug-meta.properties
-fs.copyFileSync(
-  SENTRY_DEBUG_META_SOURCE_PATH,
-  path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME),
-  COPYFILE_EXCL,
-)
+fs.copyFileSync(SENTRY_DEBUG_META_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, SENTRY_DEBUG_META_FILENAME), COPYFILE_EXCL)
 
 // mapping.txt
-fs.copyFileSync(
-  MAPPING_FILE_SOURCE_PATH,
-  path.resolve(ARTIFACTS_DIR, MAPPING_FILENAME),
-  COPYFILE_EXCL,
-)
+fs.copyFileSync(MAPPING_FILE_SOURCE_PATH, path.resolve(ARTIFACTS_DIR, MAPPING_FILENAME), COPYFILE_EXCL)
 ```
 
-- 创建 ci/sentry.js 文件
+- 创建 ci/sentry/android.js 文件，关键内容如下
 
 ```js
-// ci/sentry.js
-const path = require('path')
-const { sh } = require('./utils')
-const {
-  APPLICATION_ID,
-  PLATFORM,
-  VERSION_NAME,
-  VERSION_CODE,
-  ARTIFACTS_DIR,
-  SENTRY_PROPERTIES_PATH,
-  MANIFEST_FILENAME,
-  MAPPING_FILENAME,
-  SENTRY_DEBUG_META_FILENAME,
-} = require('./config')
-
-const release = `${APPLICATION_ID}@${VERSION_NAME}+${VERSION_CODE}`
-
-if (PLATFORM === 'ios') {
-  // -------------------------------ios-------------------------------------
-  const workdir = process.env.IOS_DIR || path.resolve(__dirname, '../ios')
-  sh(
-    `bundle exec fastlane upload_debug_symbol_to_sentry`,
-    { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
-    workdir,
-  )
-  process.exit(0)
-}
-
-// -------------------------------android-------------------------------------
 // 上传 js bundle map 文件
 sh(
   `sentry-cli --log-level INFO react-native gradle \
@@ -399,72 +349,33 @@ sh(
     --sourcemap ${ARTIFACTS_DIR}/index.android.bundle.map \
     --release ${release} \
     --dist ${VERSION_CODE}`,
-  { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
-)
-
-// 上传 java 符号表
-sh(
-  `sentry-cli --log-level INFO upload-proguard \
-    --android-manifest ${ARTIFACTS_DIR}/${MANIFEST_FILENAME} \
-    --write-properties ${ARTIFACTS_DIR}/${SENTRY_DEBUG_META_FILENAME} ${ARTIFACTS_DIR}/${MAPPING_FILENAME}`,
-  { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
+  {
+    env: { ...process.env, SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH },
+  },
 )
 ```
 
-- 修改 .gitlab-ci.yml 文件，修改两个 job，添加两个 job，这是修改后的样子：
+- 创建 ci/sentry/ios.js 文件，关键内容如下
+
+```js
+sh('bundle exec fastlane upload_debug_symbol_to_sentry', {
+  env: {
+    ...process.env,
+    SENTRY_PROPERTIES: SENTRY_PROPERTIES_PATH,
+  },
+  cwd: workdir,
+})
+```
+
+- 修改 .gitlab-ci.yml 文件，修改两个 job，关键内容如下
 
 ```yml
-before_script:
-  - export
-
-stages:
-  - build
-  - deploy
-
-variables:
-  LC_ALL: 'en_US.UTF-8'
-  LANG: 'en_US.UTF-8'
-  APP_MODULE: app
-
-build:ios:
-  stage: build
-  artifacts:
-    paths:
-      - ios/build/
-  script:
-    - yarn install
-    - node ./ci/sha.js
-    - node ./ci/build.js ios
-  tags:
-    - ios
-  except:
-    refs:
-      - tags
-    variables:
-      - $ANDROID_ONLY
-
-deploy:ios:upload:
-  stage: deploy
-  dependencies:
-    - build:ios
-  script:
-    - node ./ci/upload.js ios
-  allow_failure: true
-  only:
-    - schedules
-  tags:
-    - ios
-  except:
-    variables:
-      - $ANDROID_ONLY
-
 deploy:ios:sentry:
   stage: deploy
   dependencies:
     - build:ios
   script:
-    - node ./ci/sentry.js ios
-  allow_failure: true
+    - node ./ci/sentry ios
   only:
     - schedules
   tags:
@@ -472,46 +383,13 @@ deploy:ios:sentry:
   except:
     variables:
       - $ANDROID_ONLY
-
-build:android:
-  stage: build
-  script:
-    - yarn install
-    - node ./ci/sha.js
-    - node ./ci/build.js android
-  artifacts:
-    paths:
-      - android/${APP_MODULE}/build/artifacts/
-  tags:
-    - android
-  except:
-    refs:
-      - tags
-    variables:
-      - $IOS_ONLY
-
-deploy:android:upload:
-  stage: deploy
-  dependencies:
-    - build:android
-  script:
-    - node ./ci/upload.js android
-  allow_failure: true
-  only:
-    - schedules
-  tags:
-    - android
-  except:
-    variables:
-      - $IOS_ONLY
 
 deploy:android:sentry:
   stage: deploy
   dependencies:
     - build:android
   script:
-    - node ./ci/sentry.js android
-  allow_failure: true
+    - node ./ci/sentry android
   only:
     - schedules
   tags:
