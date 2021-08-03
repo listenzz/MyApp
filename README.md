@@ -19,10 +19,9 @@
 
   - [iOS 工程化实践的准备工作](./docs/ios.md)
 
-    - 使用 cocoapods 来管理依赖
-    - 使用 fastlane 来管理签名和打包
+    - 搭建基于 Ruby 的开发环境
+    - 使用 fastlane 来管理证书和打包
     - 使用 fastlane 上传 ipa 到 TestFlight
-    - 上传 ipa 到自建文件服务器，并提供扫码安装能力
 
   - [Android 工程化实践的准备工作](./docs/android.md)
 
@@ -33,6 +32,8 @@
 
     - 使用 NodeJS 来编写 **CI / CD** 脚本
     - 自动管理 Version Name 和 Version Code
+    - 上传 ipa 到自建文件服务器，并提供扫码安装能力
+    - 上传 apk 到自建文件服务器，并提供扫码安装能力
     - 每日自动构建、部署
 
 - [集成 Sentry 来监控应用崩溃问题](./docs/sentry.md)
