@@ -91,9 +91,9 @@
 				910C40F4223A3AB800A2E60C /* Recovered References */,
 				2ED4DBC705A4EED9F9939FD7 /* Pods */,
 			);
-			indentWidth = 2;
+			indentWidth = 4;
 			sourceTree = "<group>";
-			tabWidth = 2;
+			tabWidth = 4;
 			usesTabs = 0;
 		};
 		83CBBA001A601CBA00E9B192 /* Products */ = {

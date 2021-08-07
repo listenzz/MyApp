@@ -18,28 +18,28 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [self hookLog];
-  RCTSetLogThreshold(RCTLogLevelInfo);
-  
-  NSURL *jsCodeLocation;
+    [self hookLog];
+    RCTSetLogThreshold(RCTLogLevelInfo);
+    
+    NSURL *jsCodeLocation;
 #ifdef DEBUG
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 #else
-  jsCodeLocation = [CodePush bundleURL];
+    jsCodeLocation = [CodePush bundleURL];
 #endif
-  
-  [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
-  
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  if (@available(iOS 13.0, *)) {
-      self.window.backgroundColor = [UIColor systemBackgroundColor];
-  } else {
-      self.window.backgroundColor = UIColor.whiteColor;
-  }
-  UIViewController *rootViewController = [UIViewController new];
-  self.window.rootViewController = rootViewController;
-  [self.window makeKeyAndVisible];
-  return YES;
+    
+    [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+    
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    if (@available(iOS 13.0, *)) {
+        self.window.backgroundColor = [UIColor systemBackgroundColor];
+    } else {
+        self.window.backgroundColor = UIColor.whiteColor;
+    }
+    UIViewController *rootViewController = [UIViewController new];
+    self.window.rootViewController = rootViewController;
+    [self.window makeKeyAndVisible];
+    return YES;
 }
 
 - (void)hookLog {
@@ -50,22 +50,22 @@
 #endif
         RCTSetLogFunction(^(RCTLogLevel level, RCTLogSource source, NSString *fileName, NSNumber *lineNumber, NSString *message) {
 #if DEBUG
-          fun(level, source, fileName, lineNumber, message);
+            fun(level, source, fileName, lineNumber, message);
 #endif
-          if (source == RCTLogSourceNative) {
-              SentryBreadcrumb *crumb =
-                  [[SentryBreadcrumb alloc] initWithLevel:[self sentryLevelForLogLevel:level]
-                                                 category:@"native"];
-              if (fileName) {
+            if (source == RCTLogSourceNative) {
+                SentryBreadcrumb *crumb =
+                [[SentryBreadcrumb alloc] initWithLevel:[self sentryLevelForLogLevel:level]
+                                               category:@"native"];
+                if (fileName) {
                     crumb.data = @{ @"filename": [fileName lastPathComponent] };
-              }
-              crumb.message = message;
-              [SentrySDK addBreadcrumb:crumb];
-          }
+                }
+                crumb.message = message;
+                [SentrySDK addBreadcrumb:crumb];
+            }
         });
     });
 }
-                  
+
 - (SentryLevel)sentryLevelForLogLevel:(RCTLogLevel)loglevel {
     if (loglevel == RCTLogLevelFatal) {
         return kSentryLevelFatal;
