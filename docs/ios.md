@@ -91,7 +91,7 @@ fastlane 为我们提供了诸多 Action，它们是 iOS 项目开发中需要�
 
 - deliver，用于自动把 App 上传到 App Store
 
-可以通过 bundle exec fastlane action --help 命令来查看 action 有哪些子命令和参数。
+通过 `bundle exec fastlane <action> -- help` 命令可以查看 action 有哪些子命令和参数。
 
 如：
 
@@ -101,6 +101,14 @@ bunlde exec fastlane match --help
 ```
 
 使用向下箭头查看更多信息，使用 q 退出查看。
+
+通过 `bundle exec fastlane action <action>` 命令可以查看 action 可以传递的参数及其对应的环境变量。
+
+如：
+
+```sh
+bundle exec fastlane action match
+```
 
 ## match
 
@@ -114,11 +122,11 @@ bundle exec fastlane match development
 
 执行该命令时，需要传递若干参数，参数可以通过命令行参数或者环境变量的方式传递。通过 `bundle exec fastlane action match` 命令查看可以传递的参数及其对应的环境变量。
 
-譬如 git_url 参数可以通过 `bundle exec fastlane match development --git_url git@git.xxxxxx.com:ios/certificates.git` 的形式传递，也可以通过环境变量。
+譬如 git_url 参数可以通过 `bundle exec fastlane match development --git_url git@git.xxxxxx.com:ios/certificates.git` 的形式传递，也可以通过名为 `MATCH_GIT_URL` 的环境变量。
 
 通过环境变量的方式传递参数比较方便，因为可以在多个以及多次命令之间复用参数。
 
-通过环境变量传递也有多种形式，本文使用 .env 文件来传递环境变量。
+通过环境变量传递参数也有多种方式，本文使用 .env 文件来传递环境变量。
 
 在 fastlane 文件夹里面创建一个名为 .env 变量，注意不要少了一个点。并将 .env 加入到 .gitignore 文件中，因为这里面涉及敏感信息，我们不希望将它加入到版本控制里面。
 
@@ -126,7 +134,7 @@ bundle exec fastlane match development
 
 生成证书和 provisioning profile 文件，需要开发者账号。如果你不是该账号持有人，你需要该账号持有人或管理者将你的 AppleId 加入该账号，并赋予 APP 管理权限。
 
-请根据 [Using App Store Connect API](https://docs.fastlane.tools/app-store-connect-api/) 的指引，生成 fastlane API Key JSON file。如果你们的账号从未使用过 App Store Connect API，则需要账号持有人开通这一功能。
+请根据 [Using App Store Connect API](https://docs.fastlane.tools/app-store-connect-api/) 的指引，生成 fastlane API Key JSON file。如果你们的账号从未使用过 App Store Connect API，则需要**账号持有人**开通这一功能。
 
 生成的 json 文件长如下这个样子，把该文件存放到你的电脑某处。
 
@@ -157,7 +165,7 @@ MATCH_APP_IDENTIFIER=com.shundaojia.myapp
 
 多个项目可以共享一个证书仓库，只要这些项目的 Bundle ID 不一样即可。
 
-上面，我们生成的是 development 证书，接下来，我们生成 appstore 证书
+在之前的步骤中，我们已经通过 `bundle exec fastlanme match development` 生成了 development 证书，接下来，我们生成 appstore 证书。
 
 ```sh
 bundle exec fastlane match appstore
