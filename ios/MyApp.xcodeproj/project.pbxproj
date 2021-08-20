@@ -269,7 +269,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_TYPE = debug;
-				CODEPUSH_KEY = "";
+				CODEPUSH_KEY = "tMQ_LRSIBkPiylA1MwooA-EY1TGYHy8EkiK5N";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 272;
@@ -476,7 +476,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_TYPE = debug;
-				CODEPUSH_KEY = "";
+				CODEPUSH_KEY = "_bcNPMSPFw_sEas825aWcMwCxRDUBk-QksFcE";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 272;
