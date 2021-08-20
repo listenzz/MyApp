@@ -1,0 +1,12 @@
+//
+//  prod_debug.xcconfig
+//  MyApp
+//
+//  Created by 李生 on 2021/8/20.
+//  Copyright © 2021 Facebook. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+#include "../Pods/Target Support Files/Pods-MyApp/Pods-MyApp.productiondebug.xcconfig"
+ARCHS = $(ARCHS_STANDARD_64_BIT)
