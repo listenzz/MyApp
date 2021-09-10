@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@react-native-community/hooks": "^2.6.0",
-    "@sentry/react-native": "^2.6.2",
+    "@sentry/react-native": "^3.0.3",
     "hybrid-navigation": "^2.1.1",
     "react": "17.0.2",
     "react-native": "^0.65.1",
@@ -25,7 +25,7 @@
     "@react-native-community/eslint-config": "^3.0.0",
     "@types/jest": "^27.0.1",
     "@types/react": "^17.0.15",
-    "@types/react-native": "^0.64.13",
+    "@types/react-native": "^0.65.0",
     "@types/react-test-renderer": "17.0.1",
     "babel-jest": "^27.0.6",
     "eslint": "^7.32.0",

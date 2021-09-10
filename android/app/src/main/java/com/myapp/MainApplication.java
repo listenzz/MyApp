@@ -2,6 +2,8 @@ package com.myapp;
 
 import android.app.Application;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.facebook.common.logging.FLog;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -50,6 +52,8 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        
         SoLoader.init(this, /* native exopackage */ false);
         FLog.setMinimumLoggingLevel(FLog.INFO);
         FLog.setLoggingDelegate(new SentryLogDelegate(BuildConfig.DEBUG));
