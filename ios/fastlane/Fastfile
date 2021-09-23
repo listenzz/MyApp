@@ -59,13 +59,13 @@ lane :build do |options|
     # 清除之前的构建物
     sh(%(cd #{ENV['PWD']} && rm -rf ./build && mkdir build))
 
-    profile_name = ENV["sigh_#{app_identifier}#{type}_profile-name"] || "match Development #{app_identifier}"
+    profile_name = ENV["sigh_#{app_identifier}_#{type}_profile-name"] || "match Development #{app_identifier}"
 
     # 配置签名
     update_code_signing_settings(
         use_automatic_signing: false,
         path: xcodeproj,
-        code_sign_identity: export_method == 'appstore' ? "iPhone Distribution" : "iPhone Developer",
+        code_sign_identity: export_method == 'app-store' ? "iPhone Distribution" : "iPhone Developer",
         bundle_identifier: app_identifier,
         profile_name: profile_name,
     )
@@ -86,10 +86,6 @@ lane :build do |options|
         clean: true,
         output_directory: "./build"
     )
-end
-
-lane :test do 
-    puts last_git_tag
 end
 
 lane :upload_ipa_to_testflight do |options|
