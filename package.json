@@ -8,7 +8,9 @@
     "start": "react-native start --reset-cache",
     "test": "jest",
     "tsc": "tsc --noEmit",
-    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "dependencies": {
     "@react-native-community/hooks": "^2.6.0",
@@ -33,6 +35,7 @@
     "metro-react-native-babel-preset": "^0.66.2",
     "react-native-testing-library": "^6.0.0",
     "react-test-renderer": "17.0.2",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "vuepress": "^2.0.0-beta.26"
   }
 }

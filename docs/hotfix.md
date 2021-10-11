@@ -1,3 +1,5 @@
+# 集成热更新（CodePush）
+
 使用 React Native 开发 App 不仅可以使用前端技术栈，而且可以通过热更新快速修复 BUG，让用户能及时体验产品新的特性。
 
 本文介绍如何通过 **CI / CD** 发布热更新，并把符号表上传到 [Sentry](https://sentry.io/welcome/)，方便监控补丁包可能产生的崩溃问题。

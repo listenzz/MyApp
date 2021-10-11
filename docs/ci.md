@@ -1,3 +1,5 @@
+# 使用 GitLab CI/CD 来实现持续集成和持续交付
+
 我们使用 GitLab 作为代码仓库，使用 [GitLab CI/CD](https://docs.gitlab.com/ee/ci/README.html) 作为持续集成，持续部署工具。
 
 我们要实现如下自动化流程
