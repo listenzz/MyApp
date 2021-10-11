@@ -1,7 +1,7 @@
 module.exports = {
   title: 'React Native 工程实践',
   description: 'React Native CI/CD, 工程实践',
-  base: '/rndevops/',
+  base: '/rn/devops/',
   themeConfig: {
     home: '/',
     lastUpdatedText: '上次更新',
@@ -16,7 +16,7 @@ module.exports = {
       { text: '文档', children: [
         {
           text: 'Hybrid Navigation',
-          link: 'https://todoit.tech/hybrid-navigation/',
+          link: 'https://todoit.tech/rn/hybrid-navigation/',
           target:'_self', 
           rel:''
         }, 

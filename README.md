@@ -2,7 +2,7 @@
 
 本文档讲述 React Native 的工程实践。
 
-[在线文档](https://todoit.tech/rndevops/)
+[在线文档](https://todoit.tech/rn/devops/)
 
 - [在工程中集成 Typescript, ESLint, Prettier 等](./docs/lint.md)
 
