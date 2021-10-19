@@ -6,37 +6,37 @@
 
 按照下图指引，分别 Duplicate "Debug" Configuration 和 Duplicate "Release" Configuration，创建 Debug production 和 Release production 两个 configuration。
 
-![Configurations](./assets/ios_configurations.jpg)
+![env-2021-10-19-16-12-15](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-12-15.jpg)
 
-![Configurations](./assets/ios_configurations_result.png)
+![env-2021-10-19-16-12-36](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-12-36.png)
 
 ### 添加用户定义设置
 
 如下图所示，点击 **+** 按钮，添加用户定义设置
 
-![User defined](./assets/user_defined.png)
+![env-2021-10-19-16-13-17](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-13-17.png)
 
 我们添加 BUILD_TYPE 和 ENVIRONMENT 这两个自定义设置，结果如图所示：
 
-![](./assets/user_environment.png)
+![env-2021-10-19-16-12-59](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-12-59.png)
 
 打开 Info 选项卡
 
-![](./assets/info_app_settings.jpg)
+![env-2021-10-19-16-14-16](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-14-16.jpg)
 
 添加一个名为 AppSettings 的字典，它有两个字段：BUILD_TYPE 和 ENVIRONMENT，它们的值分别为 $(BUILD_TYPE) 和 $(ENVIRONMENT)
 
-![appsettings](./assets/info_appsettings.png)
+![env-2021-10-19-16-14-36](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-14-36.png)
 
 点击 **Scheme** 按钮，创建新的 Scheme，命名为 **MyApp qa**，中间有个空格，这个 Scheme 纯粹是对 MyApp 的复制
 
 点击 **Scheme** 按钮，创建新的 Scheme，命名为 **MyApp production**，中间有个空格。
 
-![](./assets/scheme_new.png)
+![env-2021-10-19-16-14-54](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-14-54.png)
 
 编辑 MyApp production， 把左边 **Run Test Profile Analyze Archiv** 每个选项卡中的 **Build Configuration** 设置为对应的 production 版本。
 
-![](./assets/scheme_configuration.png)
+![env-2021-10-19-16-15-25](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-15-25.png)
 
 修改 ios/Podfile 文件
 
@@ -51,19 +51,19 @@ platform :ios, '9.0'
 
 选中 MyApp 目录，右键打开菜单，选择 **New File...**
 
-![](./assets/ios_new_file.png)
+![env-2021-10-19-16-15-45](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-15-45.png)
 
 在弹出的界面中，确定 **Cocoa Touch Classs** 处于选中状态，点击 **Nex**
 
-![](./assets/ios_cocoa_touch.png)
+![env-2021-10-19-16-16-08](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-16-08.png)
 
 创建一个名为 AppIno(名字随意) 的类，然后 **Next**
 
-![](./assets/ios_class_name.png)
+![env-2021-10-19-16-16-34](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-16-34.png)
 
 选择类文件要存放的目录，在这个示例工程里，我们把它放在 MyApp 目录下
 
-![](./assets/ios_folder.png)
+![env-2021-10-19-16-16-55](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-16-55.png)
 
 点击 **Create** 完成创建
 
@@ -143,9 +143,9 @@ android{
 
 打开 AndroidStudio，如图所示，创建一个名为 AppInfo 的 java 文件
 
-![](./assets/android_create_class.png)
+![env-2021-10-19-16-17-18](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-17-18.png)
 
-![](./assets/android_create_class_2.png)
+![env-2021-10-19-16-17-36](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-17-36.png)
 
 编辑该文件
 
@@ -191,7 +191,7 @@ public class AppInfo extends ReactContextBaseJavaModule {
 
 如图，创建一个叫 AppPackage 的文件
 
-![](./assets/android_create_interface.png)
+![env-2021-10-19-16-17-59](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/env-2021-10-19-16-17-59.png)
 
 编辑如下：
 

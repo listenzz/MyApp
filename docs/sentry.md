@@ -25,11 +25,11 @@ curl -sL https://sentry.io/get-cli/ | bash
 
 1. 打开 All 选项卡，选择 **React-Native**
 
-![](./assets/sentry_create.png)
+![sentry-2021-10-19-16-27-02](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/sentry-2021-10-19-16-27-02.png)
 
 2. 更改项目名, 并点击 **Create Projec**
 
-![](./assets/sentry_create_2.jpg)
+![sentry-2021-10-19-16-27-19](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/sentry-2021-10-19-16-27-19.jpg)
 
 3. 根据官方指南，[安装 @sentry/react-native](https://docs.sentry.io/platforms/react-native/)
 
@@ -37,11 +37,11 @@ curl -sL https://sentry.io/get-cli/ | bash
 
 - 删除 **Upload Debug Symbols to Sentry** 这个 Build Phase
 
-![](./assets/sentry_ios_delete_upload_debug_symbols.jpg)
+![sentry-2021-10-19-16-27-39](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/sentry-2021-10-19-16-27-39.jpg)
 
 - 展开 **Bundle React Native code and images** 这个 Build Phase，将里面的脚本替换成如下内容
 
-![](./assets/sentry_shell.png)
+![sentry-2021-10-19-16-28-03](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/sentry-2021-10-19-16-28-03.png)
 
 ```shell
 if [ -z "$CI" ]; then
@@ -407,7 +407,7 @@ deploy:android:sentry:
 
 一旦发生异常，Sentry 将收到报告，不仅定位到了出错的地方，还附带 Breadcrumbs，即崩溃前的日志。
 
-![](./assets/sentry_error_report.png)
+![sentry-2021-10-19-16-28-41](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/sentry-2021-10-19-16-28-41.png)
 
 我们可以在 TAGS 一栏中找到 commit 和 environment，这正是我们通过以下代码所设置的
 

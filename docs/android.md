@@ -23,13 +23,13 @@ Key store path 选择 android/keystores/release
 
 > 生成的密钥请务必备份，且妥善保管，一般情况下，为了安全，不宜放在项目文件夹内，不宜加入到版本控制系统，这是另外一个问题，本文不作展开。
 
-![](./assets/keystore_generate.png)
+![android-2021-10-19-16-06-43](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/android-2021-10-19-16-06-43.png)
 
 填写完表单后，请点击 OK。
 
 5. 在 **Generate Signed Bundle or APK** 对话框中，点击 Cancel
 
-![](./assets/keystore_cancel.jpg)
+![android-2021-10-19-16-07-13](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/android-2021-10-19-16-07-13.jpg)
 
 6. 配置签名文件
 
@@ -55,7 +55,6 @@ android {
     }
   }
 }
-
 ```
 
 ## 组装 APK

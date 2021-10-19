@@ -33,7 +33,7 @@ brew install gitlab-runner
 
 在 GitLab 上打开项目，找到左侧菜单 **Settings -> CI / CD -> Runners -> Expand**
 
-![](./assets/gitlab_runner.jpg)
+![ci-2021-10-19-16-08-05](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ci-2021-10-19-16-08-05.jpg)
 
 在这里，有我们注册需要用到的信息，也可以注册 Shared Runners 或 Group Runners ，这需要 GitLab 的管理员或项目组的 owner 为你提供 token
 
@@ -53,11 +53,11 @@ tags 填写 ios,android,react-native
 
 executor 填写 shell
 
-![](./assets/gitlab_runner_register.jpg)
+![ci-2021-10-19-16-08-34](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ci-2021-10-19-16-08-34.jpg)
 
 刷新界面，可以看到刚刚注册的 Runner
 
-![](./assets/gitlab_runner_inactive.png)
+![ci-2021-10-19-16-08-51](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ci-2021-10-19-16-08-51.png)
 
 但是处于未激活状态，执行以下命令，激活该 Runner
 
@@ -80,7 +80,7 @@ gitlab-runner start
 
 分别注入 `APP_STORE_CONNECT_API_KEY_PATH` `FASTLANE_TEAM_ID` `FILE_SERVER` `MATCH_GIT_URL` `SLACK_WEB_HOOT_URL` 等环境变量
 
-![](./assets/gitlab_variables_1.png)
+![ci-2021-10-19-16-09-20](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ci-2021-10-19-16-09-20.png)
 
 还记得 fastlane 目录下那个 .env 文件吗？在跑 CI 的机器上是不需要它的，因为可以通过 CI 注入环境变量。
 
@@ -281,23 +281,23 @@ git push -u origin master
 
 在 GitLab 上打开项目，找到左侧菜单 **CI / CD -> Schedules**
 
-![](./assets/gitlab_schedules.png)
+![ci-2021-10-19-16-09-47](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ci-2021-10-19-16-09-47.png)
 
 点击绿色的 "**New schedule**" 按钮
 
-![](./assets/gitlab_schedule_create_1.png)
+![ci-2021-10-19-16-10-23](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ci-2021-10-19-16-10-23.png)
 
 在这里，我们注入了 `ENVIRONMENT` 等环境变量，表示要打生产环境的包。是的，我们在这里配置那些会经常发生变化的环境变量。
 
 一个定时构建任务就创建好了，如果有需要，也可以点击 Play 按钮立即触发构建、部署任务
 
-![](./assets/gitlab_schedule_play_1.png)
+![ci-2021-10-19-16-10-55](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ci-2021-10-19-16-10-55.png)
 
 如果只想手动触发而不希望定时触发，在创建 Schedule 时把 Acitive 的勾去掉就好。
 
 下面，就让我们来 Play 一下吧：
 
-![](./assets/gitlab_pipelines.png)
+![ci-2021-10-19-16-11-19](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ci-2021-10-19-16-11-19.png)
 
 > 我们还可以利用 **Settings -> CI / CD -> Pipeline triggers** 来给测试同学提供一个触发构建和部署的页面，如果他们有需要的话。
 

@@ -48,7 +48,7 @@ appcenter apps create -p React-Native -o Android -d myapp-android
 appcenter apps create -p React-Native -o iOS -d myapp-ios
 ```
 
-![create app at appcenter](./assets/appcenter_apps_create.png)
+![hotfix-2021-10-19-16-18-34](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-18-34.png)
 
 现在输入下面命令，应该能看到我们刚刚注册的 app 了
 
@@ -71,7 +71,7 @@ appcenter codepush deployment add -a listenzz/myapp-android Staging
 appcenter codepush deployment list -k -a listenzz/myapp-android
 ```
 
-![add deployment](./assets/appcenter_deployment_add.png)
+![hotfix-2021-10-19-16-18-54](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-18-54.png)
 
 列出当前 app 最近发布过的补丁包，如果之前没使用 code-push 发布过补丁的话，那么现在应该是空的
 
@@ -79,7 +79,7 @@ appcenter codepush deployment list -k -a listenzz/myapp-android
 appcenter codepush deployment list -a listenzz/myapp-android
 ```
 
-![list deployment](./assets/appcenter_deployment_list.png)
+![hotfix-2021-10-19-16-19-12](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-19-12.png)
 
 ## 配置 RN 工程
 
@@ -192,15 +192,15 @@ appcenter codepush deployment list -k -a listenzz/myapp-ios
 
 添加字段名为 CODEPUSH_KEY 的 User-Defined 配置
 
-![user defined](./assets/user_defined.png)
+![hotfix-2021-10-19-16-19-36](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-19-36.png)
 
-![codepush key](./assets/user_defined_codepush_key.png)
+![hotfix-2021-10-19-16-20-03](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-20-03.png)
 
 只需要配置 release 的 configuration 即可
 
 在 Info.plist 文件中添加 CodePushDeploymentKey 和它的值，也就是 \$(CODEPUSH_KEY)
 
-![info](./assets/info_codepush_deployment_key.png)
+![hotfix-2021-10-19-16-20-22](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-20-22.png)
 
 ## 配置 Andriod 工程
 
@@ -255,7 +255,7 @@ appcenter codepush release-react -a listenzz/myapp-ios -t 1.0.11 -o ./build -d S
 appcenter codepush deployment list -a listenzz/myapp-ios
 ```
 
-![no installs](./assets/appcenter_deployment_no_installs.png)
+![hotfix-2021-10-19-16-20-44](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-20-44.png)
 
 可以看到，我们刚刚发布了一个补丁，但是还没有人安装它
 
@@ -269,11 +269,11 @@ appcenter codepush deployment list -a listenzz/myapp-ios
 
 可以看到有一个用户正在等待更新
 
-![pending](./assets/appcenter_deployment_pending.png)
+![hotfix-2021-10-19-16-21-07](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-21-07.png)
 
 让我们的 App 再退到后台，然后再进入前台
 
-![acitve](./assets/appcenter_deployment_active.png)
+![hotfix-2021-10-19-16-21-25](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-21-25.png)
 
 恭喜你，所有用户都更新到了最新版本
 
@@ -359,7 +359,7 @@ sh(
 
 让我们到 Gitlab **CI / CD -> Schedules** 上去配置一个
 
-![patch schedule](./assets/gitlab_patch_schedule_1.jpg)
+![hotfix-2021-10-19-16-22-17](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/hotfix-2021-10-19-16-22-17.jpg)
 
 记得不要勾选 Active，因为我们不希望每天都发一个补丁包。
 

@@ -181,7 +181,7 @@ bundle exec fastlane match appstore
 
 打开 Xcode，配置好 Provisioning Profile，因为我们有 qa 和 production 两个环境，每个环境有 debug 和 release 两个 Configuration，所以我们有 4 处签名需要配置。
 
-![](./assets/match_xcode.jpg)
+![ios-2021-10-19-16-23-01](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2021-10-19-16-23-01.jpg)
 
 最后，别忘了设置回自动管理签名哦，因为我们只希望通过 CI 打包时，才交给 match 管理签名文件，这样可以降低团队协作成本，其它成员不需要知道有这一回事。
 
@@ -352,11 +352,11 @@ end
 
 1. 前往 App Store Connect 创建 App
 
-![](./assets/appstore_create_app.jpg)
+![ios-2021-10-19-16-23-25](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2021-10-19-16-23-25.jpg)
 
 2. 打开 Xcode，添加 AppIcon，本项目附送了一套 icon，可供测试使用
 
-![](./assets/xcode_icon.png)
+![ios-2021-10-19-16-23-42](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2021-10-19-16-23-42.png)
 
 重新打个类型为 appstore 的包再上传
 
@@ -369,17 +369,17 @@ bundle exec fastlane upload_ipa_to_testflight
 
 > 留意苹果给你发的邮件，如有问题，及时按下 Control + C
 
-![](./assets/pilot_waiting.png)
+![ios-2021-10-19-16-24-05](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2021-10-19-16-24-05.png)
 
 ipa 包通过检测后，TestFlight 功能将被激活，前往 App Store Connenct, 打开我的 App 页面，选择 TestFlight 选项卡，可以看到
 
-![](./assets/appstore_testflight.jpg)
+![ios-2021-10-19-16-24-49](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2021-10-19-16-24-49.jpg)
 
 选择侧边栏的 App Store Connect 用户，点击测试员旁边的 + 按钮，添加内部测试员。内部测试员必须是开发组的成员。
 
 添加成功后，测试员会收到邮件邀请
 
-![](./assets/testflight_email.jpg)
+![ios-2021-10-19-16-25-16](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2021-10-19-16-25-16.jpg)
 
 测试员接受邀请，在 App Store 下载 TestFlight App，输入兑换码，即可安装 App 进行测试，以后每次发布新包，测试员都可以收到通知。
 
@@ -389,17 +389,17 @@ ipa 包通过检测后，TestFlight 功能将被激活，前往 App Store Connen
 
 如果发现如下错误
 
-![](./assets/pilot_no_app.png)
+![ios-2021-10-19-16-25-34](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2021-10-19-16-25-34.png)
 
 说明准备工作 1 没做好
 
-![](./assets/pilot_no_icon.png)
+![ios-2021-10-19-16-26-00](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2021-10-19-16-26-00.png)
 
 说明准备工作 2 没做好
 
 如果收到这样的邮件
 
-![](./assets/appstore_email.png)
+![ios-2021-10-19-16-26-19](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2021-10-19-16-26-19.png)
 
 说明 ipa 未能通过检测，请根据提示修复问题
 
