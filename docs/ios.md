@@ -13,32 +13,27 @@
 Mac OS 自带 ruby，不过限制过多，在执行某些命令时，需要 sudo。 我们使用 homebrew 重新安装一个。
 
 ```zsh
-brew install ruby@2.6
+brew install ruby
 ```
 
 安装完成后，根据提示，执行如下命令
 
 ```zsh
-echo 'export PATH="/usr/local/opt/ruby@2.6/bin:$PATH"' >> ~/.zshrc
+echo 'export PATH="/usr/local/opt/ruby/bin:$PATH"' >> ~/.zshrc
+# 如果是 M1 则执行  echo 'export PATH="/opt/homebrew/opt/ruby/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
-```
-
-最后执行
-
-```zsh
-brew link --overwrite ruby@2.6
 ```
 
 查看 ruby 和 gem 的版本
 
 ```zsh
 ruby -v
-# ruby 2.6.6p146 (2020-03-31 revision 67876) [x86_64-darwin19]
+# ruby 3.0.2p107 (2021-07-07 revision 0db68f0233) [arm64-darwin20]
 ```
 
 ```zsh
 gem -v
-# 3.0.3
+# 3.2.22
 ```
 
 ## 安装 cocoapods 和 fastlane
