@@ -67,3 +67,6 @@ buck-out/
 dist/
 .temp
 .cache
+
+# ci
+!ci/build/

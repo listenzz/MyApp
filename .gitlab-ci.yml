@@ -18,7 +18,7 @@ build:ios:
   script:
     - yarn install
     - node ./ci/sha.js
-    - node ./ci/pack ios
+    - node ./ci/build ios
   tags:
     - ios
   except:
@@ -60,7 +60,7 @@ build:android:
   script:
     - yarn install
     - node ./ci/sha.js
-    - node ./ci/pack android
+    - node ./ci/build android
   artifacts:
     paths:
       - android/${APP_MODULE}/build/artifacts/
