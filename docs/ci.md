@@ -99,14 +99,14 @@ gitlab-runner start
 编写打包脚本，关键代码如下
 
 ```js
-// android 打包脚本，具体请查看 ci/pack/android.js 文件
+// android 打包脚本，具体请查看 ci/build/android.js 文件
 const workdir = process.env.ANDROID_DIR || path.join(REACT_ROOT, 'android')
 
 sh(`./gradlew assemble${ENVIRONMENT_CAPITALIZE}Release`, { cwd: workdir })
 ```
 
 ```js
-// ios 打包脚本，具体请查看 ci/pack/ios.js 文件
+// ios 打包脚本，具体请查看 ci/build/ios.js 文件
 const workdir = process.env.IOS_DIR || path.join(REACT_ROOT, 'ios')
 
 if (process.env.SHOULD_RUBY_GEM_UPDATE === 'true') {
