@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@react-native-community/hooks": "^2.8.0",
-    "@sentry/react-native": "^3.2.2",
+    "@sentry/react-native": "^3.2.10",
     "hybrid-navigation": "^2.5.0",
     "react": "17.0.2",
     "react-native": "^0.66.2",
