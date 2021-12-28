@@ -9,7 +9,7 @@ const PLATFORM = process.argv[2] || 'ios'
 // 确保或假装在 CI 环境
 process.env.CI = process.env.CI || 'true'
 
-const ENABLE_HERMES = Boolean(process.env.ENABLE_HERMES || 'true')
+const ENABLE_HERMES = process.env.ENABLE_HERMES ? process.env.ENABLE_HERMES === 'true' : false
 
 const BUILD_TYPE = process.env.BUILD_TYPE || 'release'
 process.env.BUILD_TYPE = BUILD_TYPE
