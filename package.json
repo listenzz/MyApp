@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "@react-native-community/hooks": "^2.8.0",
-    "@sentry/react-native": "^3.2.10",
-    "hybrid-navigation": "^2.5.0",
+    "@sentry/react-native": "^3.4.1",
+    "hybrid-navigation": "^2.8.0",
     "react": "17.0.2",
-    "react-native": "^0.66.2",
+    "react-native": "^0.67.4",
     "react-native-code-push": "^7.0.4"
   },
   "devDependencies": {
@@ -25,17 +25,17 @@
     "@babel/plugin-proposal-export-namespace-from": "^7.16.0",
     "@babel/runtime": "^7.16.0",
     "@react-native-community/eslint-config": "^3.0.1",
-    "@types/jest": "^27.0.2",
-    "@types/react": "^17.0.34",
-    "@types/react-native": "^0.66.2",
+    "@types/jest": "^27.4.1",
+    "@types/react": "^17.0.44",
+    "@types/react-native": "^0.67.4",
     "@types/react-test-renderer": "17.0.1",
-    "babel-jest": "^27.3.1",
+    "babel-jest": "^27.5.1",
     "eslint": "^7.32.0",
-    "jest": "^27.3.1",
+    "jest": "^27.5.1",
     "metro-react-native-babel-preset": "^0.66.2",
     "react-native-testing-library": "^6.0.0",
     "react-test-renderer": "17.0.2",
-    "typescript": "^4.4.3",
+    "typescript": "^4.6.3",
     "vuepress": "^2.0.0-beta.26"
   }
 }
