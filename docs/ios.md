@@ -133,6 +133,8 @@ bundle exec fastlane match development
 
 请根据 [Using App Store Connect API](https://docs.fastlane.tools/app-store-connect-api/) 的指引，生成 fastlane API Key JSON file。如果你们的账号从未使用过 App Store Connect API，则需要**账号持有人**开通这一功能。
 
+![ios-2022-07-07-11-18-13](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/ios-2022-07-07-11-18-13.png)
+
 生成的 json 文件长如下这个样子，把该文件存放到你的电脑某处。
 
 ```json
