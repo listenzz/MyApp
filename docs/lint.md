@@ -228,7 +228,7 @@ esbenp.prettier-vscode
 
 ---
 
-参考：
+## 参考
 
 [react-native-template-typescript](https://github.com/emin93/react-native-template-typescript)
 
