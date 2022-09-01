@@ -1,4 +1,4 @@
-const { defaultTheme } = require('@vuepress/theme-default')
+import { defaultTheme } from 'vuepress'
 
 module.exports = {
   title: 'React Native 工程实践',
