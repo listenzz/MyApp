@@ -1,51 +1,58 @@
-/* eslint-disable no-console */
-import * as Sentry from '@sentry/react-native'
+import { logger, consoleTransport, fileAsyncTransport } from 'react-native-logs'
+import RNFS from 'react-native-fs'
+import { Platform } from 'react-native'
 
-export function d(...args: any[]) {
-  log(Sentry.Severity.Debug, args)
+export function logDir() {
+  return Platform.OS === 'android' ? RNFS.CachesDirectoryPath : RNFS.DocumentDirectoryPath
 }
 
-export function i(...args: any[]) {
-  log(Sentry.Severity.Info, args)
+const config = {
+  transport: [consoleTransport, fileAsyncTransport],
+  severity: 'debug',
+  transportOptions: {
+    colors: {
+      info: 'blueBright',
+      warn: 'yellowBright',
+      error: 'redBright',
+    },
+    FS: RNFS,
+    filePath: logDir(),
+    fileName: `{date-today}.log`,
+  },
 }
 
-export function w(...args: any[]) {
-  log(Sentry.Severity.Warning, args)
-}
+const LOG = logger.createLogger(config)
 
-export function e(...args: any[]) {
-  log(Sentry.Severity.Error, args)
-}
+class Logger {
+  private log: any
 
-function log(level: Sentry.Severity, args: any[]) {
-  const msg = args
-    .map(arg => (arg === undefined ? 'undefined' : arg))
-    .map(arg => (arg === null ? 'null' : arg))
-    .map(arg => (typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg))
-    .join(' ')
-
-  const length = msg.length
-  if (length > 4000) {
-    let remaining = length
-    let index = 0
-    while (remaining > 0) {
-      addBreadcrumb(level, msg.substring(index, Math.min(index + 4000, length)))
-      remaining -= 4000
-      index += 4000
+  constructor(tag?: string) {
+    if (tag) {
+      this.log = LOG.extend(tag)
+    } else {
+      this.log = LOG
     }
-  } else {
-    addBreadcrumb(level, msg)
+  }
+
+  d(...args: any[]) {
+    this.log.debug(...args)
+  }
+
+  i(...args: any[]) {
+    this.log.info(...args)
+  }
+
+  w(...args: any[]) {
+    this.log.warn(...args)
+  }
+
+  e(...args: any[]) {
+    this.log.error(...args)
+  }
+
+  extend(tag: string) {
+    return new Logger(tag)
   }
 }
 
-function addBreadcrumb(level: Sentry.Severity, msg: string) {
-  if (level === Sentry.Severity.Info) {
-    console.info(msg)
-  } else if (level === Sentry.Severity.Warning) {
-    console.warn(msg)
-  } else if (level === Sentry.Severity.Error) {
-    console.error(msg)
-  } else {
-    console.debug(msg)
-  }
-}
+export default new Logger()

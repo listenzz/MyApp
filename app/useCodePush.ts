@@ -2,7 +2,9 @@ import { useCallback, useEffect } from 'react'
 import { useAppState } from '@react-native-community/hooks'
 import CodePush from 'react-native-code-push'
 import { useVisibleEffect } from 'hybrid-navigation'
-import { Log } from './log'
+import Logger from './log'
+
+const Log = Logger.extend('CodePush')
 
 export function useCodePush() {
   useVisibleEffect(
@@ -20,7 +22,7 @@ export function useCodePush() {
     if (appStatus !== 'active') {
       return
     }
-    Log.i('[CodePush] App 由后台进入前台')
+    Log.i('App 由后台进入前台')
 
     sync()
   }, [appStatus])

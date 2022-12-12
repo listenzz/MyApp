@@ -56,7 +56,6 @@ public class MainApplication extends Application implements ReactApplication {
         
         SoLoader.init(this, /* native exopackage */ false);
         FLog.setMinimumLoggingLevel(FLog.INFO);
-        FLog.setLoggingDelegate(new SentryLogDelegate(BuildConfig.DEBUG));
         ReactBridgeManager bridgeManager = ReactBridgeManager.get();
         bridgeManager.install(getReactNativeHost());
     }

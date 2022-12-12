@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import * as Sentry from '@sentry/react-native'
 import { Navigator, withNavigationItem } from 'hybrid-navigation'
 import { ENVIRONMENT, VERSION_NAME, VERSION_CODE, COMMIT_SHORT_SHA } from './AppInfo'
 import { useCodePush } from './useCodePush'
-import { Log } from './log'
+import Logger, { upload, prune } from './log'
+
+const Log = Logger.extend('App')
 
 export default withNavigationItem({
   rightBarButtonItem: {
@@ -17,6 +19,11 @@ export default withNavigationItem({
 
 function App() {
   useCodePush()
+
+  useEffect(() => {
+    prune()
+  }, [])
+
   const version = `${VERSION_NAME}-${VERSION_CODE}`
 
   function sentryNativeCrash() {
@@ -37,9 +44,13 @@ function App() {
     Promise.reject(new Error('promise 被拒绝了'))
   }
 
-  function log() {
-    Log.i('打印日志')
-    Sentry.captureMessage('上传诊断日志' + Math.random())
+  async function log() {
+    Log.i('打印日志', { a: 1, b: 2, c: 3 })
+    try {
+      await upload()
+    } catch (e) {
+      Log.e(e)
+    }
   }
 
   return (
